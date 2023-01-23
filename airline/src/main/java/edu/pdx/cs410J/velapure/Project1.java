@@ -24,6 +24,7 @@ public class Project1 {
                 System.err.println("Missing command line arguments. Please enter arguments in the order: " +
                         "<airline_name>, <flight_number>, <source_location>, <departure_date>, <departure_time>, " +
                         "<destination_location, <arrival_date>, <arrival_time>, '-print' (optional), '-README' (optional).");
+                return;
             } else if (argLength < 8) {
                 System.err.println("Too few command line arguments. Please enter all the non-optional arguments in the order: " +
                         "<airline_name>, <flight_number>, <source_location>, <departure_date>, <departure_time>, " +
@@ -32,6 +33,7 @@ public class Project1 {
                 for (String arg : args) {
                     System.out.println(arg);
                 }
+                return;
             } else if (argLength > 10) {
                 System.err.println("Too many command line arguments. Please enter correct number of arguments " +
                         "(optional and/or non-optional) in the order: " +
@@ -41,6 +43,7 @@ public class Project1 {
                 for (String arg : args) {
                     System.out.println(arg);
                 }
+                return;
             } else {
                 String airlineName = args[0];
 
@@ -50,11 +53,13 @@ public class Project1 {
                     flightNumber = Integer.parseInt(flightNumberString);
                 } catch (NumberFormatException e) {
                     System.err.println("Flight number provided should consist of only numbers between 0-9.");
+                    return;
                 }
 
                 String srcLocation = args[2];
                 if (!(Pattern.matches("[a-zA-Z]+", srcLocation)) || srcLocation.length() != 3) {
                     System.err.println("Source location provided should consist of only three alphabets [a-zA-Z].");
+                    return;
                 }
 
                 String departureDateString = args[3];
@@ -66,6 +71,7 @@ public class Project1 {
                 String destLocation = args[5];
                 if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
                     System.err.println("Destination location provided should consist of only three alphabets [a-zA-Z].");
+                    return;
                 }
 
                 String arrivalDate = args[6];
@@ -93,9 +99,11 @@ public class Project1 {
             Date formattedDateTypeFour = dateFormatterThree.parse(providedDateString);
             if (!(dateFormatterOne.format(formattedDateTypeOne).equals(providedDateString) || dateFormatterTwo.format(formattedDateTypeTwo).equals(providedDateString) || dateFormatterThree.format(formattedDateTypeThree).equals(providedDateString) || dateFormatterFour.format(formattedDateTypeFour).equals(providedDateString))) {
                 System.err.println(travelDateType + " date provided should be in mm/dd/yyyy format.");
+                return;
             }
         } catch (ParseException e) {
             System.err.println(travelDateType + " date provided should be in mm/dd/yyyy format.");
+            return;
         }
     }
 
@@ -107,13 +115,16 @@ public class Project1 {
                 int providedMinute = Integer.parseInt(providedTimeArray[1]);
                 if (!(providedHour > 0 && providedHour <= 23 && providedMinute > 0 && providedMinute <= 59)) {
                     System.err.println(travelTimeType + " time provided should be in 24-hour(hh:mm) format.");
+                    return;
                 }
 
             } catch (NumberFormatException e) {
                 System.err.println(travelTimeType + " time provided should be in 24-hour(hh:mm) format.");
+                return;
             }
         } else {
             System.err.println(travelTimeType + " time provided should be in 24-hour(hh:mm) format.");
+            return;
         }
     }
 }
