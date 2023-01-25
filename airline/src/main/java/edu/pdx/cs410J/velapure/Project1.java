@@ -79,10 +79,12 @@ public class Project1 {
 
                 String arrivalTime = args[7];
                 validateTime(arrivalTime, "Arrival");
+
+
             }
         }
 
-        Flight flight = new Flight();  // Refer to one of Dave's classes so that we can be sure it is on the classpath
+        //   Flight flight = new Flight();  // Refer to one of Dave's classes so that we can be sure it is on the classpath
 
 
     }
@@ -117,7 +119,6 @@ public class Project1 {
                     System.err.println(travelTimeType + " time provided should be in 24-hour(hh:mm) format.");
                     return;
                 }
-
             } catch (NumberFormatException e) {
                 System.err.println(travelTimeType + " time provided should be in 24-hour(hh:mm) format.");
                 return;
