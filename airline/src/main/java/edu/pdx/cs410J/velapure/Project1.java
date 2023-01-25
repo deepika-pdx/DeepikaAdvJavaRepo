@@ -146,6 +146,7 @@ public class Project1 {
                             || (optionalParameter1.equals("-README") && optionalParameter2.equals("-print"))) {
                         System.out.println("Flight Description: ");
                         System.out.println(flight.toString());
+                        System.out.println("\n");
                         System.out.println("Project Description: ");
                         readContentFromREADME();
                     } else {
