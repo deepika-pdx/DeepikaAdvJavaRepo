@@ -16,7 +16,7 @@ public class FlightTest {
      */
     @Test
     void test789IsReturnedAsFlightNumber() {
-        Flight flight = createFlight();
+        Flight flight = createFlight(789, "DEL", "01/22/2023 12:30", "CHN", "01/22/2023 14:30");
         assertThat(flight.getNumber(), equalTo(789));
     }
 
@@ -26,8 +26,8 @@ public class FlightTest {
      */
     @Test
     void testKOLIsReturnedAsSource() {
-        Flight flight = createFlight();
-        assertThat(flight.getSource(), equalTo("KOL"));
+        Flight flight = createFlight(789, "DEL", "01/22/2023 12:30", "CHN", "01/22/2023 14:30");
+        assertThat(flight.getSource(), equalTo("DEL"));
     }
 
     /**
@@ -36,7 +36,7 @@ public class FlightTest {
      */
     @Test
     void testDepartureTimeIsReturnedCorrectly() {
-        Flight flight = createFlight();
+        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", "CHN", "01/22/2023 14:30");
         assertThat(flight.getDepartureString(), equalTo("01/25/2023 15:30"));
     }
 
@@ -46,8 +46,8 @@ public class FlightTest {
      */
     @Test
     void testLONIsReturnedAsDestination() {
-        Flight flight = createFlight();
-        assertThat(flight.getDestination(), equalTo("LON"));
+        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", "CHN", "01/22/2023 14:30");
+        assertThat(flight.getDestination(), equalTo("CHN"));
     }
 
     /**
@@ -56,16 +56,27 @@ public class FlightTest {
      */
     @Test
     void testArrivalTimeIsReturnedCorrectly() {
-        Flight flight = createFlight();
+        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", "CHN", "01/26/2023 4:15");
         assertThat(flight.getArrivalString(), equalTo("01/26/2023 4:15"));
     }
 
-    private static Flight createFlight() {
-        int flightNumber = 789;
-        String source = "KOL";
-        String departureString = "01/25/2023 15:30";
-        String destination = "LON";
-        String arrivalString = "01/26/2023 4:15";
+    /**
+     * Creates a new <code>Flight</code> for testing
+     *
+     * @param flightNumber
+     *         A unique number that identifies the flight.
+     * @param source
+     *         A three-letter code specifying the source location of a flight.
+     * @param departureString
+     *         The date and time of departure of the flight from source location.
+     * @param destination
+     *         A three-letter code specifying the destination location of a flight.
+     * @param arrivalString
+     *         The date and time of arrival of the flight at the destination location.
+     *
+     * @return A flight object with specified parameters.
+     */
+    private static Flight createFlight(int flightNumber, String source, String departureString, String destination, String arrivalString) {
         Flight flight = new Flight(flightNumber, source, departureString, destination, arrivalString);
         return flight;
     }

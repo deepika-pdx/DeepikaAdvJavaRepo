@@ -21,7 +21,7 @@ public class Flight extends AbstractFlight {
      * @param source
      *         A three-letter code specifying the source location of a flight.
      * @param departureString
-     *         *         The date and time of departure of the flight from source location.
+     *         The date and time of departure of the flight from source location.
      * @param destination
      *         A three-letter code specifying the destination location of a flight.
      * @param arrivalString
@@ -39,7 +39,7 @@ public class Flight extends AbstractFlight {
     /**
      * Returns the flight number of the flight.
      *
-     *@return A unique number that identifies the flight.
+     * @return A unique number that identifies the flight.
      */
     public int getNumber() {
         return this.flightNumber;
@@ -49,7 +49,7 @@ public class Flight extends AbstractFlight {
     /**
      * Returns the source location of the flight.
      *
-     *@return A three-letter code specifying the source location of a flight.
+     * @return A three-letter code specifying the source location of a flight.
      */
     public String getSource() {
         return this.source;
@@ -59,7 +59,7 @@ public class Flight extends AbstractFlight {
     /**
      * Returns the departure date and time of the flight from source location.
      *
-     *@return The date and time of departure of the flight
+     * @return The date and time of departure of the flight
      */
     public String getDepartureString() {
         return this.departureString;
@@ -69,7 +69,7 @@ public class Flight extends AbstractFlight {
     /**
      * Returns the destination location of the flight.
      *
-     *@return A three-letter code specifying the destination location of a flight.
+     * @return A three-letter code specifying the destination location of a flight.
      */
     public String getDestination() {
         return this.destination;
@@ -79,7 +79,7 @@ public class Flight extends AbstractFlight {
     /**
      * Returns the arrival date and time of the flight at the destination location.
      *
-     *@return The date and time of arrival of the flight
+     * @return The date and time of arrival of the flight
      */
     public String getArrivalString() {
         return this.arrivalString;
