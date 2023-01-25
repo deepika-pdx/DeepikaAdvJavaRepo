@@ -127,4 +127,23 @@ class Project1IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "print");
         assertThat(result.getTextWrittenToStandardError(), containsString("Please enter the optional parameters as '-print' or '-README'!"));
     }
+
+    /**
+     * Tests that providing the optional parameter '-README' provides the details about Project1.
+     */
+    @Test
+    void testOptionalParameterREADMEProvidesProject1Details() {
+        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-README");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("This is an 'Airline' project."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print' and '-README' prints the flight description and provides the details about Project1.
+     */
+    @Test
+    void testOptionalParametersPrintAndREADMEProvideFlightAndProject1Details() {
+        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-print", "-README");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PUN at 1/12/2023 23:59 arrives HYD at 01/22/2023 23:00"));
+        assertThat(result.getTextWrittenToStandardOut(), containsString("This is an 'Airline' project."));
+    }
 }

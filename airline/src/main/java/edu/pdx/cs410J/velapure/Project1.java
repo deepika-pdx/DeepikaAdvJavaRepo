@@ -2,6 +2,10 @@ package edu.pdx.cs410J.velapure;
 
 import com.google.common.annotations.VisibleForTesting;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -122,15 +126,55 @@ public class Project1 {
                 // Handling the optional '-print' and '-README' parameters
                 if (args.length == 9) {
                     String optionalParameter1 = args[8];
-                    if (optionalParameter1.equals("-print")) {
+                    switch (optionalParameter1) {
+                        case "-print":
+                            System.out.println("Flight Description: ");
+                            System.out.println(flight.toString());
+                            return;
+                        case "-README":
+                            System.out.println("Project Description: ");
+                            readContentFromREADME();
+                        default:
+                            System.err.println("Please enter the optional parameters as '-print' or '-README'!");
+                            return;
+                    }
+                }
+                if (args.length == 10) {
+                    String optionalParameter1 = args[8];
+                    String optionalParameter2 = args[9];
+                    if ((optionalParameter1.equals("-print") && optionalParameter2.equals("-README"))
+                            || (optionalParameter1.equals("-README") && optionalParameter2.equals("-print"))) {
+                        System.out.println("Flight Description: ");
                         System.out.println(flight.toString());
-                        return;
+                        System.out.println("Project Description: ");
+                        readContentFromREADME();
                     } else {
                         System.err.println("Please enter the optional parameters as '-print' or '-README'!");
                         return;
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Reads the content from the README.txt file and prints the content to the console.
+     */
+    private static void readContentFromREADME() {
+        try {
+            InputStream readme = Project1.class.getResourceAsStream("README.txt");
+            if (readme != null) {
+                BufferedReader readmeReader = new BufferedReader(new InputStreamReader(readme));
+                String readLine = readmeReader.readLine();
+                while (readLine != null) {
+                    System.out.println(readLine);
+                    readLine = readmeReader.readLine();
+                }
+            }
+            return;
+        } catch (IOException e) {
+            System.err.println("Error occurred while reading from the README file!!");
+            return;
         }
     }
 
