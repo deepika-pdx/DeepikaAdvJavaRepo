@@ -17,6 +17,15 @@ public class Project1 {
         return true;
     }
 
+    /**
+     * This is the main method of the Airline project and below is the description
+     * of the parameters expected to be passed as arguments.
+     *
+     * @param args
+     *         Arguments:<airline_name>, <flight_number>, <source_location>, <departure_date>,
+     *         <departure_time>, <destination_location, <arrival_date>, <arrival_time>,
+     *         '-print' (optional), '-README' (optional)
+     */
     public static void main(String[] args) {
         if (args != null) {
             int argLength = args.length;
@@ -47,6 +56,7 @@ public class Project1 {
             } else {
                 String airlineName = args[0];
 
+                // Validation of the provided flight number
                 String flightNumberString = args[1];
                 int flightNumber = 0;
                 try {
@@ -56,12 +66,14 @@ public class Project1 {
                     return;
                 }
 
+                // Validation of the provided source location
                 String srcLocation = args[2];
                 if (!(Pattern.matches("[a-zA-Z]+", srcLocation)) || srcLocation.length() != 3) {
                     System.err.println("Source location provided should consist of only three alphabets [a-zA-Z].");
                     return;
                 }
 
+                // Validation of the provided departure date
                 String departureDateString = args[3];
                 boolean isDepartureDateValid = validateDate(departureDateString);
                 if (!isDepartureDateValid) {
@@ -69,6 +81,7 @@ public class Project1 {
                     return;
                 }
 
+                // Validation of the provided departure time
                 String departureTimeString = args[4];
                 boolean isDepartureTimeValid = validateTime(departureTimeString);
                 if (!isDepartureTimeValid) {
@@ -77,12 +90,14 @@ public class Project1 {
                 }
                 String departureDateTimeString = departureDateString + " " + departureTimeString;
 
+                // Validation of the provided destination location
                 String destLocation = args[5];
                 if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
                     System.err.println("Destination location provided should consist of only three alphabets [a-zA-Z].");
                     return;
                 }
 
+                // Validation of the provided arrival date
                 String arrivalDateString = args[6];
                 boolean isArrivalDateValid = validateDate(arrivalDateString);
                 if (!isArrivalDateValid) {
@@ -90,6 +105,7 @@ public class Project1 {
                     return;
                 }
 
+                // Validation of the provided arrival time
                 String arrivalTimeString = args[7];
                 boolean isArrivalTimeValid = validateTime(arrivalTimeString);
                 if (!isArrivalTimeValid) {
@@ -98,24 +114,34 @@ public class Project1 {
                 }
                 String arrivalDateAndTimeString = arrivalDateString + " " + arrivalTimeString;
 
+                // Creating airline and flight based on the provided input arguments
                 Airline airline = new Airline(airlineName);
                 Flight flight = new Flight(flightNumber, srcLocation, departureDateTimeString, destLocation, arrivalDateAndTimeString);
                 airline.addFlight(flight);
 
-
-                String optionalParameter1 = args.length == 9 ? args[8] : null;
-                if (optionalParameter1.equals("-print")) {
-                    System.out.println(flight.toString());
-                    return;
-                } else {
-                    System.err.println("Please enter the optional parameters as '-print' or '-README'!");
-                    return;
+                // Handling the optional '-print' and '-README' parameters
+                if (args.length == 9) {
+                    String optionalParameter1 = args[8];
+                    if (optionalParameter1.equals("-print")) {
+                        System.out.println(flight.toString());
+                        return;
+                    } else {
+                        System.err.println("Please enter the optional parameters as '-print' or '-README'!");
+                        return;
+                    }
                 }
-
             }
         }
     }
 
+    /**
+     * Validates the input departure and arrival date.
+     *
+     * @param providedDateString
+     *         The date of departure/arrival of the flight.
+     *
+     * @return true if input date is valid and false if input date is invalid.
+     */
     private static boolean validateDate(String providedDateString) {
         boolean isValid = true;
         try {
@@ -136,6 +162,14 @@ public class Project1 {
         return isValid;
     }
 
+    /**
+     * Validates the input departure and arrival time.
+     *
+     * @param providedTime
+     *         The time of departure/arrival of the flight.
+     *
+     * @return true if input time is valid and false if input time is invalid.
+     */
     private static boolean validateTime(String providedTime) {
         boolean isValid = true;
         String[] providedTimeArray = providedTime.split(":");
