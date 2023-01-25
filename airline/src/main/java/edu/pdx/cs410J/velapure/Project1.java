@@ -22,8 +22,8 @@ public class Project1 {
      * of the parameters expected to be passed as arguments.
      *
      * @param args
-     *         Arguments:<airline_name>, <flight_number>, <source_location>, <departure_date>,
-     *         <departure_time>, <destination_location, <arrival_date>, <arrival_time>,
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'destinationLocation', 'arrivalDate', 'arrivalTime',
      *         '-print' (optional), '-README' (optional)
      */
     public static void main(String[] args) {
