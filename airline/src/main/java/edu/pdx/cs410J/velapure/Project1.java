@@ -65,8 +65,9 @@ public class Project1 {
                 String departureDateString = args[3];
                 validateDate(departureDateString, "Departure");
 
-                String departureTime = args[4];
-                validateTime(departureTime, "Departure");
+                String departureTimeString = args[4];
+                validateTime(departureTimeString, "Departure");
+                String departureDateTimeString = departureDateString + " " + departureTimeString;
 
                 String destLocation = args[5];
                 if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
@@ -74,19 +75,28 @@ public class Project1 {
                     return;
                 }
 
-                String arrivalDate = args[6];
-                validateDate(arrivalDate, "Arrival");
+                String arrivalDateString = args[6];
+                validateDate(arrivalDateString, "Arrival");
 
-                String arrivalTime = args[7];
-                validateTime(arrivalTime, "Arrival");
+                String arrivalTimeString = args[7];
+                validateTime(arrivalTimeString, "Arrival");
+                String arrivalDateAndTimeString = arrivalDateString + " " + arrivalTimeString;
 
+                Airline airline = new Airline(airlineName);
+                Flight flight = new Flight(flightNumber, srcLocation, departureDateTimeString, destLocation, arrivalDateAndTimeString);
+                airline.addFlight(flight);
+
+
+                String optionalParameter1 = args.length == 9 ? args[8] : null;
+                switch (optionalParameter1) {
+                    case "-print":
+                        System.out.println(flight.toString());
+                    default:
+                        System.err.println("Please enter the optional parameters as '-print' or '-README'!");
+                }
 
             }
         }
-
-        //   Flight flight = new Flight();  // Refer to one of Dave's classes so that we can be sure it is on the classpath
-
-
     }
 
     private static void validateDate(String providedDateString, String travelDateType) {

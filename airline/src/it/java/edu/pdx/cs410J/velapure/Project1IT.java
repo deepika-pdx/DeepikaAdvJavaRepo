@@ -110,4 +110,21 @@ class Project1IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("Arrival time provided should be in 24-hour(hh:mm) format."));
     }
 
+    /**
+     * Tests that providing the optional parameter '-print' prints the flight description correctly.
+     */
+    @Test
+    void testOptionalParameterPrintProvidesTheFlightDescription() {
+        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-print");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PUN at 1/12/2023 23:59 arrives HYD at 01/22/2023 24:00"));
+    }
+
+    /**
+     * Tests that providing the optional parameter '-print' without '-' issues an error and provides necessary information.
+     */
+    @Test
+    void testOptionalParameterPrintIssuesErrorIfProvidedIncorrectly() {
+        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "print");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please enter the optional parameters as '-print' or '-README'!"));
+    }
 }
