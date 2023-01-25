@@ -7,10 +7,29 @@ import edu.pdx.cs410J.AbstractFlight;
  */
 public class Flight extends AbstractFlight {
 
+    /**
+     * Flight number of the flight
+     */
     private int flightNumber;
+
+    /**
+     * Source location of the flight
+     */
     private String source;
-    private String destination;
+
+    /**
+     * Departure date and time of the flight
+     */
     private String departureString;
+
+    /**
+     * Destination location of the flight
+     */
+    private String destination;
+
+    /**
+     * Arrival date and time of the flight
+     */
     private String arrivalString;
 
     /**

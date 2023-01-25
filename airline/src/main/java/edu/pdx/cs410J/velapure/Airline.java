@@ -10,7 +10,14 @@ import java.util.List;
  * This class is represents an <code>Airline</code>.
  */
 public class Airline extends AbstractAirline<Flight> {
+    /**
+     * Name of the airline
+     */
     private final String name;
+
+    /**
+     * Flights of the airline
+     */
     private List<Flight> flights;
 
     /**
