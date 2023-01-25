@@ -63,10 +63,18 @@ public class Project1 {
                 }
 
                 String departureDateString = args[3];
-                validateDate(departureDateString, "Departure");
+                boolean isDepartureDateValid = validateDate(departureDateString);
+                if (!isDepartureDateValid) {
+                    System.err.println("Departure date provided should be in mm/dd/yyyy format.");
+                    return;
+                }
 
                 String departureTimeString = args[4];
-                validateTime(departureTimeString, "Departure");
+                boolean isDepartureTimeValid = validateTime(departureTimeString);
+                if (!isDepartureTimeValid) {
+                    System.err.println("Departure time provided should be in 24-hour(hh:mm) format.");
+                    return;
+                }
                 String departureDateTimeString = departureDateString + " " + departureTimeString;
 
                 String destLocation = args[5];
@@ -76,10 +84,18 @@ public class Project1 {
                 }
 
                 String arrivalDateString = args[6];
-                validateDate(arrivalDateString, "Arrival");
+                boolean isArrivalDateValid = validateDate(arrivalDateString);
+                if (!isArrivalDateValid) {
+                    System.err.println("Arrival date provided should be in mm/dd/yyyy format.");
+                    return;
+                }
 
                 String arrivalTimeString = args[7];
-                validateTime(arrivalTimeString, "Arrival");
+                boolean isArrivalTimeValid = validateTime(arrivalTimeString);
+                if (!isArrivalTimeValid) {
+                    System.err.println("Arrival time provided should be in 24-hour(hh:mm) format.");
+                    return;
+                }
                 String arrivalDateAndTimeString = arrivalDateString + " " + arrivalTimeString;
 
                 Airline airline = new Airline(airlineName);
@@ -88,18 +104,20 @@ public class Project1 {
 
 
                 String optionalParameter1 = args.length == 9 ? args[8] : null;
-                switch (optionalParameter1) {
-                    case "-print":
-                        System.out.println(flight.toString());
-                    default:
-                        System.err.println("Please enter the optional parameters as '-print' or '-README'!");
+                if (optionalParameter1.equals("-print")) {
+                    System.out.println(flight.toString());
+                    return;
+                } else {
+                    System.err.println("Please enter the optional parameters as '-print' or '-README'!");
+                    return;
                 }
 
             }
         }
     }
 
-    private static void validateDate(String providedDateString, String travelDateType) {
+    private static boolean validateDate(String providedDateString) {
+        boolean isValid = true;
         try {
             SimpleDateFormat dateFormatterOne = new SimpleDateFormat("MM/dd/yyyy");
             Date formattedDateTypeOne = dateFormatterOne.parse(providedDateString);
@@ -110,32 +128,30 @@ public class Project1 {
             SimpleDateFormat dateFormatterFour = new SimpleDateFormat("M/d/yyyy");
             Date formattedDateTypeFour = dateFormatterThree.parse(providedDateString);
             if (!(dateFormatterOne.format(formattedDateTypeOne).equals(providedDateString) || dateFormatterTwo.format(formattedDateTypeTwo).equals(providedDateString) || dateFormatterThree.format(formattedDateTypeThree).equals(providedDateString) || dateFormatterFour.format(formattedDateTypeFour).equals(providedDateString))) {
-                System.err.println(travelDateType + " date provided should be in mm/dd/yyyy format.");
-                return;
+                isValid = false;
             }
         } catch (ParseException e) {
-            System.err.println(travelDateType + " date provided should be in mm/dd/yyyy format.");
-            return;
+            isValid = false;
         }
+        return isValid;
     }
 
-    private static void validateTime(String providedTime, String travelTimeType) {
+    private static boolean validateTime(String providedTime) {
+        boolean isValid = true;
         String[] providedTimeArray = providedTime.split(":");
         if (providedTimeArray.length == 2) {
             try {
                 int providedHour = Integer.parseInt(providedTimeArray[0]);
                 int providedMinute = Integer.parseInt(providedTimeArray[1]);
-                if (!(providedHour > 0 && providedHour <= 23 && providedMinute > 0 && providedMinute <= 59)) {
-                    System.err.println(travelTimeType + " time provided should be in 24-hour(hh:mm) format.");
-                    return;
+                if (!(providedHour >= 0 && providedHour <= 23 && providedMinute >= 0 && providedMinute <= 59)) {
+                    isValid = false;
                 }
             } catch (NumberFormatException e) {
-                System.err.println(travelTimeType + " time provided should be in 24-hour(hh:mm) format.");
-                return;
+                isValid = false;
             }
         } else {
-            System.err.println(travelTimeType + " time provided should be in 24-hour(hh:mm) format.");
-            return;
+            isValid = false;
         }
+        return isValid;
     }
 }
