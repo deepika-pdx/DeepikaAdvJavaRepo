@@ -111,21 +111,66 @@ class Project1IT extends InvokeMainTestCase {
     }
 
     /**
+     * Tests that providing only the optional parameter '-print' issues error and provides necessary information.
+     */
+    @Test
+    void testOnlyOptionalParameterPrintIssuesError() {
+        MainMethodResult result = invokeMain("-print");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide valid flight and airline information along with '-print'."));
+    }
+
+    /**
+     * Tests that providing the optional parameter '-print' with less airline and flight information issues error.
+     */
+    @Test
+    void testOptionalParameterPrintWithLessFlightAndAirlineInformationIssuesError() {
+        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments. Please provide valid flight and airline information along with '-print'."));
+    }
+
+    /**
+     * Tests that providing the optional parameter '-print' with airline and flight information along with extra parameters issues error.
+     */
+    @Test
+    void testOptionalParameterPrintWithFlightAndAirlineInformationAndExtraParamIssuesError() {
+        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "extra");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments. Please provide valid flight and airline information along with '-print'."));
+    }
+
+    /**
      * Tests that providing the optional parameter '-print' prints the flight description correctly.
      */
     @Test
     void testOptionalParameterPrintProvidesTheFlightDescription() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-print");
+        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00");
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PUN at 1/12/2023 23:59 arrives HYD at 01/22/2023 23:00"));
     }
 
     /**
-     * Tests that providing the optional parameter '-print' without '-' issues an error and provides necessary information.
+     * Tests that providing the optional parameter '-print' not at the beginning but elsewhere in the command line arguments issues an error.
      */
     @Test
-    void testOptionalParameterPrintIssuesErrorIfProvidedIncorrectly() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "print");
-        assertThat(result.getTextWrittenToStandardError(), containsString("Please enter the optional parameters as '-print' or '-README'!"));
+    void testOptionalParameterNotProvidedAtStartIssuesError() {
+        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-print");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide '-print' option before the flight and airline information."));
+    }
+
+    /**
+     * Tests that providing unknown optional parameter issues an error and provides necessary information.
+     */
+    @Test
+    void testUnknownOptionalParameterIssuesError() {
+        MainMethodResult result = invokeMain("-trace", "IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00");
+        assertThat(result.getTextWrittenToStandardError(), containsString("An unknown option was provided."));
+    }
+
+    /**
+     * Tests that providing only the optional parameter '-README' provides the details about Project1.
+     */
+    @Test
+    void testOnlyOptionalParameterREADMEProvidesProject1Details() {
+        MainMethodResult result = invokeMain("-README");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("This is an 'Airline' project."));
     }
 
     /**
@@ -138,12 +183,11 @@ class Project1IT extends InvokeMainTestCase {
     }
 
     /**
-     * Tests that providing the optional parameters '-print' and '-README' prints the flight description and provides the details about Project1.
+     * Tests that providing the optional parameters '-print' and '-README' prints the details about Project1.
      */
     @Test
-    void testOptionalParametersPrintAndREADMEProvideFlightAndProject1Details() {
+    void testOptionalParametersPrintAndREADMEProvidesOnlyProject1Details() {
         MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-print", "-README");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PUN at 1/12/2023 23:59 arrives HYD at 01/22/2023 23:00"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("This is an 'Airline' project."));
     }
 }
