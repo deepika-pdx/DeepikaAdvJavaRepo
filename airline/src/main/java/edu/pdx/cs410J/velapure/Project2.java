@@ -21,18 +21,53 @@ public class Project2 {
      */
     private static final String USAGE = "usage: java -jar target/airline-2023.0.0.jar [options] <args>" + "\n" +
             "args are (in this order):" + "\n" +
-            "airline" + "The name of the airline" + "\n" +
-            "flightNumber" + "The flight number" + "\n" +
-            "source" + "Three-letter code of the departure airport" + "\n" +
-            "departure date" + "Departure date in mm/dd/yyyy format" + "\n" +
-            "departure time" + "Departure time in 24-hour time format" + "\n" +
-            "destination" + "Three-letter code of the arrival airport" + "\n" +
-            "arrival date" + "Arrival date in mm/dd/yyyy format" + "\n" +
-            "arrival time" + "Arrival time in 24-hour time format" + "\n" + "\n" +
+            "airline" + "   " + "The name of the airline" + "\n" +
+            "flightNumber" + "   " + "The flight number" + "\n" +
+            "source" + "   " + "Three-letter code of the departure airport" + "\n" +
+            "departure date" + "   " + "Departure date in mm/dd/yyyy format" + "\n" +
+            "departure time" + "   " + "Departure time in 24-hour time format" + "\n" +
+            "destination" + "   " + "Three-letter code of the arrival airport" + "\n" +
+            "arrival date" + "   " + "Arrival date in mm/dd/yyyy format" + "\n" +
+            "arrival time" + "   " + "Arrival time in 24-hour time format" + "\n" + "\n" +
 
             "options are (options may appear in any order):" + "\n" +
-            "-print" + "Prints the description of the newly added flight" + "\n" +
-            "-README" + "Prints a README for this project and exits";
+            "-textFile file" + "   " + "File to read/write the airline info" + "\n" +
+            "-print" + "   " + "Prints the description of the newly added flight" + "\n" +
+            "-README" + "   " + "Prints a README for this project and exits";
+    /**
+     * User-understandable error message for providing valid airline and flight information along with '-print' option.
+     */
+    private static final String PLEASE_PROVIDE_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT = "Please provide valid flight and airline information along with '-print'. ";
+
+    /**
+     * User-understandable error message for providing text filename and valid airline and flight information along with '-textFile' option.
+     */
+    private static final String PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_TEXT_FILE = "Please provide text filename and valid flight and airline information along with '-textFile'. ";
+
+    /**
+     * User-understandable error message for providing text filename and valid airline and flight information along with '-print' and '-textFile' option.
+     */
+    private static final String PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_TEXT_FILE = "Please provide text filename and valid flight and airline information along with '-print' and '-textFile'. ";
+
+    /**
+     * User-understandable error message for an unknown option provided.
+     */
+    private static final String AN_UNKNOWN_OPTION_WAS_PROVIDED = "An unknown option was provided. ";
+
+    /**
+     * User-understandable error message when too few command line arguments are passed.
+     */
+    private static final String TOO_FEW_COMMAND_LINE_ARGUMENTS = "Too few command line arguments. ";
+
+    /**
+     * User-understandable error message when too many command line arguments are passed.
+     */
+    private static final String TOO_MANY_COMMAND_LINE_ARGUMENTS = "Too many command line arguments. ";
+
+    /**
+     * User-understandable error message when '-print' or '-textFile' is provided more than once.
+     */
+    private static final String PLEASE_PROVIDE_OPTION_PRINT_OR_TEXT_FILE_ONLY_ONCE = "Please provide option '-print' or '-textFile' only once. ";
 
     @VisibleForTesting
     static boolean isValidDateAndTime(String dateAndTime) {
@@ -53,7 +88,7 @@ public class Project2 {
             int argLength = args.length;
             switch (argLength) {
                 case 0:
-                    System.err.println("Missing command line arguments. " + USAGE);
+                    System.err.println("Missing command line arguments. " + "\n" + USAGE);
                     return;
                 case 1:
                     String optionalParameter1 = args[0];
@@ -63,17 +98,17 @@ public class Project2 {
                             readContentFromREADME();
                             return;
                         case "-print":
-                            System.err.println("Please provide valid flight and airline information along with '-print'. " + USAGE);
+                            System.err.println(PLEASE_PROVIDE_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT + "\n" + USAGE);
                             return;
                         case "-textFile":
-                            System.err.println("Please provide text filename and valid flight and airline information along with '-textFile'. " + USAGE);
+                            System.err.println(PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_TEXT_FILE + "\n" + USAGE);
                             return;
                         default:
                             if (optionalParameter1.contains("-")) {
-                                System.err.println("An unknown option was provided. " + USAGE);
+                                System.err.println(AN_UNKNOWN_OPTION_WAS_PROVIDED + "\n" + USAGE);
                                 return;
                             } else {
-                                System.err.println("Too few command line arguments. " + USAGE);
+                                System.err.println(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
                                 return;
                             }
                     }
@@ -86,17 +121,17 @@ public class Project2 {
                         return;
                     } else if ((optionalParam1.equals("-print") && optionalParam2.equals("-textFile")) ||
                             (optionalParam1.equals("-textFile") && optionalParam2.equals("-print"))) {
-                        System.err.println("Please provide text filename and valid flight and airline information along with '-print' and '-textFile'. " + USAGE);
+                        System.err.println(PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_TEXT_FILE + "\n" + USAGE);
                         return;
                     } else if (!optionalParam1.contains("-") && (optionalParam2.equals("-print") || optionalParam2.equals("-textFile"))) {
-                        System.err.println("Please provide text filename and/or valid flight and airline information after the options '-print' or '-textFile'. " + USAGE);
+                        System.err.println("Please provide text filename and/or valid flight and airline information after the options '-print' or '-textFile'. " + "\n" + USAGE);
                         return;
                     } else {
                         int printOptionCount = 0;
                         int textFileOptionCount = 0;
                         for (String arg : args) {
                             if (arg.startsWith("-") && !arg.equals("-print") && !arg.equals("-textFile")) {
-                                System.err.println("An unknown option was provided. " + USAGE);
+                                System.err.println(AN_UNKNOWN_OPTION_WAS_PROVIDED + "\n" + USAGE);
                                 return;
                             } else if (arg.equals("-print")) {
                                 printOptionCount += 1;
@@ -105,10 +140,10 @@ public class Project2 {
                             }
                         }
                         if (printOptionCount > 1 || textFileOptionCount > 1) {
-                            System.err.println("Please provide option '-print' or '-textFile' only once. " + USAGE);
+                            System.err.println(PLEASE_PROVIDE_OPTION_PRINT_OR_TEXT_FILE_ONLY_ONCE + "\n" + USAGE);
                             return;
                         }
-                        System.err.println("Too few command line arguments. " + USAGE);
+                        System.err.println(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
                         return;
                     }
                 case 3:
@@ -124,7 +159,7 @@ public class Project2 {
                             return;
                         }
                         if (arg.startsWith("-") && !arg.equals("-print") && !arg.equals("-textFile")) {
-                            System.err.println("An unknown option was provided. " + USAGE);
+                            System.err.println(AN_UNKNOWN_OPTION_WAS_PROVIDED + "\n" + USAGE);
                             return;
                         } else if (arg.equals("-print")) {
                             printOptionCount += 1;
@@ -133,16 +168,17 @@ public class Project2 {
                         }
                     }
                     if (printOptionCount > 1 || textFileOptionCount > 1) {
-                        System.err.println("Please provide option '-print' or '-textFile' only once. " + USAGE);
+                        System.err.println(PLEASE_PROVIDE_OPTION_PRINT_OR_TEXT_FILE_ONLY_ONCE + "\n" + USAGE);
                         return;
                     }
                     if ((!optParam1.contains("-") && optParam2.equals("-print") && optParam3.equals("-textFile")) ||
                             (!optParam2.contains("-") && optParam1.equals("-print") && optParam3.equals("-textFile")) ||
                             (!optParam2.contains("-") && optParam3.equals("-print") && optParam1.equals("-textFile"))) {
-                        System.err.println("Please provide text filename and/or valid flight and airline information after the options '-print' and '-textFile'. " + USAGE);
+                        System.err.println("Please provide text filename and/or valid flight and airline information after the" +
+                                " options '-print' and '-textFile'. " + "\n" + USAGE);
                         return;
                     }
-                    System.err.println("Too few command line arguments. " + USAGE);
+                    System.err.println(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
                     return;
                 default:
                     for (String arg : args) {
@@ -158,12 +194,12 @@ public class Project2 {
                     String thirdArgument = args[2];
                     if ((firstArgument.equals("-print") && secondArgument.equals("-textFile"))) {
                         if (argLength < 11) {
-                            System.err.println("Too few command line arguments. " +
-                                    "Please provide text filename and valid flight and airline information along with '-print' and '-textFile'. " + USAGE);
+                            System.err.println(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                                    PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_TEXT_FILE + "\n" + USAGE);
                             return;
                         } else if (argLength > 11) {
-                            System.err.println("Too many command line arguments. " +
-                                    "Please provide text filename and valid flight and airline information along with '-print' and '-textFile'. " + USAGE);
+                            System.err.println(TOO_MANY_COMMAND_LINE_ARGUMENTS +
+                                    PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_TEXT_FILE + "\n" + USAGE);
                             return;
                         }
                         // Validate and add airline and flight information
@@ -177,16 +213,17 @@ public class Project2 {
                         String arrivalDateString = args[9];
                         String arrivalTimeString = args[10];
                         validateArguments(airlineName, flightNumberString, srcLocation,
-                                departureDateString, departureTimeString, destLocation, arrivalDateString, arrivalTimeString, Optional.of("printFlightInformation"), Optional.of(textFilename));
+                                departureDateString, departureTimeString, destLocation, arrivalDateString, arrivalTimeString,
+                                Optional.of("printFlightInformation"), Optional.of(textFilename));
                         return;
                     } else if ((firstArgument.equals("-textFile") && thirdArgument.equals("-print"))) {
                         if (argLength < 11) {
-                            System.err.println("Too few command line arguments. " +
-                                    "Please provide text filename and valid flight and airline information along with '-print' and '-textFile'. " + USAGE);
+                            System.err.println(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                                    PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_TEXT_FILE + "\n" + USAGE);
                             return;
                         } else if (argLength > 11) {
-                            System.err.println("Too many command line arguments. " +
-                                    "Please provide text filename and valid flight and airline information along with '-print' and '-textFile'. " + USAGE);
+                            System.err.println(TOO_MANY_COMMAND_LINE_ARGUMENTS +
+                                    PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_TEXT_FILE + "\n" + USAGE);
                             return;
                         }
                         // Validate and add airline and flight information
@@ -200,19 +237,20 @@ public class Project2 {
                         String arrivalDateString = args[9];
                         String arrivalTimeString = args[10];
                         validateArguments(airlineName, flightNumberString, srcLocation,
-                                departureDateString, departureTimeString, destLocation, arrivalDateString, arrivalTimeString, Optional.of("printFlightInformation"), Optional.of(textFilename));
+                                departureDateString, departureTimeString, destLocation, arrivalDateString, arrivalTimeString,
+                                Optional.of("printFlightInformation"), Optional.of(textFilename));
                         return;
                     } else if (firstArgument.equals("-print") && thirdArgument.equals("-textFile") && argLength == 11) {
-                        System.err.println("Please provide text filename after the '-textFile' option. " + USAGE);
+                        System.err.println("Please provide text filename after the '-textFile' option. " + "\n" + USAGE);
                         return;
                     } else if (firstArgument.equals("-print")) {
                         if (argLength < 9) {
-                            System.err.println("Too few command line arguments. " +
-                                    "Please provide valid flight and airline information along with '-print'. " + USAGE);
+                            System.err.println(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                                    PLEASE_PROVIDE_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT + "\n" + USAGE);
                             return;
                         } else if (argLength > 9) {
-                            System.err.println("Too many command line arguments. " +
-                                    "Please provide valid flight and airline information along with '-print'. " + USAGE);
+                            System.err.println(TOO_MANY_COMMAND_LINE_ARGUMENTS +
+                                    PLEASE_PROVIDE_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT + "\n" + USAGE);
                             return;
                         }
                         // Validate and add airline and flight information
@@ -225,16 +263,17 @@ public class Project2 {
                         String arrivalDateString = args[7];
                         String arrivalTimeString = args[8];
                         validateArguments(airlineName, flightNumberString, srcLocation,
-                                departureDateString, departureTimeString, destLocation, arrivalDateString, arrivalTimeString, Optional.of("printFlightInformation"), Optional.empty());
+                                departureDateString, departureTimeString, destLocation, arrivalDateString, arrivalTimeString,
+                                Optional.of("printFlightInformation"), Optional.empty());
                         return;
                     } else if (firstArgument.equals("-textFile")) {
                         if (argLength < 10) {
-                            System.err.println("Too few command line arguments. " +
-                                    "Please provide text filename and valid flight and airline information along with '-textFile'. " + USAGE);
+                            System.err.println(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                                    PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_TEXT_FILE + "\n" + USAGE);
                             return;
                         } else if (argLength > 10) {
-                            System.err.println("Too many command line arguments. " +
-                                    "Please provide text filename and valid flight and airline information along with '-textFile'. " + USAGE);
+                            System.err.println(TOO_MANY_COMMAND_LINE_ARGUMENTS +
+                                    PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_TEXT_FILE + "\n" + USAGE);
                             return;
                         }
                         // Validate and add airline and flight information
@@ -248,21 +287,23 @@ public class Project2 {
                         String arrivalDateString = args[8];
                         String arrivalTimeString = args[9];
                         validateArguments(airlineName, flightNumberString, srcLocation,
-                                departureDateString, departureTimeString, destLocation, arrivalDateString, arrivalTimeString, Optional.empty(), Optional.of(textFilename));
+                                departureDateString, departureTimeString, destLocation, arrivalDateString, arrivalTimeString,
+                                Optional.empty(), Optional.of(textFilename));
                         return;
                     } else if (firstArgument.contains("-")) {
-                        System.err.println("An unknown option was provided. " + USAGE);
+                        System.err.println(AN_UNKNOWN_OPTION_WAS_PROVIDED + "\n" + USAGE);
                         return;
                     }
                     if (argLength > 8) {
-                        if ((argLength == 9 && (Arrays.stream(args).anyMatch("-print"::equals) || Arrays.stream(args).anyMatch("-textFile"::equals))) || (argLength == 10 && Arrays.stream(args).anyMatch("-textFile"::equals))) {
-                            System.err.println("Please provide '-print' or '-textFile' option before the flight and airline information. " + USAGE);
+                        if ((argLength == 9 && (Arrays.stream(args).anyMatch("-print"::equals) || Arrays.stream(args).anyMatch("-textFile"::equals)))
+                                || (argLength == 10 && Arrays.stream(args).anyMatch("-textFile"::equals))) {
+                            System.err.println("Please provide '-print' or '-textFile' option before the flight and airline information. " + "\n" + USAGE);
                             return;
                         }
-                        System.err.println("Too many command line arguments. " + USAGE);
+                        System.err.println(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
                         return;
                     } else if (argLength < 8) {
-                        System.err.println("Too few command line arguments. " + USAGE);
+                        System.err.println(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
                         return;
                     }
                     // Validate and add airline and flight information
@@ -275,8 +316,8 @@ public class Project2 {
                     String arrivalDateString = args[6];
                     String arrivalTimeString = args[7];
                     validateArguments(airlineName, flightNumberString, srcLocation, departureDateString,
-                            departureTimeString, destLocation, arrivalDateString, arrivalTimeString, Optional.empty(), Optional.empty());
-
+                            departureTimeString, destLocation, arrivalDateString, arrivalTimeString,
+                            Optional.empty(), Optional.empty());
             }
         }
     }
@@ -301,6 +342,10 @@ public class Project2 {
      *         A String that holds the date of arrival of the flight at the destination location.
      * @param arrivalTimeString
      *         A String that holds the time of arrival of the flight at the destination location.
+     * @param printFlightInformation
+     *         {@link Optional} parameter that holds the data depending on which Flight information is printed to the terminal.
+     * @param textFilename
+     *         {@link Optional} parameter that holds the filename of the text file which does/does not contain airline and flight information.
      */
     private static void validateArguments(String airlineName, String flightNumberString, String srcLocation, String departureDateString,
                                           String departureTimeString, String destLocation, String arrivalDateString, String arrivalTimeString,
@@ -430,6 +475,10 @@ public class Project2 {
      *         A three-letter code specifying the destination location of a flight.
      * @param arrivalDateAndTimeString
      *         A String that holds the date and time of arrival of the flight at the destination location.
+     * @param printFlightInformation
+     *         {@link Optional} parameter that holds the data depending on which Flight information is printed to the terminal.
+     *
+     * @return An airline object holding airline and flight data.
      */
     private static Airline createAirlineAndFlight(String airlineName, int flightNumber, String srcLocation, String departureDateTimeString,
                                                   String destLocation, String arrivalDateAndTimeString, Optional<String> printFlightInformation) {
@@ -486,7 +535,10 @@ public class Project2 {
             Date formattedDateTypeThree = dateFormatterThree.parse(providedDateString);
             SimpleDateFormat dateFormatterFour = new SimpleDateFormat("M/d/yyyy");
             Date formattedDateTypeFour = dateFormatterThree.parse(providedDateString);
-            if (!(dateFormatterOne.format(formattedDateTypeOne).equals(providedDateString) || dateFormatterTwo.format(formattedDateTypeTwo).equals(providedDateString) || dateFormatterThree.format(formattedDateTypeThree).equals(providedDateString) || dateFormatterFour.format(formattedDateTypeFour).equals(providedDateString))) {
+            if (!(dateFormatterOne.format(formattedDateTypeOne).equals(providedDateString) ||
+                    dateFormatterTwo.format(formattedDateTypeTwo).equals(providedDateString) ||
+                    dateFormatterThree.format(formattedDateTypeThree).equals(providedDateString) ||
+                    dateFormatterFour.format(formattedDateTypeFour).equals(providedDateString))) {
                 isValid = false;
             }
         } catch (ParseException e) {

@@ -11,24 +11,59 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Unit tests for the {@link TextParser} class.
+ */
 public class TextParserTest {
 
-  @Test
-  void validTextFileCanBeParsed() throws ParserException {
-    InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
-    assertThat(resource, notNullValue());
+    /**
+     * This unit test checks if a valid text file having airline info can be parsed correctly.
+     */
+    @Test
+    void validTextFileCanBeParsed() throws ParserException {
+        InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
+        assertThat(resource, notNullValue());
 
-    TextParser parser = new TextParser(new InputStreamReader(resource));
-    Airline airline = parser.parse();
-    assertThat(airline.getName(), equalTo("Test Airline"));
-  }
+        TextParser parser = new TextParser(new InputStreamReader(resource));
+        Airline airline = parser.parse();
+        assertThat(airline.getName(), equalTo("Test Airline"));
+    }
 
-  @Test
-  void invalidTextFileThrowsParserException() {
-    InputStream resource = getClass().getResourceAsStream("empty-airline.txt");
-    assertThat(resource, notNullValue());
+    /**
+     * This unit test checks if an invalid text file throws ParseException.
+     */
+    @Test
+    void invalidTextFileThrowsParserException() {
+        InputStream resource = getClass().getResourceAsStream("empty-airline.txt");
+        assertThat(resource, notNullValue());
 
-    TextParser parser = new TextParser(new InputStreamReader(resource));
-    assertThrows(ParserException.class, parser::parse);
-  }
+        TextParser parser = new TextParser(new InputStreamReader(resource));
+        assertThrows(ParserException.class, parser::parse);
+    }
+
+    /**
+     * Tests that providing the malformed text file having invalid airline parameter format
+     * is passed with '-textFile' option issues error.
+     */
+    @Test
+    void MalformedTextFileWithInvalidAirlineFormatThrowsException() {
+        InputStream resource = getClass().getResourceAsStream("malformed_text_flight.txt");
+        assertThat(resource, notNullValue());
+
+        TextParser parser = new TextParser(new InputStreamReader(resource));
+        assertThrows(ParserException.class, parser::parse);
+    }
+
+    /**
+     * Tests that providing the malformed text file having invalid source location parameter format
+     * is passed with '-textFile' option issues error.
+     */
+    @Test
+    void MalformedTextFileWithInvalidSourceLocationFormatThrowsException() {
+        InputStream resource = getClass().getResourceAsStream("malformed_text_flight2.txt");
+        assertThat(resource, notNullValue());
+
+        TextParser parser = new TextParser(new InputStreamReader(resource));
+        assertThrows(ParserException.class, parser::parse);
+    }
 }

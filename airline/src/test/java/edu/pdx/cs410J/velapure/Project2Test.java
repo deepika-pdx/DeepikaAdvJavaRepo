@@ -25,7 +25,7 @@ class Project2Test {
             assertThat(readme, not(nullValue()));
             BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
             String line = reader.readLine();
-            assertThat(line, containsString("Assignment Name: CS510 Advance Java Project 1"));
+            assertThat(line, containsString("Assignment Name: CS510 Advance Java Project 2"));
         }
     }
 }

@@ -1,0 +1,11 @@
+Airline= Indigo
+Flight count = 1
+
+Flight 1 data:
+Flight number= 8985
+Source=> Delhi
+Departure date and time= 02/15/2022 01:23
+Destination location= London
+Arrival date and time= 02/16/2022 15:25
+End of Flight 1 data!
+

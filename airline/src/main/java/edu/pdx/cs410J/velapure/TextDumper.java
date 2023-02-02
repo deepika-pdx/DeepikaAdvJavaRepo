@@ -7,16 +7,31 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 /**
- * A skeletal implementation of the <code>TextDumper</code> class for Project 2.
+ * This is <code>TextDumper</code> class for Project 2.
  */
 public class TextDumper implements AirlineDumper<Airline> {
+    /**
+     * Writer for writing airline and flight data to the file.
+     */
     private final Writer writer;
 
+    /**
+     * Creates a new <code>TextDumper</code>
+     *
+     * @param writer
+     *         writer for writing airline and flight data to the file.
+     */
     public TextDumper(Writer writer) {
         this.writer = writer;
     }
 
     @Override
+    /**
+     * This method writes the airline and flight data to a file.
+     *
+     * @param airline
+     *         An airline object having flight details.
+     */
     public void dump(Airline airline) {
         try (PrintWriter pw = new PrintWriter(this.writer)) {
             pw.println("Airline= " + airline.getName());
