@@ -2,20 +2,23 @@ package edu.pdx.cs410J.velapure;
 
 import edu.pdx.cs410J.InvokeMainTestCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * An integration test for the {@link Project1} main class.
+ * An integration test for the {@link Project2} main class.
  */
-class Project1IT extends InvokeMainTestCase {
+class Project2IT extends InvokeMainTestCase {
 
     /**
-     * Invokes the main method of {@link Project1} with the given arguments.
+     * Invokes the main method of {@link Project2} with the given arguments.
      */
     private MainMethodResult invokeMain(String... args) {
-        return invokeMain(Project1.class, args);
+        return invokeMain(Project2.class, args);
     }
 
     /**
@@ -152,7 +155,7 @@ class Project1IT extends InvokeMainTestCase {
     @Test
     void testOptionalParameterNotProvidedAtStartIssuesError() {
         MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-print");
-        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide '-print' option before the flight and airline information."));
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide '-print' or '-textFile' option before the flight and airline information."));
     }
 
     /**
@@ -190,4 +193,150 @@ class Project1IT extends InvokeMainTestCase {
         MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-print", "-README");
         assertThat(result.getTextWrittenToStandardOut(), containsString("This is an 'Airline' project."));
     }
+
+    /**
+     * Tests that providing only the optional parameters '-textFile' issues error and provides necessary information.
+     */
+    @Test
+    void testOnlyOptionalParameterTextFileIssuesError() {
+        MainMethodResult result = invokeMain("-textFile");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide text filename and valid flight and airline information along with '-textFile"));
+    }
+
+    /**
+     * Tests that providing only the optional parameters '-print' and '-textFile' issues error and provides necessary information.
+     */
+    @Test
+    void testOnlyOptionalParametersPrintAndTextFileIssuesError() {
+        MainMethodResult result = invokeMain("-print", "-textFile");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide text filename and valid flight and airline information along with '-print' and '-textFile'."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print' twice issues error and provides necessary information.
+     */
+    @Test
+    void testOptionalParameterPrintProvidedTwiceIssuesError() {
+        MainMethodResult result = invokeMain("-print", "-print");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide option '-print' or '-textFile' only once."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-textFile' twice issues error and provides necessary information.
+     */
+    @Test
+    void testOptionalParameterTextFileProvidedTwiceIssuesError() {
+        MainMethodResult result = invokeMain("-textFile", "-textFile");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide option '-print' or '-textFile' only once."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-textFile' and an unknown option issues error and provides necessary information.
+     */
+    @Test
+    void testOptionalParameterTextFileAndUnknownOptionIssuesError() {
+        MainMethodResult result = invokeMain("-textFile", "-unknown");
+        assertThat(result.getTextWrittenToStandardError(), containsString("An unknown option was provided."));
+    }
+
+    /**
+     * Tests that providing an unknown option with Airline name issues error and provides necessary information.
+     */
+    @Test
+    void testUnknownOptionalParameterWithAirlineNameIssuesError() {
+        MainMethodResult result = invokeMain("-unknown", "Delta Airlines");
+        assertThat(result.getTextWrittenToStandardError(), containsString("An unknown option was provided."));
+    }
+
+    /**
+     * Tests that providing an Airline name before the '-print' option issues error and provides necessary information.
+     */
+    @Test
+    void testAirlineNameBeforePrintIssuesError() {
+        MainMethodResult result = invokeMain("Delta Airlines", "-print");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide text filename and/or valid flight and airline information after the options '-print' or '-textFile'."));
+    }
+
+    /**
+     * Tests that providing the optional parameter '-print' with only Airline name issues error and provides necessary information.
+     */
+    @Test
+    void testOptionalParameterPrintWithOnlyAirlineNameIssuesError() {
+        MainMethodResult result = invokeMain("-print", "Delta Airlines");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', 'textFile' and '-unknown' issues error and provides necessary information.
+     */
+    @Test
+    void testOptionalParametersPrintTextFileAndUnknownIssuesError() {
+        MainMethodResult result = invokeMain("-print", "-textFile", "-unknown");
+        assertThat(result.getTextWrittenToStandardError(), containsString("An unknown option was provided."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', 'textFile' and flight number issues error and provides necessary information.
+     */
+    @Test
+    void testOptionalParametersPrintTextFileAndFlightNumberIssuesError() {
+        MainMethodResult result = invokeMain("-print", "-textFile", "789");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', 'textFile' and '-README' provides project description
+     */
+    @Test
+    void testOptionalParametersPrintTextFileAndReadMeProvidesProjectDescription() {
+        MainMethodResult result = invokeMain("-print", "-textFile", "-README");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("This is an 'Airline' project."));
+    }
+
+    /**
+     * Tests that providing the optional parameter '-print' more than once issues error.
+     */
+    @Test
+    void testOptionalParametersPrintMoreThanOnceIssuesError() {
+        MainMethodResult result = invokeMain("-print", "-print", "-textFile");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide option '-print' or '-textFile' only once."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print' and '-textFile' in incorrect order issues error.
+     */
+    @Test
+    void testOptionalParametersPrintAndTextFileInIncorrectOrderIssuesError() {
+        MainMethodResult result = invokeMain("-print", "/airline/file.txt", "-textFile", "IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide text filename after the '-textFile' option."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-textFile' and filename with valid airline and flight information prints the flight data to the terminal.
+     */
+    @Test
+    void testOptionalParametersPrintTextFileFilenameAndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/11/2023", "22:59", "LON", "01/2/2023", "22:00");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/11/2023 22:59 arrives LON at 01/2/2023 22:00"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-textFile' and filename with different airline names issues error.
+     */
+    @Test
+    void testOptionalParametersPrintTextFileFilenameAndDifferentAirlineNamesIssuesError(@TempDir File tempDir) {
+        MainMethodResult result1 = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/11/2023", "22:59", "LON", "01/2/2023", "22:00");
+        MainMethodResult result2 = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Frontier", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00");
+        assertThat(result2.getTextWrittenToStandardError(), containsString("The airline name provided in the input does not match with airline name in the input text file."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-textFile' filename  and '-print' with valid airline and flight information prints the flight data to the terminal.
+     */
+    @Test
+    void testOptionalParametersTextFileFilenamePrintAndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-textFile", tempDir + "/filenew.txt", "-print", "IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PUN at 1/12/2023 23:59 arrives HYD at 01/22/2023 23:00"));
+    }
+
 }
