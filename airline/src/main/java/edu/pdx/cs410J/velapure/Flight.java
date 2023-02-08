@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * This class is represents a <code>Flight</code>.
  */
-public class Flight extends AbstractFlight {
+public class Flight extends AbstractFlight implements Comparable<Flight> {
 
     /**
      * Flight number of the flight
@@ -137,5 +137,14 @@ public class Flight extends AbstractFlight {
      */
     public Date getArrival() {
         return this.arrivalDate;
+    }
+
+    @Override
+    public int compareTo(Flight o) {
+        int srcLocationCompareResult = getSource().compareTo(o.getSource());
+        if (srcLocationCompareResult == 0) {
+            return getDeparture().compareTo(getArrival());
+        }
+        return srcLocationCompareResult;
     }
 }

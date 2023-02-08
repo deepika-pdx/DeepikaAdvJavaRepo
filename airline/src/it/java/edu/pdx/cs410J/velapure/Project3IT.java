@@ -37,7 +37,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testTooFewCommandLineArguments() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN");
+        MainMethodResult result = invokeMain("IndiGo", "789", "ORD");
         assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments"));
     }
 
@@ -47,7 +47,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testTooManyCommandLineArguments() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "01/22/2023", "14:30", "HYD", "01/22/2023", "16:30", "KOL", "586", "-print");
+        MainMethodResult result = invokeMain("IndiGo", "789", "ORD", "01/22/2023", "14:30", "PDX", "01/22/2023", "16:30", "PHL", "586", "-print");
         assertThat(result.getTextWrittenToStandardError(), containsString("Please provide valid flight and airline information after the '-print' option."));
     }
 
@@ -56,7 +56,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testFlightNumberContainsOnlyNumbers() {
-        MainMethodResult result = invokeMain("IndiGo", "789c", "PUN", "01/22/2023", "2:30", "PM", "HYD", "01/22/2023", "6:30", "PM");
+        MainMethodResult result = invokeMain("IndiGo", "789c", "PHL", "01/22/2023", "2:30", "PM", "PDX", "01/22/2023", "6:30", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Flight number provided should consist of only numbers between 0-9."));
     }
 
@@ -65,7 +65,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testSourceLocationContainsOnlyThreeAlphabets() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN1#", "01/22/2023", "4:30", "AM", "HYD", "01/22/2023", "6:30", "PM");
+        MainMethodResult result = invokeMain("IndiGo", "789", "PDX1#", "01/22/2023", "4:30", "AM", "ORD", "01/22/2023", "6:30", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Source location provided should consist of only three alphabets [a-zA-Z]"));
     }
 
@@ -74,7 +74,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testDepartureDateIsProvidedInCorrectFormat() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "15/12/2023", "1:30", "AM", "HYD", "01/22/2023", "10:30", "PM");
+        MainMethodResult result = invokeMain("IndiGo", "789", "MSN", "15/12/2023", "1:30", "AM", "MSP", "01/22/2023", "10:30", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Invalid departure date. Please provide the departure date in mm/dd/yyyy format."));
     }
 
@@ -83,7 +83,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testDepartureTimeIsProvidedInCorrectFormat() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:60", "AM", "HYD", "01/22/2023", "6:30", "PM");
+        MainMethodResult result = invokeMain("IndiGo", "789", "LNK", "1/12/2023", "23:60", "AM", "PDX", "01/22/2023", "6:30", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Invalid departure time. Please provide the departure time in 12-hour(hh:mm) format"));
     }
 
@@ -92,7 +92,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testDestinationLocationContainsOnlyThreeAlphabets() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "01/22/2023", "11:30", "am", "HYDBD", "01/22/2023", "9:30", "pm");
+        MainMethodResult result = invokeMain("IndiGo", "789", "LNK", "01/22/2023", "11:30", "am", "PHLD", "01/22/2023", "9:30", "pm");
         assertThat(result.getTextWrittenToStandardError(), containsString("Destination location provided should consist of only three alphabets [a-zA-Z]"));
     }
 
@@ -101,7 +101,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testArrivalDateIsProvidedInCorrectFormat() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/3/2023", "4:30", "PM", "HYD", "1/22/23", "6:30", "PM");
+        MainMethodResult result = invokeMain("IndiGo", "789", "PIT", "1/3/2023", "4:30", "PM", "MSP", "1/22/23", "6:30", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Invalid arrival date. Please provide the arrival date in mm/dd/yyyy format."));
     }
 
@@ -110,7 +110,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testArrivalTimeIsProvidedInCorrectFormat() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "3:59", "PM", "HYD", "01/22/2023", "24:00", "AM");
+        MainMethodResult result = invokeMain("IndiGo", "789", "PDX", "1/12/2023", "3:59", "PM", "LNK", "01/22/2023", "24:00", "AM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Invalid arrival time. Please arrival the arrival time in 12-hour(hh:mm) format."));
     }
 
@@ -119,7 +119,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParameterPrintWithLessFlightAndAirlineInformationIssuesError() {
-        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PUN", "1/12/2023", "2:09", "PM", "HYD", "01/22/2023", "5:30");
+        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PHL", "1/12/2023", "2:09", "PM", "MSP", "01/22/2023", "5:30");
         assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments. Please provide valid flight and airline information along with '-print'."));
     }
 
@@ -128,7 +128,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParameterPrintWithFlightAndAirlineInformationAndExtraParamIssuesError() {
-        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PUN", "1/12/2023", "3:59", "PM", "HYD", "01/22/2023", "9:00", "AM", "extra");
+        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "MSP", "1/12/2023", "3:59", "PM", "PDX", "01/22/2023", "9:00", "AM", "extra");
         assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments. Please provide valid flight and airline information along with '-print'."));
     }
 
@@ -137,7 +137,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testAirlineAndFlightCreatedSuccessfully() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "12:59", "AM", "HYD", "01/22/2023", "1:00", "PM");
+        MainMethodResult result = invokeMain("IndiGo", "789", "ORD", "1/12/2023", "12:59", "AM", "MSP", "01/22/2023", "1:00", "PM");
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
     }
@@ -147,8 +147,8 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParameterPrintProvidesTheFlightDescription() {
-        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PUN", "1/12/2023", "12:59", "AM", "HYD", "01/22/2023", "1:00", "PM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PUN at 1/12/2023 12:59 AM arrives HYD at 01/22/2023 1:00 PM"));
+        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PHL", "1/12/2023", "12:59", "AM", "MSP", "01/22/2023", "1:00", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PHL at 1/12/2023 12:59 AM arrives MSP at 01/22/2023 1:00 PM"));
     }
 
     /**
@@ -156,7 +156,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParameterPrintNotProvidedAtStartIssuesError() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "12:59", "AM", "HYD", "01/22/2023", "1:00", "PM", "-print");
+        MainMethodResult result = invokeMain("IndiGo", "789", "PDX", "1/12/2023", "12:59", "AM", "ORD", "01/22/2023", "1:00", "PM", "-print");
         assertThat(result.getTextWrittenToStandardError(), containsString("Please provide valid flight and airline information after the '-print' option."));
     }
 
@@ -165,7 +165,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintAndTextFileWithInSufficientDetailsIssuesError() {
-        MainMethodResult result = invokeMain("-print", "-textFile", "/airline/file.txt", "IndiGo", "789", "PUN", "1/12/2023", "11:59", "PM", "HYD", "01/22/2023");
+        MainMethodResult result = invokeMain("-print", "-textFile", "/airline/file.txt", "IndiGo", "789", "ORD", "1/12/2023", "11:59", "PM", "PDX", "01/22/2023");
         assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments. Please provide text filename and valid flight and airline information along with '-textFile'."));
     }
 
@@ -174,7 +174,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintAndTextFileWithInSufficientAirlineDetailsIssuesError() {
-        MainMethodResult result = invokeMain("-print", "-textFile", "/airline/file.txt", "IndiGo", "789", "PUN", "1/12/2023", "11:59", "PM", "HYD", "01/22/2023", "2:50");
+        MainMethodResult result = invokeMain("-print", "-textFile", "/airline/file.txt", "IndiGo", "789", "PHL", "1/12/2023", "11:59", "PM", "LNK", "01/22/2023", "2:50");
         assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments. Please provide text filename and valid flight and airline information along with '-print' and '-textFile'."));
     }
 
@@ -183,7 +183,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrettyAndTextFileWithInSufficientAirlineDetailsIssuesError() {
-        MainMethodResult result = invokeMain("-pretty", "-textFile", "/airline/file.txt", "IndiGo", "789", "PUN", "1/12/2023", "11:59", "PM", "HYD", "01/22/2023", "2:50");
+        MainMethodResult result = invokeMain("-pretty", "-textFile", "/airline/file.txt", "IndiGo", "789", "PIT", "1/12/2023", "11:59", "PM", "PHL", "01/22/2023", "2:50");
         assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments. Please provide text filename or standard output symbol(-) and valid flight and airline information along with '-pretty' and '-textFile'."));
     }
 
@@ -192,7 +192,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testUnknownOptionalParameterIssuesError() {
-        MainMethodResult result = invokeMain("-trace", "IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00");
+        MainMethodResult result = invokeMain("-trace", "IndiGo", "789", "PDX", "1/12/2023", "23:59", "LNK", "01/22/2023", "23:00");
         assertThat(result.getTextWrittenToStandardError(), containsString("An unknown option was provided."));
     }
 
@@ -210,7 +210,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParameterREADMEProvidesProject1Details() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-README");
+        MainMethodResult result = invokeMain("IndiGo", "789", "LNK", "1/12/2023", "23:59", "PIT", "01/22/2023", "23:00", "-README");
         assertThat(result.getTextWrittenToStandardOut(), containsString("This is an 'Airline' project."));
     }
 
@@ -219,7 +219,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintAndREADMEProvidesOnlyProject1Details() {
-        MainMethodResult result = invokeMain("IndiGo", "789", "PUN", "1/12/2023", "23:59", "HYD", "01/22/2023", "23:00", "-print", "-README");
+        MainMethodResult result = invokeMain("IndiGo", "789", "PIT", "1/12/2023", "23:59", "LNK", "01/22/2023", "23:00", "-print", "-README");
         assertThat(result.getTextWrittenToStandardOut(), containsString("This is an 'Airline' project."));
     }
 
@@ -300,7 +300,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintAndTextFileInIncorrectOrderIssuesError() {
-        MainMethodResult result = invokeMain("IndiGo", "/airline/file.txt", "-textFile", "789", "PUN", "1/12/2023", "11:59", "PM", "HYD", "01/22/2023", "3:00", "PM");
+        MainMethodResult result = invokeMain("IndiGo", "/airline/file.txt", "-textFile", "789", "PDX", "1/12/2023", "11:59", "PM", "MSP", "01/22/2023", "3:00", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Please provide text filename and valid flight and airline information after the option '-textFile'."));
     }
 
@@ -309,7 +309,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersTextFileFilenameAndFlightInfoCreatesAndWritesSuccessfully(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "PM");
+        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "LNK", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "PM");
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
     }
@@ -319,8 +319,8 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintTextFileFilenameAndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/1/2023 10:59 AM arrives LON at 01/2/2023 2:00 AM"));
+        MainMethodResult result = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "PDX", "1/1/2023", "10:59", "AM", "LNK", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs PDX at 1/1/2023 10:59 AM arrives LNK at 01/2/2023 2:00 AM"));
     }
 
     /**
@@ -328,7 +328,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrettyWithNoFileTextFileFilenameAndFlightInfoIssuesError(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-pretty", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/11/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
+        MainMethodResult result = invokeMain("-pretty", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "ORD", "1/11/2023", "10:59", "AM", "PHL", "01/2/2023", "2:00", "AM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Please provide text filename or standard output symbol(-) and valid flight and airline information along with '-pretty' and '-textFile'."));
     }
 
@@ -337,9 +337,20 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintTextFileFilenameAndDifferentAirlineNamesIssuesError(@TempDir File tempDir) {
-        MainMethodResult result1 = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:50", "AM", "LON", "01/2/2023", "2:00", "PM");
-        MainMethodResult result2 = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Frontier", "789", "PUN", "1/12/2023", "11:03", "AM", "HYD", "01/22/2023", "3:00", "PM");
+        MainMethodResult result1 = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "PDX", "1/1/2023", "10:50", "AM", "LNK", "01/2/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "Frontier", "789", "ORD", "1/12/2023", "11:03", "AM", "PHL", "01/22/2023", "3:00", "PM");
         assertThat(result2.getTextWrittenToStandardError(), containsString("The airline name provided in the input does not match with airline name in the input text file."));
+    }
+
+    /**
+     * Tests that providing the optional parameters  '-textFile' and filename with multiple flights are sorted correctly.
+     */
+    @Test
+    void testOptionalParametersTextFileFilenameWithMultipleFlightsSortsCorrectly(@TempDir File tempDir) {
+        MainMethodResult result1 = invokeMain("-textFile", tempDir + "/testfile.txt", "Frontier", "448", "PDX", "1/1/2023", "10:50", "AM", "LNK", "01/2/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-textFile", tempDir + "/testfile.txt", "Frontier", "789", "ORD", "1/12/2023", "11:03", "AM", "PHL", "01/22/2023", "3:00", "PM");
+        assertThat(result2.getTextWrittenToStandardError(), equalTo(""));
+        assertThat(result2.getTextWrittenToStandardOut(), equalTo(""));
     }
 
     /**
@@ -347,8 +358,8 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersTextFileFilenamePrintAndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-textFile", tempDir + "/filenew.txt", "-print", "IndiGo", "789", "PUN", "1/12/2023", "11:59", "am", "HYD", "01/22/2023", "8:05", "pm");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PUN at 1/12/2023 11:59 am arrives HYD at 01/22/2023 8:05 pm"));
+        MainMethodResult result = invokeMain("-textFile", tempDir + "/filenew.txt", "-print", "IndiGo", "789", "PDX", "1/12/2023", "11:59", "am", "PIT", "01/22/2023", "8:05", "pm");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 departs PDX at 1/12/2023 11:59 am arrives PIT at 01/22/2023 8:05 pm"));
     }
 
     /**
@@ -365,7 +376,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrettyFilenameAndFlightInfoCreatesAndWritesSuccessfully(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyPrintTest.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "PM");
+        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyPrintTest.txt", "Indi-Go", "448", "PDX", "1/1/2023", "10:00", "AM", "LNK", "01/1/2023", "11:00", "AM");
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
     }
@@ -375,35 +386,44 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintPrettyFilenameAndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-print", "-pretty", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/1/2023 10:59 AM arrives LON at 01/2/2023 2:00 AM"));
+        MainMethodResult result = invokeMain("-print", "-pretty", tempDir + "/testfile.txt", "Indi-Go", "448", "PHL", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs PHL at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 2:00 AM"));
     }
 
     /**
-     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-textFile' and filename in order 1 with valid airline and flight information prints the flight data to the terminal.
+     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-textFile' and filename in order 1 with
+     * valid airline and flight information prints the flight data to the terminal and sorts the flights starting from same src correctly.
      */
     @Test
     void testOptionalParametersPrintPrettyTextFilenameInOrder1AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-print", "-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/1/2023 10:59 AM arrives LON at 01/2/2023 2:00 AM"));
+        MainMethodResult result1 = invokeMain("-textFile", tempDir + "/testfile.txt", "Frontier", "448", "PDX", "1/1/2023", "10:59", "AM", "LNK", "01/1/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-textFile", tempDir + "/testfile.txt", "Frontier", "789", "ORD", "1/12/2023", "11:03", "AM", "PHL", "01/12/2023", "3:00", "PM");
+        MainMethodResult result = invokeMain("-print", "-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "Frontier", "558", "PDX", "1/1/2023", "10:59", "AM", "ORD", "01/1/2023", "4:00", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 558 departs PDX at 1/1/2023 10:59 AM arrives ORD at 01/1/2023 4:00 PM"));
     }
 
     /**
-     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-textFile' and filename in order 2 with valid airline and flight information prints the flight data to the terminal.
+     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-textFile' and filename in order 2 with
+     * valid airline and flight information prints the flight data to the terminal and sorts the flights starting from same src and same time correctly.
      */
     @Test
     void testOptionalParametersPrintPrettyTextFilenameInOrder2AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/1/2023 10:59 AM arrives LON at 01/2/2023 2:00 AM"));
+        MainMethodResult result1 = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "PIT", "1/1/2023", "10:59", "AM", "LNK", "01/1/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "789", "MSP", "1/12/2023", "11:03", "AM", "PHL", "01/12/2023", "3:00", "PM");
+        MainMethodResult result = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "223", "PIT", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "5:00", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 223 departs PIT at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 5:00 PM"));
     }
 
     /**
-     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-textFile' and filename in order 3 with valid airline and flight information prints the flight data to the terminal.
+     * Tests that providing the optional parameters '-print', '-pretty' and standard output and '-textFile' and filename in order 3 with valid airline and flight information prints the flight data to the terminal.
      */
     @Test
     void testOptionalParametersPrintPrettyTextFilenameInOrder3AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-print", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/1/2023 10:59 AM arrives LON at 01/2/2023 2:00 AM"));
+        MainMethodResult result1 = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "PIT", "1/1/2023", "10:59", "AM", "LNK", "01/1/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "789", "PDX", "1/12/2023", "11:03", "AM", "PHL", "01/12/2023", "3:00", "PM");
+        MainMethodResult result = invokeMain("-pretty", "-", "-print", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "112", "LNK", "1/1/2023", "10:59", "AM", "ORD", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 112 departs LNK at 1/1/2023 10:59 AM arrives ORD at 01/2/2023 2:00 AM"));
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Indi-Go airline"));
     }
 
     /**
@@ -411,8 +431,8 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintPrettyTextFilenameInOrder4AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "-print", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/1/2023 10:59 AM arrives LON at 01/2/2023 2:00 AM"));
+        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "-print", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "Pdx", "1/1/2023", "10:59", "AM", "ord", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs PDX at 1/1/2023 10:59 AM arrives ORD at 01/2/2023 2:00 AM"));
     }
 
     /**
@@ -420,8 +440,8 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintPrettyTextFilenameInOrder5AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "-print", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/1/2023 10:59 AM arrives LON at 01/2/2023 2:00 AM"));
+        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "-print", "Indi-Go", "448", "Lnk", "1/1/2023", "10:59", "AM", "mSp", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs LNK at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 2:00 AM"));
     }
 
     /**
@@ -429,8 +449,8 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintPrettyTextFilenameInOrder6AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "-print", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
-        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs KOL at 1/1/2023 10:59 AM arrives LON at 01/2/2023 2:00 AM"));
+        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "-print", "Indi-Go", "448", "MSN", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs MSN at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 2:00 AM"));
     }
 
     /**
@@ -438,7 +458,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintPrettyTextFilenameAndInsufficientFlightInfoIssuesError(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-print", "-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/11/2023", "10:59", "AM", "LON", "01/2/2023", "2:00");
+        MainMethodResult result = invokeMain("-print", "-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "PHL", "1/11/2023", "10:59", "AM", "ORD", "01/2/2023", "2:00");
         assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments. Please provide text filename or standard output symbol(-) and valid flight and airline information along with '-pretty' and '-textFile'."));
     }
 
@@ -447,7 +467,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParameterPrintAndEarlyArrivalDateIssuesError() {
-        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "PUN", "1/12/2023", "2:59", "PM", "HYD", "01/12/2023", "1:00", "PM");
+        MainMethodResult result = invokeMain("-print", "IndiGo", "789", "Phl", "1/12/2023", "2:59", "PM", "Ord", "01/12/2023", "1:00", "PM");
         assertThat(result.getTextWrittenToStandardError(), containsString("The provided arrival date and time should not be before the departure date and time!"));
     }
 
@@ -474,7 +494,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrettyAndTextFilenameInOrder1AndFlightInfoCreatesAirlineSuccessfully(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
+        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "LNK", "1/1/2023", "10:59", "AM", "ORD", "01/2/2023", "2:00", "AM");
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
     }
@@ -484,7 +504,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrettyAndTextFilenameInOrder2AndFlightInfoCreatesAirlineSuccessfully(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
+        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "PHL", "1/1/2023", "10:59", "AM", "LNK", "01/2/2023", "2:00", "AM");
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
     }
@@ -494,7 +514,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrettyAndTextFilenameInIncorrectOrderAndFlightInfoCreatesAirlineSuccessfully(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "-pretty", tempDir + "/prettyfile.txt", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00", "AM");
+        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "-pretty", tempDir + "/prettyfile.txt", "PHL", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Please provide text filename and/or standard output symbol(-) and valid flight and airline information after the options '-textFile' and '-pretty'."));
     }
 
@@ -503,8 +523,36 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintPrettyAndTextFilenameAndInsufficientFlightInfoIssuesError(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "LON", "01/2/2023", "2:00");
+        MainMethodResult result = invokeMain("-print", "-textFile", tempDir + "/testfile.txt", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "Lnk", "1/1/2023", "10:59", "AM", "Pit", "01/2/2023", "2:00");
         assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments. Please provide text filename or standard output symbol(-) and valid flight and airline information along with '-pretty' and '-textFile'"));
     }
+
+    /**
+     * Tests that providing the optional parameters '-print', with unknown flight source location code issues error.
+     */
+    @Test
+    void testOptionalParametersPrintWithUnknownFlightSrcLocationIssuesError() {
+        MainMethodResult result = invokeMain("-print", "Indi-Go", "448", "KOL", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("The three-letter source location code does not correspond to a known airport!"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', with unknown flight destination location code issues error.
+     */
+    @Test
+    void testOptionalParametersPrintWithUnknownFlightDstLocationIssuesError() {
+        MainMethodResult result = invokeMain("-print", "Indi-Go", "448", "PDX", "1/1/2023", "10:59", "AM", "KOL", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("The three-letter destination location code does not correspond to a known airport!"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', with same src and destination location code issues error.
+     */
+    @Test
+    void testOptionalParametersPrintWithSameSrcDstLocationIssuesError() {
+        MainMethodResult result = invokeMain("-print", "Indi-Go", "448", "PDX", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("The provided source and the destination location code is same"));
+    }
+
 
 }

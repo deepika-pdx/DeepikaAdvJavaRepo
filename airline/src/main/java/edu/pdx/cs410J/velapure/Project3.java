@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.velapure;
 
 import com.google.common.annotations.VisibleForTesting;
+import edu.pdx.cs410J.AirportNames;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
@@ -366,12 +367,25 @@ public class Project3 {
         // Validation of the provided source location
         if (!(Pattern.matches("[a-zA-Z]+", srcLocation)) || srcLocation.length() != 3) {
             throw new AirlineException("Invalid source location. Source location provided should consist of only three alphabets [a-zA-Z].");
+        } else if (AirportNames.getName(srcLocation.toUpperCase()) == null) {
+            throw new AirlineException("The three-letter source location code does not correspond to a known airport!");
+        } else {
+            srcLocation = srcLocation.toUpperCase();
         }
 
 
         // Validation of the provided destination location
         if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
             throw new AirlineException("Invalid destination location. Destination location provided should consist of only three alphabets [a-zA-Z].");
+        } else if (AirportNames.getName(destLocation.toUpperCase()) == null) {
+            throw new AirlineException("The three-letter destination location code does not correspond to a known airport!");
+        } else {
+            destLocation = destLocation.toUpperCase();
+        }
+
+        if (srcLocation.equals(destLocation)) {
+            throw new AirlineException("The provided source and the destination location code is same. " +
+                    "Please provide different airport codes for flight's source and destination location.");
         }
 
         // Validation of the departure date and time
@@ -390,20 +404,40 @@ public class Project3 {
             throw new AirlineException("The provided arrival date and time should not be before the departure date and time!");
         }
 
-        boolean fileExists = false;
+        // If '-textFile' option is present
         Airline readAirline = null;
+        Airline createdAirline = null;
+        Flight newFlight = null;
         if (textFilename.isPresent()) {
             String filename = textFilename.get();
             File textFile = new File(filename);
-            fileExists = textFile.exists();
+            boolean fileExists = textFile.exists();
             try {
                 if (!fileExists) {
                     textFile.createNewFile();
+                    createdAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
+                            arrivalDateAndTimeString, arrivalDate);
+                    try {
+                        TextDumper textDumper = new TextDumper(new FileWriter(textFilename.get()));
+                        textDumper.dump(createdAirline);
+                    } catch (IOException e) {
+                        throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
+                    }
                 } else {
                     TextParser parser = new TextParser(new FileReader(filename));
                     readAirline = parser.parse();
                     if (!readAirline.getName().equals(airlineName)) {
                         throw new AirlineException("The airline name provided in the input does not match with airline name in the input text file.");
+                    }
+
+                    newFlight = new Flight(flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation, arrivalDateAndTimeString, arrivalDate);
+                    readAirline.addFlight(newFlight);
+
+                    try {
+                        TextDumper textDumper = new TextDumper(new FileWriter(textFilename.get()));
+                        textDumper.dump(readAirline);
+                    } catch (IOException e) {
+                        throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
                     }
                 }
             } catch (IOException e) {
@@ -411,34 +445,54 @@ public class Project3 {
             } catch (ParserException e) {
                 throw new AirlineException(e.getMessage());
             }
+        } else {
+            createdAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
+                    arrivalDateAndTimeString, arrivalDate);
         }
 
-        if (textFilename.isPresent()) {
-            if (!fileExists) {
-                Airline newlyCreatedAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
-                        arrivalDateAndTimeString, arrivalDate, printFlightInformation);
+        // If '-pretty' option is present
+        if (prettyFilename.isPresent()) {
+            Airline prettyPrintAirline = null;
+            if (readAirline != null) {
+                prettyPrintAirline = readAirline;
+            } else {
+                prettyPrintAirline = createdAirline;
+            }
+
+            String prettyPrintValue = prettyFilename.get();
+            if (!prettyPrintValue.equals("-")) {
+                // Pretty print to file
+                String prettyPrintFilename = prettyPrintValue;
+                File prettyFile = new File(prettyPrintFilename);
                 try {
-                    TextDumper textDumper = new TextDumper(new FileWriter(textFilename.get()));
-                    textDumper.dump(newlyCreatedAirline);
+                    prettyFile.createNewFile();
+                    try {
+                        AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new FileWriter(prettyFilename.get())));
+                        prettyPrinter.dump(prettyPrintAirline);
+                    } catch (IOException e) {
+                        throw new AirlineException("Unable to write to the pretty print file with the specified name and path. Filename: " + prettyFilename.get());
+                    }
                 } catch (IOException e) {
-                    throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
+                    throw new AirlineException("Unable to create a pretty file with the specified name and path. Filename: " + prettyPrintFilename);
                 }
             } else {
-                Flight newFlight = new Flight(flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation, arrivalDateAndTimeString, arrivalDate);
-                readAirline.addFlight(newFlight);
+                // Pretty print to terminal
                 try {
-                    TextDumper textDumper = new TextDumper(new FileWriter(textFilename.get()));
-                    textDumper.dump(readAirline);
+                    AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new FileWriter(prettyFilename.get())));
+                    prettyPrinter.dumpToTerminal(prettyPrintAirline);
                 } catch (IOException e) {
-                    throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
-                }
-                if (printFlightInformation.isPresent() && printFlightInformation.get().equals("printFlightInformation")) {
-                    System.out.println(newFlight.toString());
+                    throw new AirlineException("Unable to write to the pretty print file with the specified name and path. Filename: " + prettyFilename.get());
                 }
             }
-        } else {
-            createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
-                    arrivalDateAndTimeString, arrivalDate, printFlightInformation);
+        }
+
+        // If '-print' option is present
+        if (printFlightInformation.isPresent() && printFlightInformation.get().equals("printFlightInformation")) {
+            if (newFlight != null) {
+                System.out.println(newFlight.toString());
+            } else if (createdAirline != null) {
+                System.out.println(createdAirline.getFlights().toString());
+            }
         }
     }
 
@@ -463,19 +517,13 @@ public class Project3 {
      * @return An airline object holding airline and flight data.
      */
     private static Airline createAirlineAndFlight(String airlineName, int flightNumber, String srcLocation, String departureDateTimeString,
-                                                  Date departureDate, String destLocation, String arrivalDateAndTimeString, Date arrivalDate,
-                                                  Optional<String> printFlightInformation) {
+                                                  Date departureDate, String destLocation, String arrivalDateAndTimeString, Date arrivalDate) {
         // Creating airline and flight based on the provided input arguments
         Airline airline = new Airline(airlineName);
         Flight flight = new Flight(flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation, arrivalDateAndTimeString, arrivalDate);
         airline.addFlight(flight);
-
-        if (printFlightInformation.isPresent() && printFlightInformation.get().equals("printFlightInformation")) {
-            System.out.println(flight.toString());
-        }
         return airline;
     }
-
 
     /**
      * Reads the content from the README.txt file and prints the content to the console.

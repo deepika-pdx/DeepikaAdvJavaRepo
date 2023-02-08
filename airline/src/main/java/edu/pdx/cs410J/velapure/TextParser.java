@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.velapure;
 
 import edu.pdx.cs410J.AirlineParser;
+import edu.pdx.cs410J.AirportNames;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.BufferedReader;
@@ -99,7 +100,9 @@ public class TextParser implements AirlineParser<Airline> {
                             throw new ParserException("Malformed text file. Unable to parse data.");
                         }
                         validateSourceAndDestParameters(source, destination);
-                        validateDepartureAndArrivalDateTime(depatureDateTime, arrivalDateTime);
+                        Date[] dateArray = validateDepartureAndArrivalDateTime(depatureDateTime, arrivalDateTime);
+                        departureDate = dateArray[0];
+                        arrivalDate = dateArray[1];
                         Flight readFlight = new Flight(flightNumber, source, depatureDateTime, departureDate, destination, arrivalDateTime, arrivalDate);
                         readAirlineObj.addFlight(readFlight);
                     }
@@ -122,17 +125,30 @@ public class TextParser implements AirlineParser<Airline> {
         // Validation of the provided source location
         if (!(Pattern.matches("[a-zA-Z]+", srcLocation)) || srcLocation.length() != 3) {
             throw new AirlineException("Invalid source location. Unable to parse the provided text file.");
+        } else if (AirportNames.getName(srcLocation.toUpperCase()) == null) {
+            throw new AirlineException("The three-letter source location code does not correspond to a known airport!");
+        } else {
+            srcLocation = srcLocation.toUpperCase();
         }
 
 
         // Validation of the provided destination location
         if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
             throw new AirlineException("Invalid destination location. Unable to parse the provided text file.");
+        } else if (AirportNames.getName(destLocation.toUpperCase()) == null) {
+            throw new AirlineException("The three-letter destination location code does not correspond to a known airport!");
+        } else {
+            destLocation = destLocation.toUpperCase();
+        }
+
+        if (srcLocation.equals(destLocation)) {
+            throw new AirlineException("The source and the destination location code should not be same.");
         }
     }
 
-    private void validateDepartureAndArrivalDateTime(String depatureDateTime, String arrivalDateTime) throws AirlineException {
+    private Date[] validateDepartureAndArrivalDateTime(String depatureDateTime, String arrivalDateTime) throws AirlineException {
 
+        Date[] flightDates = new Date[2];
         // Validation of the departure date and time
         String[] departureDateTimeArray = depatureDateTime.split(" ");
         if (departureDateTimeArray.length != 3) {
@@ -152,5 +168,8 @@ public class TextParser implements AirlineParser<Airline> {
         if (arrivalDate.before(departureDate)) {
             throw new AirlineException("The arrival date and time is before the departure date and time. Unable to parse the provided text file.");
         }
+        flightDates[0] = departureDate;
+        flightDates[1] = arrivalDate;
+        return flightDates;
     }
 }
