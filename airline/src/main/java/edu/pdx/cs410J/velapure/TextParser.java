@@ -6,6 +6,8 @@ import edu.pdx.cs410J.ParserException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * This is <code>TextParser</code> class for Project 2.
@@ -39,8 +41,10 @@ public class TextParser implements AirlineParser<Airline> {
             int flightNumber = 0;
             String source = null;
             String depatureDateTime = null;
+            Date departureDate = null;
             String destination = null;
             String arrivalDateTime = null;
+            Date arrivalDate = null;
             if (textRead != null) {
                 String[] airlineNameArray = textRead.split("=");
                 if (airlineNameArray != null && airlineNameArray.length > 1) {
@@ -94,14 +98,59 @@ public class TextParser implements AirlineParser<Airline> {
                         if (flightNumber == 0 || source == null || depatureDateTime == null || destination == null || arrivalDateTime == null) {
                             throw new ParserException("Malformed text file. Unable to parse data.");
                         }
-                        Flight readFlight = new Flight(flightNumber, source, depatureDateTime, destination, arrivalDateTime);
+                        validateSourceAndDestParameters(source, destination);
+                        validateDepartureAndArrivalDateTime(depatureDateTime, arrivalDateTime);
+                        Flight readFlight = new Flight(flightNumber, source, depatureDateTime, departureDate, destination, arrivalDateTime, arrivalDate);
                         readAirlineObj.addFlight(readFlight);
                     }
                 }
                 return readAirlineObj;
             }
+        } catch (AirlineException e) {
+            String errorMessage = e.getMessage();
+            if (e.getMessage().contains("Please")) {
+                errorMessage = "Malformed text file. Unable to parse data.";
+            }
+            throw new ParserException(e.getMessage());
         } catch (IOException e) {
             throw new ParserException("Malformed text file. Unable to parse data.", e);
+        }
+    }
+
+    private void validateSourceAndDestParameters(String srcLocation, String destLocation) throws AirlineException {
+
+        // Validation of the provided source location
+        if (!(Pattern.matches("[a-zA-Z]+", srcLocation)) || srcLocation.length() != 3) {
+            throw new AirlineException("Invalid source location. Unable to parse the provided text file.");
+        }
+
+
+        // Validation of the provided destination location
+        if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
+            throw new AirlineException("Invalid destination location. Unable to parse the provided text file.");
+        }
+    }
+
+    private void validateDepartureAndArrivalDateTime(String depatureDateTime, String arrivalDateTime) throws AirlineException {
+
+        // Validation of the departure date and time
+        String[] departureDateTimeArray = depatureDateTime.split(" ");
+        if (departureDateTimeArray.length != 3) {
+            throw new AirlineException("Malformed text file. Unable to parse data.");
+        }
+        Date departureDate = null;
+        departureDate = AirlineDateTimeValidator.validateDateAndTime(departureDateTimeArray[0], departureDateTimeArray[1], departureDateTimeArray[2], "Departure");
+
+        // Validation of the arrival date and time
+        String[] arrivalDateTimeArray = arrivalDateTime.split(" ");
+        if (arrivalDateTimeArray.length != 3) {
+            throw new AirlineException("Malformed text file. Unable to parse data.");
+        }
+        Date arrivalDate = null;
+        arrivalDate = AirlineDateTimeValidator.validateDateAndTime(arrivalDateTimeArray[0], arrivalDateTimeArray[1], arrivalDateTimeArray[2], "Arrival");
+
+        if (arrivalDate.before(departureDate)) {
+            throw new AirlineException("The arrival date and time is before the departure date and time. Unable to parse the provided text file.");
         }
     }
 }

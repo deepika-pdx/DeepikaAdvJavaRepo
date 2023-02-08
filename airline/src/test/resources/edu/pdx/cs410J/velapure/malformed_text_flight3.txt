@@ -1,0 +1,19 @@
+Airline= Project2
+Flight count= 2
+
+Flight 1 data:
+Flight number= 700
+Source location= PDX
+Departure date and time= 01/07/XXXX 07:00
+Destination location= MHT
+Arrival date and time= 01/17/XXXX 17:00
+End of Flight 1 data!
+
+Flight 2 data:
+Flight number= 800
+Source location= MHT
+Departure date and time= 01/08/XXXX 08:00
+Destination location= BTV
+Arrival date and time= 01/08/XXXX 18:00
+End of Flight 2 data!
+

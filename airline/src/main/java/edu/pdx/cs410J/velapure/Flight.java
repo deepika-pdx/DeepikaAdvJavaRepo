@@ -2,6 +2,8 @@ package edu.pdx.cs410J.velapure;
 
 import edu.pdx.cs410J.AbstractFlight;
 
+import java.util.Date;
+
 /**
  * This class is represents a <code>Flight</code>.
  */
@@ -18,9 +20,14 @@ public class Flight extends AbstractFlight {
     private String source;
 
     /**
-     * Departure date and time of the flight
+     * String representation of departure date and time of the flight
      */
     private String departureString;
+
+    /**
+     * Departure date and time of the flight
+     */
+    private Date departureDate;
 
     /**
      * Destination location of the flight
@@ -28,9 +35,14 @@ public class Flight extends AbstractFlight {
     private String destination;
 
     /**
-     * Arrival date and time of the flight
+     * String representation of arrival date and time of the flight
      */
     private String arrivalString;
+
+    /**
+     * Arrival date and time of the flight
+     */
+    private Date arrivalDate;
 
     /**
      * Creates a new <code>Flight</code>
@@ -46,12 +58,14 @@ public class Flight extends AbstractFlight {
      * @param arrivalString
      *         The date and time of arrival of the flight at the destination location.
      */
-    public Flight(int flightNumber, String source, String departureString, String destination, String arrivalString) {
+    public Flight(int flightNumber, String source, String departureString, Date departureDate, String destination, String arrivalString, Date arrivalDate) {
         this.flightNumber = flightNumber;
         this.source = source;
         this.departureString = departureString;
+        this.departureDate = departureDate;
         this.destination = destination;
         this.arrivalString = arrivalString;
+        this.arrivalDate = arrivalDate;
     }
 
     @Override
@@ -76,12 +90,22 @@ public class Flight extends AbstractFlight {
 
     @Override
     /**
+     * Returns the string representation of departure date and time of the flight from source location.
+     *
+     * @return The string representation of date and time of departure of the flight
+     */
+    public String getDepartureString() {
+        return this.departureString;
+    }
+
+    /**
      * Returns the departure date and time of the flight from source location.
      *
      * @return The date and time of departure of the flight
      */
-    public String getDepartureString() {
-        return this.departureString;
+    @Override
+    public Date getDeparture() {
+        return this.departureDate;
     }
 
     @Override
@@ -96,11 +120,22 @@ public class Flight extends AbstractFlight {
 
     @Override
     /**
+     * Returns the string representation of arrival date and time of the flight at the destination location.
+     *
+     * @return The string representation ofdate and time of arrival of the flight
+     */
+    public String getArrivalString() {
+        return this.arrivalString;
+    }
+
+    @Override
+
+    /**
      * Returns the arrival date and time of the flight at the destination location.
      *
      * @return The date and time of arrival of the flight
      */
-    public String getArrivalString() {
-        return this.arrivalString;
+    public Date getArrival() {
+        return this.arrivalDate;
     }
 }

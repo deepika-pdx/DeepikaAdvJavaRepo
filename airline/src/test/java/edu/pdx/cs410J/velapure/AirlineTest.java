@@ -2,6 +2,8 @@ package edu.pdx.cs410J.velapure;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -29,8 +31,8 @@ public class AirlineTest {
         String airlineName = "Indigo";
         Airline airline = new Airline(airlineName);
 
-        Flight flight855 = createFlight(855, "PUN", "01/22/2023 14:30", "HYD", "01/22/2023 16:30");
-        Flight flight111 = createFlight(111, "LON", "01/24/2023 5:30", "PDX", "01/25/2023 12:30");
+        Flight flight855 = createFlight(855, "PUN", "01/22/2023 14:30", new Date(), "HYD", "01/22/2023 16:30", new Date());
+        Flight flight111 = createFlight(111, "LON", "01/24/2023 5:30", new Date(), "PDX", "01/25/2023 12:30", new Date());
         airline.addFlight(flight855);
         airline.addFlight(flight111);
 
@@ -54,8 +56,8 @@ public class AirlineTest {
      *
      * @return A flight object with specified parameters.
      */
-    private static Flight createFlight(int flightNumber, String source, String departureString, String destination, String arrivalString) {
-        Flight flight = new Flight(flightNumber, source, departureString, destination, arrivalString);
+    private static Flight createFlight(int flightNumber, String source, String departureString, Date departureDate, String destination, String arrivalString, Date arrivalDate) {
+        Flight flight = new Flight(flightNumber, source, departureString, departureDate, destination, arrivalString, arrivalDate);
         return flight;
     }
 }

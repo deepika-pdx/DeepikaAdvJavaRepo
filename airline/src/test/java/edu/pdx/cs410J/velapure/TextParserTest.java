@@ -66,4 +66,19 @@ public class TextParserTest {
         TextParser parser = new TextParser(new InputStreamReader(resource));
         assertThrows(ParserException.class, parser::parse);
     }
+
+    /**
+     * Tests that providing the malformed text file having invalid arrival date
+     * is passed with '-textFile' option issues error.
+     */
+    @Test
+    void MalformedTextFileWithInvalidArrivalDateThrowsException() {
+        InputStream resource = getClass().getResourceAsStream("malformed_text_flight3.txt");
+        assertThat(resource, notNullValue());
+
+        TextParser parser = new TextParser(new InputStreamReader(resource));
+        assertThrows(ParserException.class, parser::parse);
+    }
+
+
 }

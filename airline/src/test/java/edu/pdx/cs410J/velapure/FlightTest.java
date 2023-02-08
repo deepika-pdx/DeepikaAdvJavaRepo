@@ -2,8 +2,11 @@ package edu.pdx.cs410J.velapure;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 
 /**
  * Unit tests for the {@link Flight} class.
@@ -16,7 +19,7 @@ public class FlightTest {
      */
     @Test
     void test789IsReturnedAsFlightNumber() {
-        Flight flight = createFlight(789, "DEL", "01/22/2023 12:30", "CHN", "01/22/2023 14:30");
+        Flight flight = createFlight(789, "DEL", "01/22/2023 12:30", new Date(), "CHN", "01/22/2023 14:30", new Date());
         assertThat(flight.getNumber(), equalTo(789));
     }
 
@@ -26,7 +29,7 @@ public class FlightTest {
      */
     @Test
     void testKOLIsReturnedAsSource() {
-        Flight flight = createFlight(789, "DEL", "01/22/2023 12:30", "CHN", "01/22/2023 14:30");
+        Flight flight = createFlight(789, "DEL", "01/22/2023 12:30", new Date(), "CHN", "01/22/2023 14:30", new Date());
         assertThat(flight.getSource(), equalTo("DEL"));
     }
 
@@ -36,7 +39,7 @@ public class FlightTest {
      */
     @Test
     void testDepartureTimeIsReturnedCorrectly() {
-        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", "CHN", "01/22/2023 14:30");
+        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", new Date(), "CHN", "01/22/2023 14:30", new Date());
         assertThat(flight.getDepartureString(), equalTo("01/25/2023 15:30"));
     }
 
@@ -46,7 +49,7 @@ public class FlightTest {
      */
     @Test
     void testLONIsReturnedAsDestination() {
-        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", "CHN", "01/22/2023 14:30");
+        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", new Date(), "CHN", "01/22/2023 14:30", new Date());
         assertThat(flight.getDestination(), equalTo("CHN"));
     }
 
@@ -56,7 +59,7 @@ public class FlightTest {
      */
     @Test
     void testArrivalTimeIsReturnedCorrectly() {
-        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", "CHN", "01/26/2023 4:15");
+        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", new Date(), "CHN", "01/26/2023 4:15", new Date());
         assertThat(flight.getArrivalString(), equalTo("01/26/2023 4:15"));
     }
 
@@ -76,8 +79,8 @@ public class FlightTest {
      *
      * @return A flight object with specified parameters.
      */
-    private static Flight createFlight(int flightNumber, String source, String departureString, String destination, String arrivalString) {
-        Flight flight = new Flight(flightNumber, source, departureString, destination, arrivalString);
+    private static Flight createFlight(int flightNumber, String source, String departureString, Date departureDate, String destination, String arrivalString, Date arrivalDate) {
+        Flight flight = new Flight(flightNumber, source, departureString, departureDate, destination, arrivalString, arrivalDate);
         return flight;
     }
 
