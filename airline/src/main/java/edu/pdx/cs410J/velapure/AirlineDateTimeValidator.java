@@ -4,14 +4,24 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * This is <code>AirlineDateTimeValidator</code> class for Project.
+ */
 public class AirlineDateTimeValidator {
+
     /**
      * Validates the input departure and arrival date.
      *
      * @param providedDateString
      *         The date of departure/arrival of the flight.
+     * @param providedTimeString
+     *         The time of departure/arrival of the flight.
+     * @param providedAmOrPmString
+     *         The time indication i.e. AM/PM of departure/arrival date and time of the flight.
+     * @param flightDateType
+     *         The 'departure' or 'arrival' value for identifying the type of flight's date passed.
      *
-     * @return true if input date is valid and false if input date is invalid.
+     * @return valid Date object.
      */
     public static Date validateDateAndTime(String providedDateString, String providedTimeString, String providedAmOrPmString, String flightDateType)
             throws AirlineException {
@@ -67,7 +77,7 @@ public class AirlineDateTimeValidator {
      * @param providedDateString
      *         The date of departure/arrival of the flight.
      *
-     * @return true if input date is valid and false if input date is invalid.
+     * @return valid date pattern.
      */
     public static String validateDate(String providedDateString) {
         String datePattern = null;
@@ -112,7 +122,7 @@ public class AirlineDateTimeValidator {
      * @param providedTimeString
      *         The time of departure/arrival of the flight.
      *
-     * @return true if input time is valid and false if input time is invalid.
+     * @return valid time pattern.
      */
     public static String validateTime(String providedTimeString) {
         String timePattern = null;

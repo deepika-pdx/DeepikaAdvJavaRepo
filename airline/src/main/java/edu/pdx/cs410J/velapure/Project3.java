@@ -151,6 +151,14 @@ public class Project3 {
         }
     }
 
+    /**
+     * This method processes the airline details with '-print', '-pretty' and '-textFile' options
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-pretty file/-', '-textFile file', '-print'
+     */
     private static void processAirlineDetailsWithPrintPrettyAndTextFileOptions(String[] args) throws AirlineException {
         if (args[0].equals("-print") && args[1].equals("-textFile") && args[2].contains(".txt") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
             // Validate and add airline and flight information
@@ -185,6 +193,14 @@ public class Project3 {
         }
     }
 
+    /**
+     * This method processes the airline details with '-pretty' and '-textFile' options
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-pretty file/-', '-textFile file'
+     */
     private static void processAirlineDetailsWithPrettyAndTextFileOptions(String[] args) throws AirlineException {
         if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
@@ -211,6 +227,14 @@ public class Project3 {
         }
     }
 
+    /**
+     * This method processes the airline details with '-print', '-pretty' or '-textFile' options
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-pretty file/-', '-textFile file', '-print'
+     */
     private static void processAirlineDetailsWithPrintAndPrettyOrTextFileOption(String[] args) throws AirlineException {
         if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
@@ -244,6 +268,14 @@ public class Project3 {
         }
     }
 
+    /**
+     * This method processes the airline details with  '-pretty' or '-textFile' options
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-pretty file/-', '-textFile file'
+     */
     private static void processAirlineDetailsWithOnlyPrettyOrTextFileOption(String[] args) throws AirlineException {
         if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
@@ -275,6 +307,14 @@ public class Project3 {
         }
     }
 
+    /**
+     * This method processes the airline details with only '-print' option
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-print'
+     */
     private static void processAirlineDetailsWithOnlyPrintOption(String[] args) throws AirlineException {
         if (Arrays.stream(args).anyMatch("-textFile"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
@@ -294,6 +334,13 @@ public class Project3 {
         }
     }
 
+    /**
+     * This method processes the airline details without any options.
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     */
     private static void processAirlineDetailsWithoutOptions(String[] args) throws AirlineException {
         if (Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
@@ -340,16 +387,22 @@ public class Project3 {
      *         A String that holds the date of departure of the flight from source location.
      * @param departureTimeString
      *         A String that holds the time of departure of the flight from source location.
+     * @param departureTimeIndicationString
+     *         A String that holds the time indication i.e. AM/PM of the flight's departure.
      * @param destLocation
      *         A three-letter code specifying the destination location of a flight.
      * @param arrivalDateString
      *         A String that holds the date of arrival of the flight at the destination location.
      * @param arrivalTimeString
      *         A String that holds the time of arrival of the flight at the destination location.
+     * @param arrivalTimeIndicationString
+     *         A String that holds the time indication i.e. AM/PM of the flight's arrival.
      * @param printFlightInformation
      *         {@link Optional} parameter that holds the data depending on which Flight information is printed to the terminal.
      * @param textFilename
      *         {@link Optional} parameter that holds the filename of the text file which does/does not contain airline and flight information.
+     * @param prettyFilename
+     *         {@link Optional} parameter that holds the filename/standard output symbol to which airline and flight information is pretty printed.
      */
     private static void validateArguments(String airlineName, String flightNumberString, String srcLocation, String departureDateString,
                                           String departureTimeString, String departureTimeIndicationString, String destLocation, String arrivalDateString,
@@ -507,12 +560,14 @@ public class Project3 {
      *         A three-letter code specifying the source location of a flight.
      * @param departureDateTimeString
      *         A String that holds the date and time of departure of the flight from source location.
+     * @param departureDate
+     *         A Date object that holds the date and time of departure of the flight from source location.
      * @param destLocation
      *         A three-letter code specifying the destination location of a flight.
      * @param arrivalDateAndTimeString
      *         A String that holds the date and time of arrival of the flight at the destination location.
-     * @param printFlightInformation
-     *         {@link Optional} parameter that holds the data depending on which Flight information is printed to the terminal.
+     * @param arrivalDate
+     *         A Date object that holds the date and time of arrival of the flight at destination location.
      *
      * @return An airline object holding airline and flight data.
      */
@@ -544,5 +599,4 @@ public class Project3 {
             throw new AirlineException("Error occurred while reading from the README file!!");
         }
     }
-
 }

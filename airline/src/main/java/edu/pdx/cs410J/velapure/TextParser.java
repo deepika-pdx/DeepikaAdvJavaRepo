@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * This is <code>TextParser</code> class for Project 2.
+ * This is <code>TextParser</code> class for Project.
  */
 public class TextParser implements AirlineParser<Airline> {
     /**
@@ -120,6 +120,14 @@ public class TextParser implements AirlineParser<Airline> {
         }
     }
 
+    /**
+     * This method validates the source and destination location of the flight read from the text file.
+     *
+     * @param srcLocation
+     *         Flight's source location.
+     * @param destLocation
+     *         Flight's destination location.
+     */
     private void validateSourceAndDestParameters(String srcLocation, String destLocation) throws AirlineException {
 
         // Validation of the provided source location
@@ -146,6 +154,14 @@ public class TextParser implements AirlineParser<Airline> {
         }
     }
 
+    /**
+     * This method validates the departure and arrival date of the flight read from the text file.
+     *
+     * @param depatureDateTime
+     *         Flight's departure date and time.
+     * @param arrivalDateTime
+     *         Flight's arrival date and time.
+     */
     private Date[] validateDepartureAndArrivalDateTime(String depatureDateTime, String arrivalDateTime) throws AirlineException {
 
         Date[] flightDates = new Date[2];

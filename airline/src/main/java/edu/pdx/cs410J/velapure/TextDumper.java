@@ -7,7 +7,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 
 /**
- * This is <code>TextDumper</code> class for Project 2.
+ * This is <code>TextDumper</code> class for Project.
  */
 public class TextDumper implements AirlineDumper<Airline> {
     /**

@@ -13,14 +13,32 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This is <code>AirlinePrettyPrinter</code> class for Project.
+ */
 public class AirlinePrettyPrinter implements AirlineDumper {
 
+    /**
+     * Writer for pretty printing the airline and flight data to the file.
+     */
     private final PrintWriter pw;
 
+    /**
+     * Creates a new <code>AirlinePrettyPrinter</code>
+     *
+     * @param pw
+     *         writer for pretty printing airline and flight data to the file.
+     */
     public AirlinePrettyPrinter(PrintWriter pw) throws IOException {
         this.pw = pw;
     }
 
+    /**
+     * This method pretty prints the airline and flight data to a file.
+     *
+     * @param prettyPrintAirline
+     *         An airline object having flight details.
+     */
     @Override
     public void dump(AbstractAirline prettyPrintAirline) throws IOException {
         Collections.sort((List) prettyPrintAirline.getFlights());
@@ -52,6 +70,12 @@ public class AirlinePrettyPrinter implements AirlineDumper {
         airlinePrintWriter.close();
     }
 
+    /**
+     * This method pretty prints the airline and flight data to standard output terminal.
+     *
+     * @param prettyPrintAirline
+     *         An airline object having flight details.
+     */
     public void dumpToTerminal(AbstractAirline prettyPrintAirline) throws IOException {
         Collections.sort((List) prettyPrintAirline.getFlights());
 
