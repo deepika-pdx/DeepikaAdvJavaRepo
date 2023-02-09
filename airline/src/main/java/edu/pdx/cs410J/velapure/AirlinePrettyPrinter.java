@@ -47,13 +47,13 @@ public class AirlinePrettyPrinter implements AirlineDumper {
         airlinePrintWriter.println("***************** Flight Information of the " +
                 prettyPrintAirline.getName() + " airline " + "*****************");
         airlinePrintWriter.println("");
+        airlinePrintWriter.println("");
 
         DateFormat flightDateFormatter = null;
         DateFormat flightTimeFormatter = null;
         Iterator flightIterator = prettyPrintAirline.getFlights().iterator();
         while (flightIterator.hasNext()) {
             Flight flight = (Flight) flightIterator.next();
-            airlinePrintWriter.println("");
             airlinePrintWriter.println("Flight " + flight.getNumber() + " details:");
             airlinePrintWriter.println("    Source: " + AirportNames.getName(flight.getSource()) + "(" + flight.getSource() + ")");
             flightDateFormatter = DateFormat.getDateInstance(DateFormat.FULL, Locale.US);
@@ -65,6 +65,7 @@ public class AirlinePrettyPrinter implements AirlineDumper {
             long flightDifference = (flight.getArrival().getTime() - flight.getDeparture().getTime());
             long flightDuration = flightDifference / (60 * 1000);
             airlinePrintWriter.println("    Flight duration: " + flightDuration + " minutes");
+            airlinePrintWriter.println("");
             airlinePrintWriter.flush();
         }
         airlinePrintWriter.close();

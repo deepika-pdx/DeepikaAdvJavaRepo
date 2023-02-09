@@ -41,10 +41,11 @@ Behavior of the '-textFile' option: The '-textFile' option allows a user to stor
                                     if a malformed file is provided in the input command line arguments.
 
 Behavior of the '-pretty' option:   The '-pretty' option prints the information about an airline and its flights in an user-understandable simple
-                                    text format. It accepts either a file name with path to which the airline and flight data can be pretty printed or a '-' symbol which indicates that the airline and flight data will be printed to the
-                                    standard output terminal'. There are no restrictions on the filename. Also, the file path provided can be an
-                                    absolute or relative path or it can even be the current directory. If the file provided with the '-pretty' does not
-                                    exist, then a new file is created to pretty print the airline and flight information passed through the arguments.
+                                    text format. It accepts either a file name with path to which the airline and flight data can be pretty printed or a
+                                    '-' symbol which indicates that the airline and flight data will be printed to the standard output terminal'.
+                                    There are no restrictions on the filename. Also, the file path provided can be an absolute or relative path
+                                    or it can even be the current directory. If the file provided with the '-pretty' does not exist,
+                                    then a new file is created to pretty print the airline and flight information passed through the arguments.
                                     If the file provided with the '-textFile' does exist, then it is overwritten with the airline and flight
                                     information. If '-textFile' option is provided along with it, then the flights read from the text file
                                     provided with the '-textFile' option along with the new flight details provided in the command line are pretty printed.

@@ -5,6 +5,7 @@ import edu.pdx.cs410J.AirportNames;
 import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
@@ -544,7 +545,7 @@ public class Project3 {
             if (newFlight != null) {
                 System.out.println(newFlight.toString());
             } else if (createdAirline != null) {
-                System.out.println(createdAirline.getFlights().toString());
+                System.out.println(((ArrayList) createdAirline.getFlights()).get(0).toString());
             }
         }
     }
