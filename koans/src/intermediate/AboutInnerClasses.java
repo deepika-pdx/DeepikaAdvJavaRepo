@@ -2,7 +2,6 @@ package intermediate;
 
 import com.sandwich.koan.Koan;
 
-import static com.sandwich.koan.constant.KoanConstants.__;
 import static com.sandwich.util.Assert.assertEquals;
 
 public class AboutInnerClasses {
@@ -24,13 +23,13 @@ public class AboutInnerClasses {
     @Koan
     public void creatingInnerClassInstance() {
         Inner someObject = new Inner();
-        assertEquals(someObject.doStuff(), __);
+        assertEquals(someObject.doStuff(), "stuff");
     }
 
     @Koan
     public void creatingInnerClassInstanceWithOtherSyntax() {
         AboutInnerClasses.Inner someObject = this.new Inner();
-        assertEquals(someObject.doStuff(), __);
+        assertEquals(someObject.doStuff(), "stuff");
     }
 
     private int x = 10;
@@ -38,7 +37,7 @@ public class AboutInnerClasses {
     @Koan
     public void accessingOuterClassMembers() {
         Inner someObject = new Inner();
-        assertEquals(someObject.returnOuter(), __);
+        assertEquals(someObject.returnOuter(), 10);
     }
 
     @Koan
@@ -48,7 +47,7 @@ public class AboutInnerClasses {
                 return 100;
             }
         }
-        assertEquals(new MethodInnerClass().oneHundred(), __);
+        assertEquals(new MethodInnerClass().oneHundred(), 100);
         // Where can you use this class?
     }
 
@@ -71,9 +70,9 @@ public class AboutInnerClasses {
     @Koan
     public void innerClassesInMethodsThatEscape() {
         AnotherInnerClass ic = new AnotherInnerClass();
-        assertEquals(ic.thousand(), __);
+        assertEquals(ic.thousand(), 1000);
         AnotherInnerClass theCrazyIC = ic.crazyReturn();
-        assertEquals(theCrazyIC.thousand(), __);
+        assertEquals(theCrazyIC.thousand(), 2000);
     }
 
     int theAnswer() {
@@ -87,16 +86,12 @@ public class AboutInnerClasses {
                 return 23;
             }
         };// <- Why do you need a semicolon here?
-        assertEquals(anonymous.theAnswer(), __);
+        assertEquals(anonymous.theAnswer(), 23);
     }
 
     @Koan
     public void creatingAnonymousInnerClassesToImplementInterface() {
-        Ignoreable ignoreable = new Ignoreable() {
-            public String ignoreAll() {
-                return null;
-            }
-        }; // Complete the code so that the statement below is correct.
+        Ignoreable ignoreable = () -> "SomeInterestingString"; // Complete the code so that the statement below is correct.
         // Look at the koan above for inspiration
         assertEquals(ignoreable.ignoreAll(), "SomeInterestingString");
         // Did you just created an object of an interface type?
@@ -111,7 +106,7 @@ public class AboutInnerClasses {
         // Try to change the 'Inner' below to "AboutInnerClasses'
         // Why do you get an error?
         // What does that imply for inner classes and inheritance?
-        assertEquals(someObject instanceof Inner, __);
+        assertEquals(someObject instanceof Inner, true);
     }
 
     class OtherInner extends AboutInnerClasses {
@@ -122,7 +117,7 @@ public class AboutInnerClasses {
         OtherInner someObject = new OtherInner();
         // What do you expect here?
         // Compare this result with the last koan. What does that mean?
-        assertEquals(someObject instanceof AboutInnerClasses, __);
+        assertEquals(someObject instanceof AboutInnerClasses, true);
     }
 
     static class StaticInnerClass {
@@ -134,7 +129,7 @@ public class AboutInnerClasses {
     @Koan
     public void staticInnerClass() {
         StaticInnerClass someObject = new StaticInnerClass();
-        assertEquals(someObject.importantNumber(), __);
+        assertEquals(someObject.importantNumber(), 3);
         // What happens if you try to access 'x' or 'theAnswer' from the outer class?
         // What does this mean for static inner classes?
         // Try to create a sub package of this package which is named 'StaticInnerClass'
@@ -144,7 +139,7 @@ public class AboutInnerClasses {
     @Koan
     public void staticInnerClassFullyQualified() {
         AboutInnerClasses.StaticInnerClass someObject = new AboutInnerClasses.StaticInnerClass();
-        assertEquals(someObject.importantNumber(), __);
+        assertEquals(someObject.importantNumber(), 3);
     }
 
 }
