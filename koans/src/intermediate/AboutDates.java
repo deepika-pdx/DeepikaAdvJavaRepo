@@ -59,7 +59,7 @@ public class AboutDates {
     public void usingDateFormatToFormatDateFull() {
         String formattedDate = DateFormat.getDateInstance(DateFormat.FULL).format(date);
         // There is also DateFormat.MEDIUM and DateFormat.LONG... you get the idea ;-)
-        assertEquals(formattedDate, "Saturday, 3 March, 1973");
+        assertEquals(formattedDate, "Saturday, March 3, 1973");
     }
 
     @Koan
