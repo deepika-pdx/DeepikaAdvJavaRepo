@@ -104,7 +104,8 @@ public class AboutExceptions {
         try {
             doUncheckedStuff();
         } catch (RuntimeException e) {
-            System.err.println("Runtime exception occurred!!");
+            // Usually we should log the exception so that the user is informed about the unexpected error. for example as below:
+            // System.err.println("Runtime exception occurred!!");
         }
     }
 
