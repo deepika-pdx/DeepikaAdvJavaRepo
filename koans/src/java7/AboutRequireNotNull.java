@@ -4,7 +4,6 @@ import com.sandwich.koan.Koan;
 
 import java.util.Objects;
 
-import static com.sandwich.koan.constant.KoanConstants.__;
 import static com.sandwich.util.Assert.assertEquals;
 
 public class AboutRequireNotNull {
@@ -19,7 +18,7 @@ public class AboutRequireNotNull {
         } catch (NullPointerException ex) {
             s = "caught a NullPointerException";
         }
-        assertEquals(s, __);
+        assertEquals(s, "caught a NullPointerException");
     }
 
     @Koan
@@ -32,7 +31,7 @@ public class AboutRequireNotNull {
         } catch (NullPointerException ex) {
             s = "caught a NullPointerException";
         }
-        assertEquals(s, __);
+        assertEquals(s, "5");
     }
 
     private int validateUsingRequireNotNull(String str) {

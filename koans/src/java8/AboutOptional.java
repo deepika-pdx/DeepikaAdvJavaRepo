@@ -4,7 +4,6 @@ import com.sandwich.koan.Koan;
 
 import java.util.Optional;
 
-import static com.sandwich.koan.constant.KoanConstants.__;
 import static com.sandwich.util.Assert.assertEquals;
 
 public class AboutOptional {
@@ -18,14 +17,14 @@ public class AboutOptional {
         if (value.isPresent()) {
             optionalIsPresent = true;
         }
-        assertEquals(optionalIsPresent, __);
+        assertEquals(optionalIsPresent, false);
     }
 
     @Koan
     public void ifPresentLambda() {
         Optional<String> value = notPresent();
         value.ifPresent(x -> optionalIsPresentField = true);
-        assertEquals(optionalIsPresentField, __);
+        assertEquals(optionalIsPresentField, false);
     }
 
     //use optional on api to signal that value is optional

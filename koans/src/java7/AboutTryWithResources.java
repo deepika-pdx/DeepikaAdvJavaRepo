@@ -4,7 +4,6 @@ import com.sandwich.koan.Koan;
 
 import java.io.*;
 
-import static com.sandwich.koan.constant.KoanConstants.__;
 import static com.sandwich.util.Assert.assertEquals;
 
 public class AboutTryWithResources {
@@ -47,7 +46,7 @@ public class AboutTryWithResources {
         } catch (IOException e) {
             line = "error";
         }
-        assertEquals(line, __);
+        assertEquals(line, "first line");
     }
 
     @Koan
@@ -60,7 +59,7 @@ public class AboutTryWithResources {
         } catch (FileNotFoundException e) {
             line = "no more leaking!";
         }
-        assertEquals(line, __);
+        assertEquals(line, "no more leaking!");
     }
 
     @Koan
@@ -83,7 +82,7 @@ public class AboutTryWithResources {
         } catch (IOException e) {
             line = "error";
         }
-        assertEquals(line, __);
+        assertEquals(line, "error");
     }
 
     @Koan
@@ -96,7 +95,7 @@ public class AboutTryWithResources {
         } catch (CloseException e) {
             message += e.getMessage();
         }
-        assertEquals(message, __);
+        assertEquals(message, "Exception thrown while working Exception thrown while closing");
     }
 
 
