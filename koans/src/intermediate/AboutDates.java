@@ -52,7 +52,7 @@ public class AboutDates {
     @Koan
     public void usingDateFormatToFormatDateShort() {
         String formattedDate = DateFormat.getDateInstance(DateFormat.SHORT).format(date);
-        assertEquals(formattedDate, "03/03/73");
+        assertEquals(formattedDate, "3/3/73");
     }
 
     @Koan
