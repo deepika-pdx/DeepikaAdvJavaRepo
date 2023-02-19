@@ -60,7 +60,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>edu.pdx.cs410J.velapure.Project3</mainClass>
+                            <mainClass>edu.pdx.cs410J.velapure.Project4</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -11,15 +11,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
- * An integration test for the {@link Project3} main class.
+ * An integration test for the {@link Project4} main class.
  */
-class Project3IT extends InvokeMainTestCase {
+class Project4IT extends InvokeMainTestCase {
 
     /**
-     * Invokes the main method of {@link Project3} with the given arguments.
+     * Invokes the main method of {@link Project4} with the given arguments.
      */
     private MainMethodResult invokeMain(String... args) {
-        return invokeMain(Project3.class, args);
+        return invokeMain(Project4.class, args);
     }
 
     /**
@@ -449,7 +449,7 @@ class Project3IT extends InvokeMainTestCase {
      */
     @Test
     void testOptionalParametersPrintPrettyTextFilenameInOrder6AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
-        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-textFile", tempDir + "/testfile.txt", "-print", "Indi-Go", "448", "MSN", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "AM");
+        MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "-pretty", tempDir + "/prettyfile.txt", "-print", "Indi-Go", "448", "MSN", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "AM");
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs MSN at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 2:00 AM"));
     }
 
@@ -513,7 +513,7 @@ class Project3IT extends InvokeMainTestCase {
      * Tests that providing the optional parameters '-pretty' and filename and '-textFile' and filename in incorrect order 2 issues error.
      */
     @Test
-    void testOptionalParametersPrettyAndTextFilenameInIncorrectOrderAndFlightInfoCreatesAirlineSuccessfully(@TempDir File tempDir) {
+    void testOptionalParametersPrettyAndTextFilenameInIncorrectOrderAndFlightInfoIssuesError(@TempDir File tempDir) {
         MainMethodResult result = invokeMain("-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "-pretty", tempDir + "/prettyfile.txt", "PHL", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Please provide text filename and/or standard output symbol(-) and valid flight and airline information after the options '-textFile' and '-pretty'."));
     }
@@ -554,5 +554,192 @@ class Project3IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardError(), containsString("The provided source and the destination location code is same"));
     }
 
+    /**
+     * Tests that providing the optional parameters '-xmlFile', without xml filename and insufficient flight and airline information issues error.
+     */
+    @Test
+    void testOptionalParametersXmlFileWithoutFilenameAndInvalidFlightDataIssuesError() {
+        MainMethodResult result = invokeMain("-xmlFile", "Indi-Go", "448", "PDX", "1/1/2023", "10:59", "AM", "PHL", "01/2/2023", "2:00");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide xml filename and valid flight and airline information along with '-xmlFile'."));
+    }
 
+    /**
+     * Tests that providing the optional parameters '-xmlFile', without xml filename and valid flight and airline information issues error.
+     */
+    @Test
+    void testOptionalParametersXmlFileWithoutFilenameButValidFlightIssuesError() {
+        MainMethodResult result = invokeMain("-xmlFile", "Indi-Go", "448", "PDX", "1/1/2023", "10:59", "AM", "PHL", "01/2/2023", "2:00", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide xml filename and valid flight and airline information along with '-xmlFile'."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-xmlFile' and '-textFile' with valid flight and airline information issues error.
+     */
+    @Test
+    void testOptionalParametersXmlFileAndTextFilenameButValidFlightIssuesError() {
+        MainMethodResult result = invokeMain("-xmlFile", "-textFile", "Indi-Go", "448", "PDX", "1/1/2023", "10:59", "AM", "PHL", "01/2/2023", "2:00", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide either '-xmlFile' or '-textFile' option along with filename and valid flight and airline information."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-xmlFile' and filename with valid flight and airline information in incorrect order issues error.
+     */
+    @Test
+    void testOptionalParametersXmlFileWithValidFlightButIncorrectOrderIssuesError() {
+        MainMethodResult result = invokeMain("Indi-Go", "448", "-xmlFile", "/testFile.xml", "PDX", "1/1/2023", "10:59", "AM", "PHL", "01/2/2023", "2:00", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide xml filename and valid flight and airline information after the option '-xmlFile'."));
+    }
+
+    /**
+     * Tests that providing the optional parameter '-xmlFile' and filename with valid airline and flight information creates and writes airline and flight information successfully..
+     */
+    @Test
+    void testOptionalParametersXmlFileFilenameAndFlightInfoCreatesAndWritesSuccessfully(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "448", "LNK", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
+        assertThat(result.getTextWrittenToStandardError(), equalTo(""));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-xmlFile' and '-textFile' with valid flight and airline information issues error.
+     */
+    @Test
+    void testOptionalParametersXmlFileAndFilenameAndTextFilenameButValidFlightIssuesError() {
+        MainMethodResult result = invokeMain("-xmlFile", "/testXmlfile.xml", "-textFile", "Indi-Go", "448", "PDX", "1/1/2023", "10:59", "AM", "PHL", "01/2/2023", "2:00", "PM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide either '-xmlFile' or '-textFile' option along with filename and valid flight and airline information."));
+    }
+
+    /**
+     * Tests that providing the optional parameter '-xmlFile' and filename and '-print' with valid airline and flight information creates and writes airline and flight information successfully..
+     */
+    @Test
+    void testOptionalParametersXmlFileFilenameAndPrintWithFlightInfoCreatesAndWritesSuccessfully(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "-print", "Indi-Go", "448", "LNK", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs LNK at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 2:00 PM"));
+        assertThat(result.getTextWrittenToStandardError(), equalTo(""));
+    }
+
+    /**
+     * Tests that providing the optional parameter '-print' and '-xmlFile' and filename with valid airline and flight information creates and writes airline and flight information successfully..
+     */
+    @Test
+    void testOptionalParametersPrintAndXmlFileFilenameWithFlightInfoCreatesAndWritesSuccessfully(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-print", "-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "448", "LNK", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs LNK at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 2:00 PM"));
+        assertThat(result.getTextWrittenToStandardError(), equalTo(""));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-pretty' and filename and '-xmlFile' and filename in order 1 with valid airline and flight information creates airline and flight successfully.
+     */
+    @Test
+    void testOptionalParametersPrettyAndXmlFilenameInOrder1AndFlightInfoCreatesAirlineSuccessfully(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "448", "LNK", "1/1/2023", "10:59", "AM", "ORD", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
+        assertThat(result.getTextWrittenToStandardError(), equalTo(""));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-pretty' and filename and '-xmlFile' and filename in order 2 with valid airline and flight information creates airline and flight successfully.
+     */
+    @Test
+    void testOptionalParametersPrettyAndXmlFilenameInOrder2AndFlightInfoCreatesAirlineSuccessfully(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "PHL", "1/1/2023", "10:59", "AM", "LNK", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
+        assertThat(result.getTextWrittenToStandardError(), equalTo(""));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-pretty' and filename and '-xmlFile' and filename in incorrect order 2 issues error.
+     */
+    @Test
+    void testOptionalParametersPrettyAndXmlFilenameInIncorrectOrderAndFlightInfoIssuesError(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "448", "-pretty", tempDir + "/prettyfile.txt", "PHL", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide xml filename and/or standard output symbol(-) and valid flight and airline information after the options '-xmlFile' and '-pretty'."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-xmlFile' and filename and '-textFile' with insufficient flight information issues error.
+     */
+    @Test
+    void testOptionalParametersPrintXmlandTextFilenameAndInsufficientFlightInfoIssuesError(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-print", "-xmlFile", tempDir + "/testXmlfile.xml", "-textFile", "Indi-Go", "448", "PHL", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide either '-xmlFile' or '-textFile' option along with filename and valid flight and airline information."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-xmlFile' and filename in order 1 with
+     * valid airline and flight information prints the flight data to the terminal and sorts the flights starting from same src correctly.
+     */
+    @Test
+    void testOptionalParametersPrintPrettyXmlFilenameInOrder1AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
+        MainMethodResult result1 = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "Frontier", "448", "PDX", "1/1/2023", "10:59", "AM", "LNK", "01/1/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "Frontier", "789", "ORD", "1/12/2023", "11:03", "AM", "PHL", "01/12/2023", "3:00", "PM");
+        MainMethodResult result = invokeMain("-print", "-pretty", tempDir + "/prettyfile.txt", "-xmlFile", tempDir + "/testXmlfile.xml", "Frontier", "558", "PDX", "1/1/2023", "10:59", "AM", "ORD", "01/1/2023", "4:00", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 558 departs PDX at 1/1/2023 10:59 AM arrives ORD at 01/1/2023 4:00 PM"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-xmlFile' and filename in order 2 with
+     * valid airline and flight information prints the flight data to the terminal and sorts the flights starting from same src and same time correctly.
+     */
+    @Test
+    void testOptionalParametersPrintPrettyXmlFilenameInOrder2AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
+        MainMethodResult result1 = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "448", "PIT", "1/1/2023", "10:59", "AM", "LNK", "01/1/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "789", "MSP", "1/12/2023", "11:03", "AM", "PHL", "01/12/2023", "3:00", "PM");
+        MainMethodResult result = invokeMain("-print", "-xmlFile", tempDir + "/testXmlfile.xml", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "223", "PIT", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "5:00", "PM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 223 departs PIT at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 5:00 PM"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-pretty' and standard output and '-xmlFile' and filename in order 3 with valid airline and flight information
+     * prints the flight data to the terminal.
+     */
+    @Test
+    void testOptionalParametersPrintPrettyXmlFilenameInOrder3AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
+        MainMethodResult result1 = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "448", "PIT", "1/1/2023", "10:59", "AM", "LNK", "01/1/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "789", "PDX", "1/12/2023", "11:03", "AM", "PHL", "01/12/2023", "3:00", "PM");
+        MainMethodResult result = invokeMain("-pretty", "-", "-print", "-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "112", "LNK", "1/1/2023", "10:59", "AM", "ORD", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 112 departs LNK at 1/1/2023 10:59 AM arrives ORD at 01/2/2023 2:00 AM"));
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Indi-Go airline"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-xmlFile' and filename in order 4 with valid airline and flight information
+     * prints the flight data to the terminal.
+     */
+    @Test
+    void testOptionalParametersPrintPrettyXmlFilenameInOrder4AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "-print", "-pretty", tempDir + "/prettyfile.txt", "Indi-Go", "448", "Pdx", "1/1/2023", "10:59", "AM", "ord", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs PDX at 1/1/2023 10:59 AM arrives ORD at 01/2/2023 2:00 AM"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-xmlFile' and filename in order 5 with valid airline and flight information
+     * prints the flight data to the terminal.
+     */
+    @Test
+    void testOptionalParametersPrintPrettyXmlFilenameInOrder5AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-pretty", tempDir + "/prettyfile.txt", "-xmlFile", tempDir + "/testXmlfile.xml", "-print", "Indi-Go", "448", "Lnk", "1/1/2023", "10:59", "AM", "mSp", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs LNK at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 2:00 AM"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-pretty' and filename and '-xmlFile' and filename in order 6 with valid airline and flight information
+     * prints the flight data to the terminal.
+     */
+    @Test
+    void testOptionalParametersPrintPrettyXmlFilenameInOrder6AndFlightInfoPrintsCorrectFlightData(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-xmlFile", tempDir + "/testXmlfile.xml", "-pretty", tempDir + "/prettyfile.txt", "-print", "Indi-Go", "448", "MSN", "1/1/2023", "10:59", "AM", "MSP", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 448 departs MSN at 1/1/2023 10:59 AM arrives MSP at 01/2/2023 2:00 AM"));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-xmlFile' and filename and '-textFile' with valid flight information issues error.
+     */
+    @Test
+    void testOptionalParametersPrintXmlandTextFilenameAndValidFlightInfoIssuesError(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-print", "-xmlFile", tempDir + "/testXmlfile.xml", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "PHL", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide either '-xmlFile' or '-textFile' option along with filename and valid flight and airline information."));
+    }
 }

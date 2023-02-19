@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 /**
  * The main class for the CS410J airline Project
  */
-public class Project3 {
+public class Project4 {
 
     /**
      * Usage information of this project.
@@ -32,9 +32,10 @@ public class Project3 {
             "arrival time" + "   " + "Arrival time in 12-hour time format" + "\n" + "\n" +
             "arrival time indication" + "   " + "Arrival time indication i.e. AM/am or PM/pm" + "\n" +
 
-            "options are (options may appear in any order):" + "\n" +
+            "options are (Options may appear in any order. Please do not provide '-xmlFile' and '-textFile' option together.) :" + "\n" +
+            "-xmlFile file" + "   " + "Xml file to read/write the airline info" + "\n" +
+            "-textFile file" + "   " + "Text file to read/write the airline info" + "\n" +
             "-pretty file" + "   " + "Pretty print the airline’s flights to a text file or standard out. Provide this option as '-pretty file' or '-pretty -'" + "\n" +
-            "-textFile file" + "   " + "File to read/write the airline info" + "\n" +
             "-print" + "   " + "Prints the description of the newly added flight" + "\n" +
             "-README" + "   " + "Prints a README for this project and exits";
     /**
@@ -48,6 +49,11 @@ public class Project3 {
     private static final String PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_TEXT_FILE = "Please provide text filename and valid flight and airline information along with '-textFile'. ";
 
     /**
+     * User-understandable error message for providing xml filename and valid airline and flight information along with '-xmlFile' option.
+     */
+    private static final String PLEASE_PROVIDE_XML_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_XML_FILE = "Please provide xml filename and valid flight and airline information along with '-xmlFile'. ";
+
+    /**
      * User-understandable error message for providing filename or standard output symbol and valid airline and flight information along with '-pretty' option.
      */
     private static final String PLEASE_PROVIDE_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY = "Please provide filename or standard output symbol(-) and valid flight and airline information along with '-pretty'. ";
@@ -56,6 +62,16 @@ public class Project3 {
      * User-understandable error message for providing text filename and valid airline and flight information along with '-print' and '-textFile' option.
      */
     private static final String PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_TEXT_FILE = "Please provide text filename and valid flight and airline information along with '-print' and '-textFile'. ";
+
+    /**
+     * User-understandable error message for providing xml filename and valid airline and flight information along with '-print' and '-xmlFile' option.
+     */
+    private static final String PLEASE_PROVIDE_XML_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_XML_FILE = "Please provide xml filename and valid flight and airline information along with '-print' and '-xmlFile'. ";
+
+    /**
+     * User-understandable error message for providing '-textFile' and '-xmlFile' option together.
+     */
+    private static final String PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION = "Please provide either '-xmlFile' or '-textFile' option along with filename and valid flight and airline information. ";
 
     /**
      * User-understandable error message for providing text filename or standard output symbol(-) and valid airline and flight information along with '-pretty' and '-print' option.
@@ -68,9 +84,19 @@ public class Project3 {
     private static final String PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_TEXT_FILE = "Please provide text filename or standard output symbol(-) and valid flight and airline information along with '-pretty' and '-textFile'. ";
 
     /**
+     * User-understandable error message for providing xml filename or standard output symbol(-) and valid airline and flight information along with '-pretty' and '-xmlFile' option.
+     */
+    private static final String PLEASE_PROVIDE_XML_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_XML_FILE = "Please provide xml filename or standard output symbol(-) and valid flight and airline information along with '-pretty' and '-xmlFile'. ";
+
+    /**
      * User-understandable error message for an unknown option provided.
      */
     private static final String AN_UNKNOWN_OPTION_WAS_PROVIDED = "An unknown option was provided. ";
+
+    /**
+     * User-understandable error message when invalid optional parameter combination.
+     */
+    private static final String INVALID_OPTIONAL_PARAMETER_COMBINATION = "Invalid optional parameter combination. ";
 
     /**
      * User-understandable error message when too few command line arguments are passed.
@@ -99,7 +125,7 @@ public class Project3 {
      * @param args
      *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
      *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
-     *         Options: '-pretty file/-', '-textFile file', '-print', '-README'
+     *         Options: '-xmlFile file', '-textFile file', '-pretty file/-', '-print', '-README'
      */
     public static void main(String[] args) {
         if (args != null) {
@@ -122,20 +148,20 @@ public class Project3 {
                         processAirlineDetailsWithOnlyPrintOption(args);
                         break;
                     case 12:
-                        // with (pretty and file/symbol) or (textfile and file)
-                        processAirlineDetailsWithOnlyPrettyOrTextFileOption(args);
+                        // with (pretty and file/symbol) or (textfile and file) or (xmlfile and file)
+                        processAirlineDetailsWithOnlyPrettyOrTextOrXmlFileOption(args);
                         break;
                     case 13:
-                        // with print and (pretty and file/symbol) or (textfile and file)
-                        processAirlineDetailsWithPrintAndPrettyOrTextFileOption(args);
+                        // with print and {(pretty and file/symbol) or (textfile and file) or (xmlfile and file)}
+                        processAirlineDetailsWithPrintAndPrettyOrTextOrXmlFileOption(args);
                         break;
                     case 14:
-                        // with (pretty and file/symbol) and (textfile and file)
-                        processAirlineDetailsWithPrettyAndTextFileOptions(args);
+                        // with (pretty and file/symbol) and {(textfile and file) or (xmlfile and file)}
+                        processAirlineDetailsWithPrettyAndTextOrXmlFileOptions(args);
                         break;
                     case 15:
-                        // with print and (pretty and file/symbol) and (textfile and file)
-                        processAirlineDetailsWithPrintPrettyAndTextFileOptions(args);
+                        // with print and (pretty and file/symbol) and {(textfile and file) or (xmlfile and file)}
+                        processAirlineDetailsWithPrintPrettyAndTextOrXmlFileOptions(args);
                         break;
                     default:
                         handleUnknownOption(args);
@@ -153,41 +179,74 @@ public class Project3 {
     }
 
     /**
-     * This method processes the airline details with '-print', '-pretty' and '-textFile' options
+     * This method processes the airline details with '-print', '-pretty' and ('-textFile' or '-xmlFile') options
      *
      * @param args
      *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
      *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
-     *         Options: '-pretty file/-', '-textFile file', '-print'
+     *         Options: '-pretty file/-', '-textFile file', '-xmlFile file', '-print'
      */
-    private static void processAirlineDetailsWithPrintPrettyAndTextFileOptions(String[] args) throws AirlineException {
-        if (args[0].equals("-print") && args[1].equals("-textFile") && args[2].contains(".txt") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
+    private static void processAirlineDetailsWithPrintPrettyAndTextOrXmlFileOptions(String[] args) throws AirlineException {
+        //process below six combinations of '-print', '-xmlFile' and '-pretty'
+        if (args[0].equals("-print") && args[1].equals("-xmlFile") && args[2].contains(".xml") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
-                    Optional.of("printFlightInformation"), Optional.of(args[2]), Optional.of(args[4]));
+                    Optional.of("printFlightInformation"), Optional.of(args[2]), Optional.empty(), Optional.of(args[4]));
+        } else if (args[0].equals("-print") && args[1].equals("-pretty") && (args[2].contains(".txt") || args[2].equals("-")) && args[3].equals("-xmlFile") && args[4].contains(".xml")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
+                    Optional.of("printFlightInformation"), Optional.of(args[4]), Optional.empty(), Optional.of(args[2]));
+        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml") && args[2].equals("-pretty") && (args[3].contains(".txt") || args[3].equals("-")) && args[4].equals("-print")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
+                    Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.empty(), Optional.of(args[3]));
+        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-xmlFile") && args[3].contains(".xml") && args[4].equals("-print")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
+                    Optional.of("printFlightInformation"), Optional.of(args[3]), Optional.empty(), Optional.of(args[1]));
+        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml") && args[2].equals("-print") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
+                    Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.empty(), Optional.of(args[4]));
+        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-print") && args[3].equals("-xmlFile") && args[4].contains(".xml")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
+                    Optional.of("printFlightInformation"), Optional.of(args[4]), Optional.empty(), Optional.of(args[1]));
+        }
+        //process below six combinations of '-print', '-textFile' and '-pretty'
+        else if (args[0].equals("-print") && args[1].equals("-textFile") && args[2].contains(".txt") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[2]), Optional.of(args[4]));
         } else if (args[0].equals("-print") && args[1].equals("-pretty") && (args[2].contains(".txt") || args[2].equals("-")) && args[3].equals("-textFile") && args[4].contains(".txt")) {
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
-                    Optional.of("printFlightInformation"), Optional.of(args[4]), Optional.of(args[2]));
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[4]), Optional.of(args[2]));
         } else if (args[0].equals("-textFile") && args[1].contains(".txt") && args[2].equals("-pretty") && (args[3].contains(".txt") || args[3].equals("-")) && args[4].equals("-print")) {
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
-                    Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.of(args[3]));
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[1]), Optional.of(args[3]));
         } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-textFile") && args[3].contains(".txt") && args[4].equals("-print")) {
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
-                    Optional.of("printFlightInformation"), Optional.of(args[3]), Optional.of(args[1]));
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[3]), Optional.of(args[1]));
         } else if (args[0].equals("-textFile") && args[1].contains(".txt") && args[2].equals("-print") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
-                    Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.of(args[4]));
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[1]), Optional.of(args[4]));
         } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-print") && args[3].equals("-textFile") && args[4].contains(".txt")) {
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
-                    Optional.of("printFlightInformation"), Optional.of(args[4]), Optional.of(args[1]));
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[4]), Optional.of(args[1]));
+        } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
+            throw new AirlineException("Please provide xml filename and pretty text filename and/or standard output symbol(-) and " +
+                    "valid flight and airline information after the options '-xmlFile' and '-pretty'. " + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException("Please provide text filename and/or standard output symbol(-) and " +
                     "valid flight and airline information after the options '-textFile' and '-pretty'. " + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
+            throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
+                    PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
         } else {
             handleUnknownOption(args);
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
@@ -195,31 +254,50 @@ public class Project3 {
     }
 
     /**
-     * This method processes the airline details with '-pretty' and '-textFile' options
+     * This method processes the airline details with '-pretty' and ('-textFile' or '-xmlFile') options
      *
      * @param args
      *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
      *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
-     *         Options: '-pretty file/-', '-textFile file'
+     *         Options: '-pretty file/-', '-textFile file', '-xmlFile file'
      */
-    private static void processAirlineDetailsWithPrettyAndTextFileOptions(String[] args) throws AirlineException {
-        if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
+    private static void processAirlineDetailsWithPrettyAndTextOrXmlFileOptions(String[] args) throws AirlineException {
+        if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                    PLEASE_PROVIDE_XML_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_XML_FILE + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_TEXT_FILE + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
+            throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
+                    PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS +
+                    PLEASE_PROVIDE_XML_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_XML_FILE + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_TEXT_FILE + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-pretty"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_PRINT + "\n" + USAGE);
+        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml") && args[2].equals("-pretty") && (args[3].contains(".txt") || args[3].equals("-"))) {
+            // Validate and add airline and flight information
+            validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
+                    Optional.empty(), Optional.of(args[1]), Optional.empty(), Optional.of(args[3]));
+        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-xmlFile") && args[3].contains(".xml")) {
+            // Validate and add airline and flight information
+            validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
+                    Optional.empty(), Optional.of(args[3]), Optional.empty(), Optional.of(args[1]));
         } else if (args[0].equals("-textFile") && args[1].contains(".txt") && args[2].equals("-pretty") && (args[3].contains(".txt") || args[3].equals("-"))) {
             // Validate and add airline and flight information
             validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
-                    Optional.empty(), Optional.of(args[1]), Optional.of(args[3]));
+                    Optional.empty(), Optional.empty(), Optional.of(args[1]), Optional.of(args[3]));
         } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-textFile") && args[3].contains(".txt")) {
             // Validate and add airline and flight information
             validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
-                    Optional.empty(), Optional.of(args[3]), Optional.of(args[1]));
+                    Optional.empty(), Optional.empty(), Optional.of(args[3]), Optional.of(args[1]));
+        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
+            throw new AirlineException("Please provide xml filename and/or standard output symbol(-) and valid flight and airline information after the options '-xmlFile' and '-pretty'. " + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException("Please provide text filename and/or standard output symbol(-) and valid flight and airline information after the options '-textFile' and '-pretty'. " + "\n" + USAGE);
         } else {
@@ -229,36 +307,53 @@ public class Project3 {
     }
 
     /**
-     * This method processes the airline details with '-print', '-pretty' or '-textFile' options
+     * This method processes the airline details with '-print' and ('-pretty' or '-textFile' or '-xmlFile') options
      *
      * @param args
      *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
      *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
-     *         Options: '-pretty file/-', '-textFile file', '-print'
+     *         Options: '-pretty file/-', '-textFile file', '-xmlFile file', '-print'
      */
-    private static void processAirlineDetailsWithPrintAndPrettyOrTextFileOption(String[] args) throws AirlineException {
-        if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
+    private static void processAirlineDetailsWithPrintAndPrettyOrTextOrXmlFileOption(String[] args) throws AirlineException {
+        if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                    PLEASE_PROVIDE_XML_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_XML_FILE + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_TEXT_FILE + "\n" + USAGE);
-        } else if (Arrays.stream(args).anyMatch("-print"::equals) && !Arrays.stream(args).anyMatch("-textFile"::equals) && !Arrays.stream(args).anyMatch("-pretty"::equals)) {
+        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
+            throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
+                    PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-print"::equals) && !Arrays.stream(args).anyMatch("-xmlFile"::equals)
+                && !Arrays.stream(args).anyMatch("-textFile"::equals) && !Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT + "\n" + USAGE);
+        } else if (args[0].equals("-print") && args[1].equals("-xmlFile") && args[2].contains(".xml")) {
+            // Validate and add airline and flight information
+            validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
+                    Optional.of("printFlightInformation"), Optional.of(args[2]), Optional.empty(), Optional.empty());
         } else if (args[0].equals("-print") && args[1].equals("-textFile") && args[2].contains(".txt")) {
             // Validate and add airline and flight information
             validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
-                    Optional.of("printFlightInformation"), Optional.of(args[2]), Optional.empty());
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[2]), Optional.empty());
         } else if (args[0].equals("-print") && args[1].equals("-pretty") && (args[2].contains(".txt") || args[2].equals("-"))) {
             // Validate and add airline and flight information
             validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
-                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[2]));
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.empty(), Optional.of(args[2]));
+        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml") && args[2].equals("-print")) {
+            // Validate and add airline and flight information
+            validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
+                    Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.empty(), Optional.empty());
         } else if (args[0].equals("-textFile") && args[1].contains(".txt") && args[2].equals("-print")) {
             // Validate and add airline and flight information
             validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
-                    Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.empty());
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[1]), Optional.empty());
         } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-print")) {
             // Validate and add airline and flight information
             validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
-                    Optional.of("printFlightInformation"), Optional.empty(), Optional.of(args[1]));
+                    Optional.of("printFlightInformation"), Optional.empty(), Optional.empty(), Optional.of(args[1]));
+        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException("Please provide xml filename and valid flight and airline information after the option '-xmlFile'. " + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException("Please provide text filename and valid flight and airline information after the option '-textFile'. " + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-pretty"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
@@ -270,15 +365,24 @@ public class Project3 {
     }
 
     /**
-     * This method processes the airline details with  '-pretty' or '-textFile' options
+     * This method processes the airline details with  '-pretty' or '-textFile' or '-xmlFile' option
      *
      * @param args
      *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
      *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
-     *         Options: '-pretty file/-', '-textFile file'
+     *         Options: '-pretty file/-', '-textFile file', '-xmlFile file'
      */
-    private static void processAirlineDetailsWithOnlyPrettyOrTextFileOption(String[] args) throws AirlineException {
-        if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
+    private static void processAirlineDetailsWithOnlyPrettyOrTextOrXmlFileOption(String[] args) throws AirlineException {
+        if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                    PLEASE_PROVIDE_XML_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_XML_FILE + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                    PLEASE_PROVIDE_XML_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_XML_FILE + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
+            throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
+                    PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_TEXT_FILE + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
@@ -290,18 +394,24 @@ public class Project3 {
         } else if (Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT + "\n" + USAGE);
+        } else if (!args[0].equals("-xmlFile") && Arrays.stream(args).anyMatch("-xmlFile"::equals)) {
+            throw new AirlineException("Please provide xml filename and valid flight and airline information after the option '-xmlFile'. " + "\n" + USAGE);
         } else if (!args[0].equals("-textFile") && Arrays.stream(args).anyMatch("-textFile"::equals)) {
             throw new AirlineException("Please provide text filename and valid flight and airline information after the option '-textFile'. " + "\n" + USAGE);
         } else if (!args[0].equals("-pretty") && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException("Please provide text filename or standard output symbol(-) and valid flight and airline information after the option '-pretty'. " + "\n" + USAGE);
+        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml")) {
+            // Validate and add airline and flight information
+            validateArguments(args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11],
+                    Optional.empty(), Optional.of(args[1]), Optional.empty(), Optional.empty());
         } else if (args[0].equals("-textFile") && args[1].contains(".txt")) {
             // Validate and add airline and flight information
             validateArguments(args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11],
-                    Optional.empty(), Optional.of(args[1]), Optional.empty());
+                    Optional.empty(), Optional.empty(), Optional.of(args[1]), Optional.empty());
         } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-"))) {
             // Validate and add airline and flight information
             validateArguments(args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11],
-                    Optional.empty(), Optional.empty(), Optional.of(args[1]));
+                    Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(args[1]));
         } else {
             handleUnknownOption(args);
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
@@ -317,7 +427,10 @@ public class Project3 {
      *         Options: '-print'
      */
     private static void processAirlineDetailsWithOnlyPrintOption(String[] args) throws AirlineException {
-        if (Arrays.stream(args).anyMatch("-textFile"::equals)) {
+        if (Arrays.stream(args).anyMatch("-xmlFile"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                    PLEASE_PROVIDE_XML_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_XML_FILE + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-textFile"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_TEXT_FILE + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-pretty"::equals)) {
@@ -328,7 +441,7 @@ public class Project3 {
         } else if (args[0].equals("-print")) {
             // Validate and add airline and flight information
             validateArguments(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9],
-                    args[10], Optional.of("printFlightInformation"), Optional.empty(), Optional.empty());
+                    args[10], Optional.of("printFlightInformation"), Optional.empty(), Optional.empty(), Optional.empty());
         } else {
             handleUnknownOption(args);
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
@@ -346,18 +459,21 @@ public class Project3 {
         if (Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT + "\n" + USAGE);
-        } else if (Arrays.stream(args).anyMatch("-textFile"::equals)) {
-            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
-                    PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_TEXT_FILE + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-textFile"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                    PLEASE_PROVIDE_TEXT_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_TEXT_FILE + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
+                    PLEASE_PROVIDE_XML_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_XML_FILE + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-"::startsWith)) {
             throw new AirlineException(AN_UNKNOWN_OPTION_WAS_PROVIDED + "\n" + USAGE);
         }
         // Validate and add airline and flight information
         validateArguments(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8],
-                args[9], Optional.empty(), Optional.empty(), Optional.empty());
+                args[9], Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     }
 
     /**
@@ -400,6 +516,8 @@ public class Project3 {
      *         A String that holds the time indication i.e. AM/PM of the flight's arrival.
      * @param printFlightInformation
      *         {@link Optional} parameter that holds the data depending on which Flight information is printed to the terminal.
+     * @param xmlFilename
+     *         {@link Optional} parameter that holds the filename of the xml file which does/does not contain airline and flight information.
      * @param textFilename
      *         {@link Optional} parameter that holds the filename of the text file which does/does not contain airline and flight information.
      * @param prettyFilename
@@ -408,7 +526,7 @@ public class Project3 {
     private static void validateArguments(String airlineName, String flightNumberString, String srcLocation, String departureDateString,
                                           String departureTimeString, String departureTimeIndicationString, String destLocation, String arrivalDateString,
                                           String arrivalTimeString, String arrivalTimeIndicationString, Optional<String> printFlightInformation,
-                                          Optional<String> textFilename, Optional<String> prettyFilename) throws AirlineException {
+                                          Optional<String> xmlFilename, Optional<String> textFilename, Optional<String> prettyFilename) throws AirlineException {
 
         // Validation of the provided flight number
         int flightNumber = 0;
@@ -586,7 +704,7 @@ public class Project3 {
      */
     private static void readContentFromREADME() throws AirlineException {
         try {
-            InputStream readme = Project3.class.getResourceAsStream("README.txt");
+            InputStream readme = Project4.class.getResourceAsStream("README.txt");
             if (readme != null) {
                 BufferedReader readmeReader = new BufferedReader(new InputStreamReader(readme));
                 String readLine = readmeReader.readLine();
