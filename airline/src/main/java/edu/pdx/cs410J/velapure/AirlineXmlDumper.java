@@ -16,19 +16,47 @@ import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * This is <code>AirlineXmlDumper</code> class for Project.
+ */
 public class AirlineXmlDumper extends AirlineXmlHelper implements AirlineDumper<Airline> {
 
+    /**
+     * PrintWriter for writing error messages.
+     */
     private static PrintWriter err;
+
+    /**
+     * PrintWriter for writing airline and flight data to the file.
+     */
     private static PrintWriter pw;
 
+    /**
+     * Creates a new <code>AirlineXmlDumper</code>
+     *
+     * @param fileName
+     *         filename for writing airline and flight data.
+     */
     public AirlineXmlDumper(String fileName) throws IOException {
         this(new File(fileName));
     }
 
+    /**
+     * Creates a new <code>AirlineXmlDumper</code>
+     *
+     * @param file
+     *         file for writing airline and flight data.
+     */
     public AirlineXmlDumper(File file) throws IOException {
         this(new PrintWriter(new FileWriter(file), true));
     }
 
+    /**
+     * Creates a new <code>AirlineXmlDumper</code>
+     *
+     * @param pw
+     *         PrintWriter obj for writing airline and flight data to the file.
+     */
     public AirlineXmlDumper(PrintWriter pw) {
         this.pw = pw;
     }
@@ -37,6 +65,12 @@ public class AirlineXmlDumper extends AirlineXmlHelper implements AirlineDumper<
         err = new PrintWriter(System.err, true);
     }
 
+    /**
+     * This method writes the airline and flight data to a file.
+     *
+     * @param airline
+     *         An airline object having flight details.
+     */
     @Override
     public void dump(Airline airline) {
         Document doc = null;
@@ -86,7 +120,7 @@ public class AirlineXmlDumper extends AirlineXmlHelper implements AirlineDumper<
                 dest.appendChild(doc.createTextNode(flight.getDestination()));
                 flightElement.appendChild(dest);
 
-                Element arrive = createDateElement(doc, flight.getDeparture(), "arrive");
+                Element arrive = createDateElement(doc, flight.getArrival(), "arrive");
                 flightElement.appendChild(arrive);
 
                 airlineElement.appendChild(flightElement);
@@ -115,6 +149,16 @@ public class AirlineXmlDumper extends AirlineXmlHelper implements AirlineDumper<
         this.pw.flush();
     }
 
+    /**
+     * This method creates date element using flight departure/arrival date.
+     *
+     * @param doc
+     *         Document obj for holding airline and flight details.
+     * @param flightDate
+     *         flight departure/arrival date.
+     * @param dateType
+     *         String holding 'depart' or 'arrive'.
+     */
     private static Element createDateElement(Document doc, Date flightDate, String dateType) {
         Element flightDateElement = doc.createElement(dateType);
 

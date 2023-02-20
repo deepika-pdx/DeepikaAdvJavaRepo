@@ -468,7 +468,7 @@ class Project4IT extends InvokeMainTestCase {
     @Test
     void testOptionalParameterPrintAndEarlyArrivalDateIssuesError() {
         MainMethodResult result = invokeMain("-print", "IndiGo", "789", "Phl", "1/12/2023", "2:59", "PM", "Ord", "01/12/2023", "1:00", "PM");
-        assertThat(result.getTextWrittenToStandardError(), containsString("The provided arrival date and time should not be before the departure date and time!"));
+        assertThat(result.getTextWrittenToStandardError(), containsString("The provided arrival date and time should not be before or same as the departure date and time!"));
     }
 
     /**

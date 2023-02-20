@@ -1,7 +1,7 @@
 package edu.pdx.cs410J.velapure;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -9,6 +9,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -20,16 +22,23 @@ public class AirlineXmlDumperTest {
 
     /**
      * This unit test checks if the airline details are correctly written to a xml file.
+     *
+     * @param tempDir
+     *         A temporary directory to store the files created during testing.
      */
     @Test
-    @Disabled
-    void airlineDetailsAreCorrectlyDumpedInXmlFormat() throws IOException, ParserConfigurationException, SAXException {
+    void airlineDetailsAreCorrectlyDumpedInXmlFormat(@TempDir File tempDir) throws IOException, ParserConfigurationException, SAXException, ParseException {
         String airlineName = "Test Airline";
         Airline airline = new Airline(airlineName);
-        Flight flight = new Flight(789, "PDX", "01/25/2023 15:30", new Date(), "PHL", "01/26/2023 4:15", new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+        Date departureDate = sdf.parse("01/25/2023 15:30");
+        Date arrivalDate = sdf.parse("01/26/2023 4:15");
+
+
+        Flight flight = new Flight(789, "PDX", "01/25/2023 15:30", departureDate, "PHL", "01/26/2023 4:15", arrivalDate);
         airline.addFlight(flight);
 
-        File xmlFile = new File("src/test/resources/edu/pdx/cs410J/velapure/airline.xml");
+        File xmlFile = new File(tempDir + "airline.xml");
         AirlineXmlDumper dumper = new AirlineXmlDumper(xmlFile);
         dumper.dump(airline);
 
@@ -45,7 +54,7 @@ public class AirlineXmlDumperTest {
         builder.setEntityResolver(helper);
 
         assertDoesNotThrow(() -> {
-            builder.parse(this.getClass().getResourceAsStream("airline.xml"));
+            builder.parse(xmlFile);
         });
     }
 }

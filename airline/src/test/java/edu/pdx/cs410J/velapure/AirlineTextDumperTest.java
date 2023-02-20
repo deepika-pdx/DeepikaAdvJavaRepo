@@ -42,7 +42,7 @@ public class AirlineTextDumperTest {
         String airlineName = "Test Airline";
         Airline airline = new Airline(airlineName);
 
-        File textFile = new File("airline.txt");
+        File textFile = new File(tempDir + "airline.txt");
         AirlineTextDumper dumper = new AirlineTextDumper(new FileWriter(textFile));
         dumper.dump(airline);
 

@@ -572,8 +572,8 @@ public class Project4 {
         arrivalDate = AirlineDateTimeValidator.validateDateAndTime(arrivalDateString, arrivalTimeString, arrivalTimeIndication, "Arrival");
         String arrivalDateAndTimeString = arrivalDateString + " " + arrivalTimeString + " " + arrivalTimeIndication;
 
-        if (arrivalDate.before(departureDate)) {
-            throw new AirlineException("The provided arrival date and time should not be before the departure date and time!");
+        if (arrivalDate.before(departureDate) || arrivalDate.equals(departureDate)) {
+            throw new AirlineException("The provided arrival date and time should not be before or same as the departure date and time!");
         }
 
         // If '-textFile' option is present
