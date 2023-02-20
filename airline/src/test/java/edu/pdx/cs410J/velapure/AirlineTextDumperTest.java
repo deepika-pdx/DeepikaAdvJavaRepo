@@ -1,7 +1,6 @@
 package edu.pdx.cs410J.velapure;
 
 import edu.pdx.cs410J.ParserException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -12,10 +11,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
- * Unit tests for the {@link TextDumper} class.
+ * Unit tests for the {@link AirlineTextDumper} class.
  */
-@Disabled
-public class TextDumperTest {
+public class AirlineTextDumperTest {
 
     /**
      * This unit test checks if the airline name is correctly written to a file.
@@ -26,7 +24,7 @@ public class TextDumperTest {
         Airline airline = new Airline(airlineName);
 
         StringWriter sw = new StringWriter();
-        TextDumper dumper = new TextDumper(sw);
+        AirlineTextDumper dumper = new AirlineTextDumper(sw);
         dumper.dump(airline);
 
         String text = sw.toString();
@@ -45,10 +43,10 @@ public class TextDumperTest {
         Airline airline = new Airline(airlineName);
 
         File textFile = new File("airline.txt");
-        TextDumper dumper = new TextDumper(new FileWriter(textFile));
+        AirlineTextDumper dumper = new AirlineTextDumper(new FileWriter(textFile));
         dumper.dump(airline);
 
-        TextParser parser = new TextParser(new FileReader(textFile));
+        AirlineTextParser parser = new AirlineTextParser(new FileReader(textFile));
         Airline read = parser.parse();
         assertThat(read.getName(), equalTo(airlineName));
     }

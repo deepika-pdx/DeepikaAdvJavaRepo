@@ -19,7 +19,7 @@ public class FlightTest {
      */
     @Test
     void test789IsReturnedAsFlightNumber() {
-        Flight flight = createFlight(789, "DEL", "01/22/2023 12:30", new Date(), "CHN", "01/22/2023 14:30", new Date());
+        Flight flight = createFlight(789, "PDX", "01/22/2023 12:30", new Date(), "PHL", "01/22/2023 14:30", new Date());
         assertThat(flight.getNumber(), equalTo(789));
     }
 
@@ -29,8 +29,8 @@ public class FlightTest {
      */
     @Test
     void testKOLIsReturnedAsSource() {
-        Flight flight = createFlight(789, "DEL", "01/22/2023 12:30", new Date(), "CHN", "01/22/2023 14:30", new Date());
-        assertThat(flight.getSource(), equalTo("DEL"));
+        Flight flight = createFlight(789, "MSP", "01/22/2023 12:30", new Date(), "PDX", "01/22/2023 14:30", new Date());
+        assertThat(flight.getSource(), equalTo("MSP"));
     }
 
     /**
@@ -39,7 +39,7 @@ public class FlightTest {
      */
     @Test
     void testDepartureTimeIsReturnedCorrectly() {
-        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", new Date(), "CHN", "01/22/2023 14:30", new Date());
+        Flight flight = createFlight(789, "PDX", "01/25/2023 15:30", new Date(), "MSP", "01/22/2023 14:30", new Date());
         assertThat(flight.getDepartureString(), equalTo("01/25/2023 15:30"));
     }
 
@@ -49,8 +49,8 @@ public class FlightTest {
      */
     @Test
     void testLONIsReturnedAsDestination() {
-        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", new Date(), "CHN", "01/22/2023 14:30", new Date());
-        assertThat(flight.getDestination(), equalTo("CHN"));
+        Flight flight = createFlight(789, "PHL", "01/25/2023 15:30", new Date(), "PDX", "01/22/2023 14:30", new Date());
+        assertThat(flight.getDestination(), equalTo("PDX"));
     }
 
     /**
@@ -59,7 +59,7 @@ public class FlightTest {
      */
     @Test
     void testArrivalTimeIsReturnedCorrectly() {
-        Flight flight = createFlight(789, "DEL", "01/25/2023 15:30", new Date(), "CHN", "01/26/2023 4:15", new Date());
+        Flight flight = createFlight(789, "PDX", "01/25/2023 15:30", new Date(), "MSP", "01/26/2023 4:15", new Date());
         assertThat(flight.getArrivalString(), equalTo("01/26/2023 4:15"));
     }
 
@@ -83,11 +83,4 @@ public class FlightTest {
         Flight flight = new Flight(flightNumber, source, departureString, departureDate, destination, arrivalString, arrivalDate);
         return flight;
     }
-
-//    @Test
-//    void forProject1ItIsOkayIfGetDepartureTimeReturnsNull() {
-//        Flight flight = new Flight(789, "KOL", "01/25/2023 15:30", "LON", "01/26/2023 4:15");
-//        assertThat(flight.getDeparture(), is(nullValue()));
-//    }
-
 }

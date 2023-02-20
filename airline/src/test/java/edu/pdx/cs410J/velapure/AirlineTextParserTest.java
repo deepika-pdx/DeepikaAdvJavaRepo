@@ -12,9 +12,9 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Unit tests for the {@link TextParser} class.
+ * Unit tests for the {@link AirlineTextParser} class.
  */
-public class TextParserTest {
+public class AirlineTextParserTest {
 
     /**
      * This unit test checks if a valid text file having airline info can be parsed correctly.
@@ -24,7 +24,7 @@ public class TextParserTest {
         InputStream resource = getClass().getResourceAsStream("valid-airline.txt");
         assertThat(resource, notNullValue());
 
-        TextParser parser = new TextParser(new InputStreamReader(resource));
+        AirlineTextParser parser = new AirlineTextParser(new InputStreamReader(resource));
         Airline airline = parser.parse();
         assertThat(airline.getName(), equalTo("Test Airline"));
     }
@@ -37,7 +37,7 @@ public class TextParserTest {
         InputStream resource = getClass().getResourceAsStream("empty-airline.txt");
         assertThat(resource, notNullValue());
 
-        TextParser parser = new TextParser(new InputStreamReader(resource));
+        AirlineTextParser parser = new AirlineTextParser(new InputStreamReader(resource));
         assertThrows(ParserException.class, parser::parse);
     }
 
@@ -50,7 +50,7 @@ public class TextParserTest {
         InputStream resource = getClass().getResourceAsStream("malformed_text_flight.txt");
         assertThat(resource, notNullValue());
 
-        TextParser parser = new TextParser(new InputStreamReader(resource));
+        AirlineTextParser parser = new AirlineTextParser(new InputStreamReader(resource));
         assertThrows(ParserException.class, parser::parse);
     }
 
@@ -63,7 +63,7 @@ public class TextParserTest {
         InputStream resource = getClass().getResourceAsStream("malformed_text_flight2.txt");
         assertThat(resource, notNullValue());
 
-        TextParser parser = new TextParser(new InputStreamReader(resource));
+        AirlineTextParser parser = new AirlineTextParser(new InputStreamReader(resource));
         assertThrows(ParserException.class, parser::parse);
     }
 
@@ -76,7 +76,7 @@ public class TextParserTest {
         InputStream resource = getClass().getResourceAsStream("malformed_text_flight3.txt");
         assertThat(resource, notNullValue());
 
-        TextParser parser = new TextParser(new InputStreamReader(resource));
+        AirlineTextParser parser = new AirlineTextParser(new InputStreamReader(resource));
         assertThrows(ParserException.class, parser::parse);
     }
 

@@ -590,13 +590,13 @@ public class Project4 {
                     createdAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
                             arrivalDateAndTimeString, arrivalDate);
                     try {
-                        TextDumper textDumper = new TextDumper(new FileWriter(textFilename.get()));
-                        textDumper.dump(createdAirline);
+                        AirlineTextDumper airlineTextDumper = new AirlineTextDumper(new FileWriter(textFilename.get()));
+                        airlineTextDumper.dump(createdAirline);
                     } catch (IOException e) {
                         throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
                     }
                 } else {
-                    TextParser parser = new TextParser(new FileReader(filename));
+                    AirlineTextParser parser = new AirlineTextParser(new FileReader(filename));
                     readAirline = parser.parse();
                     if (!readAirline.getName().equals(airlineName)) {
                         throw new AirlineException("The airline name provided in the input does not match with airline name in the input text file.");
@@ -606,8 +606,8 @@ public class Project4 {
                     readAirline.addFlight(newFlight);
 
                     try {
-                        TextDumper textDumper = new TextDumper(new FileWriter(textFilename.get()));
-                        textDumper.dump(readAirline);
+                        AirlineTextDumper airlineTextDumper = new AirlineTextDumper(new FileWriter(textFilename.get()));
+                        airlineTextDumper.dump(readAirline);
                     } catch (IOException e) {
                         throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
                     }

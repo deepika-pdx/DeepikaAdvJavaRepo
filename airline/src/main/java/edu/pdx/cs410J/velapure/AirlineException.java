@@ -1,6 +1,6 @@
 package edu.pdx.cs410J.velapure;
 
-public class AirlineException extends Exception {
+public class AirlineException extends RuntimeException {
 
     private String message;
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * This is <code>TextDumper</code> class for Project.
  */
-public class TextDumper implements AirlineDumper<Airline> {
+public class AirlineTextDumper implements AirlineDumper<Airline> {
     /**
      * Writer for writing airline and flight data to the file.
      */
@@ -21,7 +21,7 @@ public class TextDumper implements AirlineDumper<Airline> {
      * @param writer
      *         writer for writing airline and flight data to the file.
      */
-    public TextDumper(Writer writer) {
+    public AirlineTextDumper(Writer writer) {
         this.writer = writer;
     }
 

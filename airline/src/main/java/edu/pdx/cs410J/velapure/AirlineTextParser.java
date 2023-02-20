@@ -11,21 +11,21 @@ import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
- * This is <code>TextParser</code> class for Project.
+ * This is <code>AirlineTextParser</code> class for Project.
  */
-public class TextParser implements AirlineParser<Airline> {
+public class AirlineTextParser implements AirlineParser<Airline> {
     /**
      * Reader for reading airline and flight data from a file.
      */
     private final Reader reader;
 
     /**
-     * Creates a new <code>TextParser</code>
+     * Creates a new <code>AirlineTextParser</code>
      *
      * @param reader
      *         reader for reading airline and flight data from a file.
      */
-    public TextParser(Reader reader) {
+    public AirlineTextParser(Reader reader) {
         this.reader = reader;
     }
 
