@@ -80,13 +80,13 @@ public class AirlineXmlParser extends AirlineXmlHelper implements AirlineParser<
                 builder.setEntityResolver(this);
                 doc = builder.parse(new InputSource(this.reader));
             } catch (ParserConfigurationException e) {
-                errorMessage = "Error while parsing the XML file" + " " + e.getMessage();
+                errorMessage = "Error while parsing the XML file." + " " + e.getMessage();
                 throw new AirlineException(errorMessage);
             } catch (IOException e) {
-                errorMessage = "Error while parsing the XML file" + " " + e.getMessage();
+                errorMessage = "Error while parsing the XML file." + " " + e.getMessage();
                 throw new AirlineException(errorMessage);
             } catch (SAXException e) {
-                errorMessage = "Error while parsing the XML file" + " " + e.getMessage();
+                errorMessage = "Error while parsing the XML file as it does not conform to the airline DTD." + " " + e.getMessage();
                 throw new AirlineException(errorMessage);
             }
 
@@ -280,7 +280,7 @@ public class AirlineXmlParser extends AirlineXmlHelper implements AirlineParser<
         if (!(Pattern.matches("[a-zA-Z]+", srcLocation)) || srcLocation.length() != 3) {
             throw new AirlineException("Invalid source location. Unable to parse the provided xml file.");
         } else if (AirportNames.getName(srcLocation.toUpperCase()) == null) {
-            throw new AirlineException("The three-letter source location code does not correspond to a known airport!");
+            throw new AirlineException("The three-letter source airport code in the input xml file does not correspond to a known airport!");
         } else {
             srcLocation = srcLocation.toUpperCase();
         }
@@ -290,13 +290,13 @@ public class AirlineXmlParser extends AirlineXmlHelper implements AirlineParser<
         if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
             throw new AirlineException("Invalid destination location. Unable to parse the provided xml file.");
         } else if (AirportNames.getName(destLocation.toUpperCase()) == null) {
-            throw new AirlineException("The three-letter destination location code does not correspond to a known airport!");
+            throw new AirlineException("The three-letter destination airport code in the input xml file does not correspond to a known airport!");
         } else {
             destLocation = destLocation.toUpperCase();
         }
 
         if (srcLocation.equals(destLocation)) {
-            throw new AirlineException("The source and the destination location code should not be same.");
+            throw new AirlineException("The source and the destination airport codes in the input xml file should not be same.");
         }
     }
 
@@ -310,7 +310,7 @@ public class AirlineXmlParser extends AirlineXmlHelper implements AirlineParser<
      */
     private void validateDepartureAndArrivalDates(Date departureDate, Date arrivalDate) throws AirlineException {
         if (arrivalDate.before(departureDate) || arrivalDate.equals(departureDate)) {
-            throw new AirlineException("Invalid arrival and departure date present in the xml file. The arrival date and time should not be before or same as the departure date and time!");
+            throw new AirlineException("Invalid arrival and departure date present in the xml file. The arrival date and time should not be before or same as the departure date and time.");
         }
     }
 }

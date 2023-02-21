@@ -468,7 +468,7 @@ class Project4IT extends InvokeMainTestCase {
     @Test
     void testOptionalParameterPrintAndEarlyArrivalDateIssuesError() {
         MainMethodResult result = invokeMain("-print", "IndiGo", "789", "Phl", "1/12/2023", "2:59", "PM", "Ord", "01/12/2023", "1:00", "PM");
-        assertThat(result.getTextWrittenToStandardError(), containsString("The provided arrival date and time should not be before or same as the departure date and time!"));
+        assertThat(result.getTextWrittenToStandardError(), containsString("The provided arrival date and time should not be before or same as the departure date and time."));
     }
 
     /**
@@ -741,5 +741,42 @@ class Project4IT extends InvokeMainTestCase {
     void testOptionalParametersPrintXmlandTextFilenameAndValidFlightInfoIssuesError(@TempDir File tempDir) {
         MainMethodResult result = invokeMain("-print", "-xmlFile", tempDir + "/testXmlfile.xml", "-textFile", tempDir + "/testfile.txt", "Indi-Go", "448", "PHL", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
         assertThat(result.getTextWrittenToStandardError(), containsString("Please provide either '-xmlFile' or '-textFile' option along with filename and valid flight and airline information."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-xmlFile' and with filename having extension other than '.xml' issues error.
+     */
+    @Test
+    void testOptionalParametersXmlandFilenameNotDotXmlIssuesError(@TempDir File tempDir) {
+        MainMethodResult result = invokeMain("-xmlFile", tempDir + "/testXmlfile.txt", "Indi-Go", "448", "PHL", "1/1/2023", "10:59", "AM", "PDX", "01/2/2023", "2:00", "AM");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Please provide filename with only '.xml' extension after the '-xmlFile' option."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print', '-xmlFile' and filename with different airline names issues error.
+     */
+    @Test
+    void testOptionalParametersPrintXmlFileFilenameAndDifferentAirlineNameIssuesError(@TempDir File tempDir) {
+        MainMethodResult result1 = invokeMain("-print", "-xmlFile", tempDir + "/testXmlfile.xml", "Indi-Go", "448", "PDX", "1/1/2023", "10:50", "AM", "LNK", "01/2/2023", "2:00", "PM");
+        MainMethodResult result2 = invokeMain("-print", "-xmlFile", tempDir + "/testXmlfile.xml", "Frontier", "789", "ORD", "1/12/2023", "11:03", "AM", "PHL", "01/22/2023", "3:00", "PM");
+        assertThat(result2.getTextWrittenToStandardError(), containsString("The airline name provided in the input does not match with airline name in the input xml file."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print' and '-xmlFile' with insufficient airline and flight details issues error.
+     */
+    @Test
+    void testOptionalParametersPrintAndXmlFileWithInSufficientDetailsIssuesError() {
+        MainMethodResult result = invokeMain("-print", "-xmlFile", "./testXmlFile.xml", "IndiGo", "789", "ORD", "1/12/2023", "11:59", "PM", "PDX", "01/22/2023");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Too few command line arguments. Please provide xml filename and valid flight and airline information along with '-xmlFile'."));
+    }
+
+    /**
+     * Tests that providing the optional parameters '-print' and '-xmlFile' with extra airline and flight details issues error.
+     */
+    @Test
+    void testOptionalParametersPrintAndXmlFileWithExtraDetailsIssuesError() {
+        MainMethodResult result = invokeMain("-xmlFile", "./testXmlFile.xml", "IndiGo", "789", "ORD", "1/12/2023", "11:59", "PM", "PDX", "01/22/2023", "3:00", "PM", "extra");
+        assertThat(result.getTextWrittenToStandardError(), containsString("Too many command line arguments."));
     }
 }

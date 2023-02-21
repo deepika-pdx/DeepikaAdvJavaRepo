@@ -147,6 +147,7 @@ public class AirlineXmlDumper extends AirlineXmlHelper implements AirlineDumper<
             throw new AirlineException(errorMessage);
         }
         this.pw.flush();
+        this.pw.close();
     }
 
     /**

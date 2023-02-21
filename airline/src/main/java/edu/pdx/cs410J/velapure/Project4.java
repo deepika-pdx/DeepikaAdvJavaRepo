@@ -135,6 +135,10 @@ public class Project4 {
                     readContentFromREADME();
                     return;
                 }
+                if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
+                    throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
+                            PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
+                }
                 int argLength = args.length;
                 switch (argLength) {
                     case 0:
@@ -168,7 +172,7 @@ public class Project4 {
                         if (argLength < 10) {
                             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
                         }
-                        if (argLength > 16) {
+                        if (argLength > 15) {
                             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
                         }
                 }
@@ -188,27 +192,45 @@ public class Project4 {
      */
     private static void processAirlineDetailsWithPrintPrettyAndTextOrXmlFileOptions(String[] args) throws AirlineException {
         //process below six combinations of '-print', '-xmlFile' and '-pretty'
-        if (args[0].equals("-print") && args[1].equals("-xmlFile") && args[2].contains(".xml") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
+        if (args[0].equals("-print") && args[1].equals("-xmlFile") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
+            if (!args[2].contains(".xml") && args[2].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
                     Optional.of("printFlightInformation"), Optional.of(args[2]), Optional.empty(), Optional.of(args[4]));
-        } else if (args[0].equals("-print") && args[1].equals("-pretty") && (args[2].contains(".txt") || args[2].equals("-")) && args[3].equals("-xmlFile") && args[4].contains(".xml")) {
+        } else if (args[0].equals("-print") && args[1].equals("-pretty") && (args[2].contains(".txt") || args[2].equals("-")) && args[3].equals("-xmlFile")) {
+            if (!args[4].contains(".xml") && args[4].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
                     Optional.of("printFlightInformation"), Optional.of(args[4]), Optional.empty(), Optional.of(args[2]));
-        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml") && args[2].equals("-pretty") && (args[3].contains(".txt") || args[3].equals("-")) && args[4].equals("-print")) {
+        } else if (args[0].equals("-xmlFile") && args[2].equals("-pretty") && (args[3].contains(".txt") || args[3].equals("-")) && args[4].equals("-print")) {
+            if (!args[1].contains(".xml") && args[1].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
                     Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.empty(), Optional.of(args[3]));
-        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-xmlFile") && args[3].contains(".xml") && args[4].equals("-print")) {
+        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-xmlFile") && args[4].equals("-print")) {
+            if (!args[3].contains(".xml") && args[3].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
                     Optional.of("printFlightInformation"), Optional.of(args[3]), Optional.empty(), Optional.of(args[1]));
-        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml") && args[2].equals("-print") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
+        } else if (args[0].equals("-xmlFile") && args[2].equals("-print") && args[3].equals("-pretty") && (args[4].contains(".txt") || args[4].equals("-"))) {
+            if (!args[1].contains(".xml") && args[1].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
                     Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.empty(), Optional.of(args[4]));
-        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-print") && args[3].equals("-xmlFile") && args[4].contains(".xml")) {
+        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-print") && args[3].equals("-xmlFile")) {
+            if (!args[4].contains(".xml") && args[4].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14],
                     Optional.of("printFlightInformation"), Optional.of(args[4]), Optional.empty(), Optional.of(args[1]));
@@ -244,9 +266,6 @@ public class Project4 {
         } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException("Please provide text filename and/or standard output symbol(-) and " +
                     "valid flight and airline information after the options '-textFile' and '-pretty'. " + "\n" + USAGE);
-        } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
-            throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
-                    PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
         } else {
             handleUnknownOption(args);
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
@@ -268,9 +287,6 @@ public class Project4 {
         } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_TEXT_FILE + "\n" + USAGE);
-        } else if (Arrays.stream(args).anyMatch("-print"::equals) && Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
-            throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
-                    PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_XML_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_XML_FILE + "\n" + USAGE);
@@ -280,11 +296,17 @@ public class Project4 {
         } else if (Arrays.stream(args).anyMatch("-pretty"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_PRINT + "\n" + USAGE);
-        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml") && args[2].equals("-pretty") && (args[3].contains(".txt") || args[3].equals("-"))) {
+        } else if (args[0].equals("-xmlFile") && args[2].equals("-pretty") && (args[3].contains(".txt") || args[3].equals("-"))) {
+            if (!args[1].contains(".xml") && args[1].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
                     Optional.empty(), Optional.of(args[1]), Optional.empty(), Optional.of(args[3]));
-        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-xmlFile") && args[3].contains(".xml")) {
+        } else if (args[0].equals("-pretty") && (args[1].contains(".txt") || args[1].equals("-")) && args[2].equals("-xmlFile")) {
+            if (!args[3].contains(".xml") && args[3].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
                     Optional.empty(), Optional.of(args[3]), Optional.empty(), Optional.of(args[1]));
@@ -321,14 +343,14 @@ public class Project4 {
         } else if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_TEXT_FILE + "\n" + USAGE);
-        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
-            throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
-                    PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-print"::equals) && !Arrays.stream(args).anyMatch("-xmlFile"::equals)
                 && !Arrays.stream(args).anyMatch("-textFile"::equals) && !Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT + "\n" + USAGE);
-        } else if (args[0].equals("-print") && args[1].equals("-xmlFile") && args[2].contains(".xml")) {
+        } else if (args[0].equals("-print") && args[1].equals("-xmlFile")) {
+            if (!args[2].contains(".xml") && args[2].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
                     Optional.of("printFlightInformation"), Optional.of(args[2]), Optional.empty(), Optional.empty());
@@ -340,7 +362,10 @@ public class Project4 {
             // Validate and add airline and flight information
             validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
                     Optional.of("printFlightInformation"), Optional.empty(), Optional.empty(), Optional.of(args[2]));
-        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml") && args[2].equals("-print")) {
+        } else if (args[0].equals("-xmlFile") && args[2].equals("-print")) {
+            if (!args[1].contains(".xml") && args[1].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
                     Optional.of("printFlightInformation"), Optional.of(args[1]), Optional.empty(), Optional.empty());
@@ -379,9 +404,6 @@ public class Project4 {
         } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_XML_FILENAME_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRINT_AND_XML_FILE + "\n" + USAGE);
-        } else if (Arrays.stream(args).anyMatch("-xmlFile"::equals) && Arrays.stream(args).anyMatch("-textFile"::equals)) {
-            throw new AirlineException(INVALID_OPTIONAL_PARAMETER_COMBINATION +
-                    PLEASE_PROVIDE_EITHER_XML_FILE_OR_TEXT_FILE_OPTION_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-textFile"::equals) && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS +
                     PLEASE_PROVIDE_TEXT_FILENAME_OR_STD_OP_SYMBOL_AND_VALID_FLIGHT_AND_AIRLINE_INFORMATION_ALONG_WITH_PRETTY_AND_TEXT_FILE + "\n" + USAGE);
@@ -400,7 +422,10 @@ public class Project4 {
             throw new AirlineException("Please provide text filename and valid flight and airline information after the option '-textFile'. " + "\n" + USAGE);
         } else if (!args[0].equals("-pretty") && Arrays.stream(args).anyMatch("-pretty"::equals)) {
             throw new AirlineException("Please provide text filename or standard output symbol(-) and valid flight and airline information after the option '-pretty'. " + "\n" + USAGE);
-        } else if (args[0].equals("-xmlFile") && args[1].contains(".xml")) {
+        } else if (args[0].equals("-xmlFile")) {
+            if (!args[1].contains(".xml") && args[1].contains(".")) {
+                throw new AirlineException("Please provide filename with only '.xml' extension after the '-xmlFile' option. " + "\n" + USAGE);
+            }
             // Validate and add airline and flight information
             validateArguments(args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11],
                     Optional.empty(), Optional.of(args[1]), Optional.empty(), Optional.empty());
@@ -484,7 +509,7 @@ public class Project4 {
      */
     private static void handleUnknownOption(String[] args) throws AirlineException {
         for (String arg : args) {
-            if (arg.startsWith("-") && !arg.equals("-print") && !arg.equals("-textFile") && !arg.equals("-pretty")) {
+            if (arg.startsWith("-") && !arg.equals("-print") && !arg.equals("-textFile") && !arg.equals("-pretty") && !arg.equals("-xmlFile")) {
                 throw new AirlineException(AN_UNKNOWN_OPTION_WAS_PROVIDED + "\n" + USAGE);
             }
         }
@@ -573,43 +598,44 @@ public class Project4 {
         String arrivalDateAndTimeString = arrivalDateString + " " + arrivalTimeString + " " + arrivalTimeIndication;
 
         if (arrivalDate.before(departureDate) || arrivalDate.equals(departureDate)) {
-            throw new AirlineException("The provided arrival date and time should not be before or same as the departure date and time!");
+            throw new AirlineException("The provided arrival date and time should not be before or same as the departure date and time.");
         }
 
-        // If '-textFile' option is present
         Airline readAirline = null;
         Airline createdAirline = null;
         Flight newFlight = null;
-        if (textFilename.isPresent()) {
-            String filename = textFilename.get();
-            File textFile = new File(filename);
-            boolean fileExists = textFile.exists();
+
+        // If '-xmlFile' option is present
+        if (xmlFilename.isPresent()) {
+            String filename = xmlFilename.get();
+            File xmlFile = new File(filename);
+            boolean fileExists = xmlFile.exists();
             try {
                 if (!fileExists) {
-                    textFile.createNewFile();
+                    xmlFile.createNewFile();
                     createdAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
                             arrivalDateAndTimeString, arrivalDate);
                     try {
-                        AirlineTextDumper airlineTextDumper = new AirlineTextDumper(new FileWriter(textFilename.get()));
-                        airlineTextDumper.dump(createdAirline);
+                        AirlineXmlDumper airlineXmlDumper = new AirlineXmlDumper(filename);
+                        airlineXmlDumper.dump(createdAirline);
                     } catch (IOException e) {
-                        throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
+                        throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + filename);
                     }
                 } else {
-                    AirlineTextParser parser = new AirlineTextParser(new FileReader(filename));
-                    readAirline = parser.parse();
+                    AirlineXmlParser airlineXmlParser = new AirlineXmlParser(new FileReader(filename));
+                    readAirline = airlineXmlParser.parse();
                     if (!readAirline.getName().equals(airlineName)) {
-                        throw new AirlineException("The airline name provided in the input does not match with airline name in the input text file.");
+                        throw new AirlineException("The airline name provided in the input does not match with airline name in the input xml file.");
                     }
 
                     newFlight = new Flight(flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation, arrivalDateAndTimeString, arrivalDate);
                     readAirline.addFlight(newFlight);
 
                     try {
-                        AirlineTextDumper airlineTextDumper = new AirlineTextDumper(new FileWriter(textFilename.get()));
-                        airlineTextDumper.dump(readAirline);
+                        AirlineXmlDumper airlineXmlDumper = new AirlineXmlDumper(filename);
+                        airlineXmlDumper.dump(readAirline);
                     } catch (IOException e) {
-                        throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
+                        throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + filename);
                     }
                 }
             } catch (IOException e) {
@@ -617,10 +643,49 @@ public class Project4 {
             } catch (ParserException e) {
                 throw new AirlineException(e.getMessage());
             }
-        } else {
-            createdAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
-                    arrivalDateAndTimeString, arrivalDate);
-        }
+        } else
+            // If '-textFile' option is present
+            if (textFilename.isPresent()) {
+                String filename = textFilename.get();
+                File textFile = new File(filename);
+                boolean fileExists = textFile.exists();
+                try {
+                    if (!fileExists) {
+                        textFile.createNewFile();
+                        createdAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
+                                arrivalDateAndTimeString, arrivalDate);
+                        try {
+                            AirlineTextDumper airlineTextDumper = new AirlineTextDumper(new FileWriter(textFilename.get()));
+                            airlineTextDumper.dump(createdAirline);
+                        } catch (IOException e) {
+                            throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
+                        }
+                    } else {
+                        AirlineTextParser parser = new AirlineTextParser(new FileReader(filename));
+                        readAirline = parser.parse();
+                        if (!readAirline.getName().equals(airlineName)) {
+                            throw new AirlineException("The airline name provided in the input does not match with airline name in the input text file.");
+                        }
+
+                        newFlight = new Flight(flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation, arrivalDateAndTimeString, arrivalDate);
+                        readAirline.addFlight(newFlight);
+
+                        try {
+                            AirlineTextDumper airlineTextDumper = new AirlineTextDumper(new FileWriter(textFilename.get()));
+                            airlineTextDumper.dump(readAirline);
+                        } catch (IOException e) {
+                            throw new AirlineException("Unable to write to the file with the specified name and path. Filename: " + textFilename.get());
+                        }
+                    }
+                } catch (IOException e) {
+                    throw new AirlineException("Unable to create a file with the specified name and path. Filename: " + filename);
+                } catch (ParserException e) {
+                    throw new AirlineException(e.getMessage());
+                }
+            } else {
+                createdAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
+                        arrivalDateAndTimeString, arrivalDate);
+            }
 
         // If '-pretty' option is present
         if (prettyFilename.isPresent()) {
@@ -639,10 +704,10 @@ public class Project4 {
                 try {
                     prettyFile.createNewFile();
                     try {
-                        AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new FileWriter(prettyFilename.get())));
+                        AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new FileWriter(prettyPrintFilename)));
                         prettyPrinter.dump(prettyPrintAirline);
                     } catch (IOException e) {
-                        throw new AirlineException("Unable to write to the pretty print file with the specified name and path. Filename: " + prettyFilename.get());
+                        throw new AirlineException("Unable to write to the pretty print file with the specified name and path. Filename: " + prettyPrintFilename);
                     }
                 } catch (IOException e) {
                     throw new AirlineException("Unable to create a pretty file with the specified name and path. Filename: " + prettyPrintFilename);
@@ -650,10 +715,10 @@ public class Project4 {
             } else {
                 // Pretty print to terminal
                 try {
-                    AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new FileWriter(prettyFilename.get())));
+                    AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new FileWriter(prettyPrintValue)));
                     prettyPrinter.dumpToTerminal(prettyPrintAirline);
                 } catch (IOException e) {
-                    throw new AirlineException("Unable to write to the pretty print file with the specified name and path. Filename: " + prettyFilename.get());
+                    throw new AirlineException("Unable to pretty print the airline and flight details to the terminal!");
                 }
             }
         }

@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -38,7 +39,9 @@ public class AirlineXmlParserTest {
         assertThat(resource, notNullValue());
 
         AirlineXmlParser parser = new AirlineXmlParser(new InputStreamReader(resource));
-        assertThrows(ParserException.class, parser::parse);
+        Exception exception = assertThrows(ParserException.class, parser::parse);
+        assertEquals(exception.getMessage(), "Error while parsing the XML file as it does not conform to the airline DTD. " +
+                "The content of element type \"depart\" is incomplete, it must match \"(date,time)\".");
     }
 
     /**
@@ -50,6 +53,20 @@ public class AirlineXmlParserTest {
         assertThat(resource, notNullValue());
 
         AirlineXmlParser parser = new AirlineXmlParser(new InputStreamReader(resource));
-        assertThrows(ParserException.class, parser::parse, "Malformed xml file. Unable to parse year of the given date.");
+        Exception exception = assertThrows(ParserException.class, parser::parse, "Malformed xml file. Unable to parse year of the given date.");
+        assertEquals(exception.getMessage(), "Malformed xml file. Unable to parse year of the given date.");
+    }
+
+    /**
+     * This unit test checks if an invalid xml file with unknown arrival airport code throws ParseException with correct error message.
+     */
+    @Test
+    void invalidXmlFileWithUnknownArrivalAirportCodeThrowsParserExceptionWithCorrectErrMsg() {
+        InputStream resource = getClass().getResourceAsStream("airline-with-unknown-airport-code.xml");
+        assertThat(resource, notNullValue());
+
+        AirlineXmlParser parser = new AirlineXmlParser(new InputStreamReader(resource));
+        Exception exception = assertThrows(ParserException.class, parser::parse);
+        assertEquals(exception.getMessage(), "The three-letter destination airport code in the input xml file does not correspond to a known airport!");
     }
 }
