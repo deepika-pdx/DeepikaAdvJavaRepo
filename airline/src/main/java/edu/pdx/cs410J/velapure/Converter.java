@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * This is <code>Converter</code> class for Project.
+ */
 public class Converter {
 
     /**
