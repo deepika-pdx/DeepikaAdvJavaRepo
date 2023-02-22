@@ -509,7 +509,7 @@ public class Project4 {
      */
     private static void handleUnknownOption(String[] args) throws AirlineException {
         for (String arg : args) {
-            if (arg.startsWith("-") && !arg.equals("-print") && !arg.equals("-textFile") && !arg.equals("-pretty") && !arg.equals("-xmlFile")) {
+            if (arg.startsWith("-") && !arg.equals("-") && !arg.equals("-print") && !arg.equals("-textFile") && !arg.equals("-pretty") && !arg.equals("-xmlFile")) {
                 throw new AirlineException(AN_UNKNOWN_OPTION_WAS_PROVIDED + "\n" + USAGE);
             }
         }
