@@ -75,6 +75,7 @@ public class AirlineXmlParser extends AirlineXmlHelper implements AirlineParser<
             try {
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 factory.setValidating(true);
+                factory.setIgnoringComments(true);
                 DocumentBuilder builder = factory.newDocumentBuilder();
                 builder.setErrorHandler(this);
                 builder.setEntityResolver(this);
@@ -90,6 +91,7 @@ public class AirlineXmlParser extends AirlineXmlHelper implements AirlineParser<
                 throw new AirlineException(errorMessage);
             }
 
+            Node n = doc.getChildNodes().item(1);
             Element root = (Element) doc.getChildNodes().item(1);
             String rootNodeName = root.getNodeName();
             if (!rootNodeName.equals("airline")) {
