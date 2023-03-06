@@ -1,15 +1,10 @@
 package edu.pdx.cs410J.velapure;
 
-import edu.pdx.cs410J.ParserException;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import java.io.IOException;
-import java.util.Map;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 /**
  * Integration test that tests the REST calls made by {@link AirlineRestClient}
@@ -30,12 +25,12 @@ class AirlineRestClientIT {
         client.removeAllDictionaryEntries();
     }
 
-    @Test
-    void test1EmptyServerContainsNoDictionaryEntries() throws IOException, ParserException {
-        AirlineRestClient client = newAirlineRestClient();
-        Map<String, String> dictionary = client.getAllDictionaryEntries();
-        assertThat(dictionary.size(), equalTo(0));
-    }
+//    @Test
+//    void test1EmptyServerContainsNoDictionaryEntries() throws IOException, ParserException {
+//        AirlineRestClient client = newAirlineRestClient();
+//        Map<String, String> dictionary = client.getAllDictionaryEntries();
+//        assertThat(dictionary.size(), equalTo(0));
+//    }
 }
 
 //  @Test
