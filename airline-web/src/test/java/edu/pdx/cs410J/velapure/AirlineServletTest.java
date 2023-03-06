@@ -20,53 +20,57 @@ import static org.mockito.Mockito.*;
  */
 class AirlineServletTest {
 
-  @Test
-  void initiallyServletContainsNoDictionaryEntries() throws IOException {
-    AirlineServlet servlet = new AirlineServlet();
+    @Test
+    void initiallyServletContainsNoAirlineEntries() throws IOException {
+        AirlineServlet servlet = new AirlineServlet();
 
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    HttpServletResponse response = mock(HttpServletResponse.class);
-    PrintWriter pw = mock(PrintWriter.class);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        PrintWriter pw = mock(PrintWriter.class);
+        String airlineName = "Frontier";
+        when(request.getParameter(AirlineServlet.AIRLINE_PARAMETER)).thenReturn(airlineName);
+        when(response.getWriter()).thenReturn(pw);
 
-    when(response.getWriter()).thenReturn(pw);
+        servlet.doGet(request, response);
+        verify(response).setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
 
-    servlet.doGet(request, response);
+    @Test
+    void addOneAirlineToAirlineFlightMap() throws IOException {
+        AirlineServlet servlet = new AirlineServlet();
 
-    // Nothing is written to the response's PrintWriter
-    verify(pw, never()).println(anyString());
-    verify(response).setStatus(HttpServletResponse.SC_OK);
-  }
+        String airlineName = "Frontier";
+        String flightNumberString = "123";
+        String srcAirport = "PDX";
+        String destAirport = "LAS";
+        String departure = "1/1/2023 10:59 AM";
+        String arrival = "01/1/2023 2:00 PM";
 
-  @Test
-  void addOneWordToDictionary() throws IOException {
-    AirlineServlet servlet = new AirlineServlet();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getParameter(AirlineServlet.AIRLINE_PARAMETER)).thenReturn(airlineName);
+        when(request.getParameter(AirlineServlet.FLIGHT_NO_PARAMETER)).thenReturn(flightNumberString);
+        when(request.getParameter(AirlineServlet.SRC_PARAMETER)).thenReturn(srcAirport);
+        when(request.getParameter(AirlineServlet.DEST_PARAMETER)).thenReturn(destAirport);
+        when(request.getParameter(AirlineServlet.DEPARTURE_PARAMETER)).thenReturn(departure);
+        when(request.getParameter(AirlineServlet.ARRIVAL_PARAMETER)).thenReturn(arrival);
 
-    String word = "TEST WORD";
-    String definition = "TEST DEFINITION";
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
-    HttpServletRequest request = mock(HttpServletRequest.class);
-    when(request.getParameter(AirlineServlet.WORD_PARAMETER)).thenReturn(word);
-    when(request.getParameter(AirlineServlet.DEFINITION_PARAMETER)).thenReturn(definition);
+        // Use a StringWriter to gather the text from multiple calls to println()
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter pw = new PrintWriter(stringWriter, true);
 
-    HttpServletResponse response = mock(HttpServletResponse.class);
+        when(response.getWriter()).thenReturn(pw);
 
-    // Use a StringWriter to gather the text from multiple calls to println()
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter pw = new PrintWriter(stringWriter, true);
+        servlet.doPost(request, response);
 
-    when(response.getWriter()).thenReturn(pw);
+        assertThat(stringWriter.toString(), containsString(Messages.addedFlightToTheAirline(airlineName, flightNumberString, srcAirport, departure, destAirport, arrival)));
 
-    servlet.doPost(request, response);
+        // Use an ArgumentCaptor when you want to make multiple assertions against the value passed to the mock
+        ArgumentCaptor<Integer> statusCode = ArgumentCaptor.forClass(Integer.class);
+        verify(response).setStatus(statusCode.capture());
 
-    assertThat(stringWriter.toString(), containsString(Messages.definedWordAs(word, definition)));
-
-    // Use an ArgumentCaptor when you want to make multiple assertions against the value passed to the mock
-    ArgumentCaptor<Integer> statusCode = ArgumentCaptor.forClass(Integer.class);
-    verify(response).setStatus(statusCode.capture());
-
-    assertThat(statusCode.getValue(), equalTo(HttpServletResponse.SC_OK));
-
-    assertThat(servlet.getDefinition(word), equalTo(definition));
-  }
-
+        assertThat(statusCode.getValue(), equalTo(HttpServletResponse.SC_OK));
+        assertThat(servlet.getAirline(airlineName).getName(), equalTo(airlineName));
+    }
 }
