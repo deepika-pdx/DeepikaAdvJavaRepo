@@ -4,14 +4,14 @@ import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 import org.junit.jupiter.api.Test;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * A unit test for the REST client that demonstrates using mocks and
@@ -19,22 +19,21 @@ import static org.mockito.Mockito.*;
  */
 public class AirlineRestClientTest {
 
-  @Test
-  void getAllDictionaryEntriesPerformsHttpGetWithNoParameters() throws ParserException, IOException {
-    Map<String, String> dictionary = Map.of("One", "1", "Two", "2");
+    @Test
+    void getAllFlightsOfTheSpecifiedPerformsHttpGetButReturnsErrorAsAirlineDoesNotExist() throws ParserException, IOException {
+        String airlineName = "Frontier";
+        Map<String, String> airlineMap = Map.of(AirlineServlet.AIRLINE_PARAMETER, "Frontier");
 
-    HttpRequestHelper http = mock(HttpRequestHelper.class);
-    when(http.get(eq(Map.of()))).thenReturn(dictionaryAsText(dictionary));
-    
-    AirlineRestClient client = new AirlineRestClient(http);
+        HttpRequestHelper http = mock(HttpRequestHelper.class);
+        HttpRequestHelper.Response response = mock(HttpRequestHelper.Response.class);
 
-    assertThat(client.getAllDictionaryEntries(), equalTo(dictionary));
-  }
+        when(response.getHttpStatusCode()).thenReturn(HttpServletResponse.SC_NOT_FOUND);
+        when(http.get(eq(airlineMap))).thenReturn(response);
 
-  private HttpRequestHelper.Response dictionaryAsText(Map<String, String> dictionary) {
-    StringWriter writer = new StringWriter();
-    new TextDumper(writer).dump(dictionary);
+        AirlineRestClient client = new AirlineRestClient(http);
 
-    return new HttpRequestHelper.Response(writer.toString());
-  }
+        HttpRequestHelper.RestException restException = assertThrows(HttpRequestHelper.RestException.class, () -> {
+            client.getAllFlightsOfAnAirline(airlineName);
+        });
+    }
 }

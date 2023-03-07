@@ -179,7 +179,7 @@ public class AirlineServlet extends HttpServlet {
         } else {
             String[] arrivalDateArray = arrivalDateTimeString.split(" ");
             if (arrivalDateArray == null || arrivalDateArray.length != 3) {
-                specifiedParameterIsInvalid(response, arrivalDateTimeString, Messages.DEPARTURE_DATE_IS_INVALID);
+                specifiedParameterIsInvalid(response, arrivalDateTimeString, Messages.ARRIVAL_DATE_IS_INVALID);
                 return;
             }
             String arrivalDateString = arrivalDateArray[0];
@@ -196,19 +196,20 @@ public class AirlineServlet extends HttpServlet {
         }
 
         Airline airlineObj = airlineFlightMap.get(airlineName);
+        Flight flight = null;
         if (airlineObj == null) {
             airlineObj = new Airline(airlineName);
-            Flight flight = new Flight(flightNumber, srcAirportCode, departureFlightString, departureDate, destAirportCode, arrivalFlightString, arrivalDate);
+            flight = new Flight(flightNumber, srcAirportCode, departureFlightString, departureDate, destAirportCode, arrivalFlightString, arrivalDate);
             airlineObj.addFlight(flight);
             airlineFlightMap.put(airlineName, airlineObj);
         } else {
-            Flight flight = new Flight(flightNumber, srcAirportCode, departureFlightString, departureDate, destAirportCode, arrivalFlightString, arrivalDate);
+            flight = new Flight(flightNumber, srcAirportCode, departureFlightString, departureDate, destAirportCode, arrivalFlightString, arrivalDate);
             airlineObj.addFlight(flight);
             airlineFlightMap.put(airlineName, airlineObj);
         }
 
         PrintWriter pw = response.getWriter();
-        pw.println(Messages.addedFlightToTheAirline(airlineName, flightNumberString, srcAirportCode, departureFlightString, destAirportCode, arrivalFlightString));
+        pw.println(flight.toString());
         pw.flush();
 
         response.setStatus(HttpServletResponse.SC_OK);

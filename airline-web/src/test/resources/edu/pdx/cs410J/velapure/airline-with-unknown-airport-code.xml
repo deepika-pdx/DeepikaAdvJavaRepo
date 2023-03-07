@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ASCII" standalone="no"?>
+<!DOCTYPE airline PUBLIC "-//Portland State University//DTD CS410J Airline//EN"
+        "http://www.cs.pdx.edu/~whitlock/dtds/airline.dtd">
+<airline>
+    <name>Test Airline</name>
+    <flight>
+        <number>789</number>
+        <src>PDX</src>
+        <depart>
+            <date day="25" month="0" year="2023"/>
+            <time hour="15" minute="30"/>
+        </depart>
+        <dest>KOL</dest>
+        <arrive>
+            <date day="26" month="0" year="2023"/>
+            <time hour="4" minute="15"/>
+        </arrive>
+    </flight>
+</airline>

@@ -24,6 +24,7 @@ public class Messages {
 
     public static final String ARRIVAL_DATE_IS_INVALID = "The provided arrival date \"%s\" is invalid. ";
 
+
     public static String missingRequiredParameter(String parameterName) {
         return String.format("The required parameter \"%s\" is missing", parameterName);
     }

@@ -1,11 +1,10 @@
 package edu.pdx.cs410J.velapure;
 
 import edu.pdx.cs410J.AirportNames;
+import edu.pdx.cs410J.ParserException;
+import edu.pdx.cs410J.web.HttpRequestHelper;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -81,6 +80,11 @@ public class Project5 {
      */
     public static final String AN_UNKNOWN_OPTION_WAS_PROVIDED = "An unknown option was provided. ";
 
+    /**
+     * User-understandable error message for an non-existent airline name provided.
+     */
+    public static final String SPECIFIED_AIRLINE_DOES_NOT_EXIST = "The specified airline does not exists. ";
+
     public static void main(String... args) {
         if (args != null) {
             try {
@@ -97,203 +101,30 @@ public class Project5 {
                         throw new AirlineException(MISSING_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
                     case 6:
                         // Display all the flights of the airline specified with the '-search' parameter
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
-                            throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
-                            throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
-                        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-search")) {
-                            validateAndSearchAirlineDetails(args[1], args[3], args[5], Optional.empty(), Optional.empty());
-                        } else if (args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-search")) {
-                            validateAndSearchAirlineDetails(args[3], args[1], args[5], Optional.empty(), Optional.empty());
-                        } else if (args[0].equals("-search") && args[2].equals("-host") && args[4].equals("-port")) {
-                            validateAndSearchAirlineDetails(args[3], args[5], args[1], Optional.empty(), Optional.empty());
-                        } else if (args[0].equals("-search") && args[2].equals("-port") && args[4].equals("-host")) {
-                            validateAndSearchAirlineDetails(args[5], args[3], args[1], Optional.empty(), Optional.empty());
-                        } else if (args[0].equals("-host") && args[2].equals("-search") && args[4].equals("-port")) {
-                            validateAndSearchAirlineDetails(args[1], args[5], args[3], Optional.empty(), Optional.empty());
-                        } else if (args[0].equals("-port") && args[2].equals("-search") && args[4].equals("-host")) {
-                            validateAndSearchAirlineDetails(args[5], args[1], args[3], Optional.empty(), Optional.empty());
-                        } else {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        searchAndDisplayAllFlightsOfTheSpecifiedAirline(args);
                         break;
                     case 7:
-                        // Invalid scenarios
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-search")
-                                || args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-search")) {
-                            // Validation of the provided source location airport code
-                            String srcLocation = args[6];
-                            if (Pattern.matches("[a-zA-Z]+", srcLocation) && srcLocation.length() == 3 && AirportNames.getName(srcLocation.toUpperCase()) != null) {
-                                throw new AirlineException(PLEASE_PROVIDE_DEST_AIRPORT_CODE_ALONG_WITH_SOUCRE_AIRPORT_CODE + "\n" + USAGE);
-                            } else {
-                                handleUnknownOption(args);
-                                throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                            }
-                        } else if (!Arrays.stream(args).anyMatch("-search"::equals)) {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        processInvalidScenariosWith7Param(args);
                     case 8:
-                        // Display all the flights of the airline specified with the '-search' parameter from given source airport to destination airport
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
-                            throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
-                            throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && !Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-search")) {
-                            validateAndSearchAirlineDetails(args[1], args[3], args[5], Optional.of(args[6]), Optional.of(args[7]));
-                        } else if (args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-search")) {
-                            validateAndSearchAirlineDetails(args[3], args[1], args[5], Optional.of(args[6]), Optional.of(args[7]));
-                        } else if (args[0].equals("-search") && args[4].equals("-host") && args[6].equals("-port")) {
-                            validateAndSearchAirlineDetails(args[5], args[7], args[1], Optional.of(args[2]), Optional.of(args[3]));
-                        } else if (args[0].equals("-search") && args[4].equals("-port") && args[6].equals("-host")) {
-                            validateAndSearchAirlineDetails(args[7], args[5], args[1], Optional.of(args[2]), Optional.of(args[3]));
-                        } else if (args[0].equals("-host") && args[2].equals("-search") && args[6].equals("-port")) {
-                            validateAndSearchAirlineDetails(args[1], args[7], args[3], Optional.of(args[4]), Optional.of(args[5]));
-                        } else if (args[0].equals("-port") && args[2].equals("-search") && args[6].equals("-host")) {
-                            validateAndSearchAirlineDetails(args[7], args[1], args[3], Optional.of(args[4]), Optional.of(args[5]));
-                        } else {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        searchAndDisplayOnlyThoseFlightWithSpecifiedSrcAndDest(args);
                         break;
                     case 9:
-                        // Invalid scenarios
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals)) {
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        processInvalidScenariosWith9Param(args);
                     case 10:
-                        // Invalid scenarios
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals)) {
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-print"::equals) ||
-                                (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals))) {
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else {
-                            handleUnknownOption(args);
-                        }
-                        // Valid scenario: Only create the flight and exit
                         processAirlineDetailsWithoutOptions(args);
                         break;
                     case 11:
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals)) {
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)) {
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else if (args[0].equals("-print")) {
-                            // Valid scenario: create the flight and print the flight information
-                            processAirlineDetailsWithOnlyPrintOption(args);
-                        } else {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        processAirlineDetailsWithOnlyPrintOption(args);
                         break;
                     case 12:
-                        // Invalid scenarios
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
-                            throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
-                            throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if ((Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)) ||
-                                (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)
-                                        && Arrays.stream(args).anyMatch("-print"::equals))) {
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        processInvalidScenariosWith12Param(args);
                     case 13:
-                        // Invalid scenarios
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if ((Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)) ||
-                                (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)
-                                        && Arrays.stream(args).anyMatch("-print"::equals))) {
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        processInvalidScenariosWith13Param(args);
                     case 14:
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        } else if (args[0].equals("-host") && args[2].equals("-port")) {
-                            // Validate and add airline and flight information
-                            validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
-                                    args[13], Optional.of(args[1]), Optional.of(args[3]), Optional.empty());
-                        } else if (args[0].equals("-port") && args[2].equals("-host")) {
-                            // Validate and add airline and flight information
-                            validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
-                                    args[13], Optional.of(args[3]), Optional.of(args[1]), Optional.empty());
-                        } else {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        addFlightToTheSpecifiedAirlineWithoutPrintOption(args);
                         break;
                     case 15:
-                        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
-                                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
-                            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-                        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-print")) {
-                            // Validate and add airline and flight information
-                            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
-                                    args[14], Optional.of(args[1]), Optional.of(args[3]), Optional.of("printFlightInformation"));
-                        } else if (args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-print")) {
-                            // Validate and add airline and flight information
-                            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
-                                    args[14], Optional.of(args[3]), Optional.of(args[1]), Optional.of("printFlightInformation"));
-                        } else if (args[0].equals("-print") && args[1].equals("-host") && args[3].equals("-port")) {
-                            // Validate and add airline and flight information
-                            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
-                                    args[14], Optional.of(args[2]), Optional.of(args[4]), Optional.of("printFlightInformation"));
-                        } else if (args[0].equals("-print") && args[1].equals("-port") && args[3].equals("-host")) {
-                            // Validate and add airline and flight information
-                            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
-                                    args[14], Optional.of(args[4]), Optional.of(args[2]), Optional.of("printFlightInformation"));
-                        } else if (args[0].equals("-host") && args[2].equals("-print") && args[3].equals("-port")) {
-                            // Validate and add airline and flight information
-                            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
-                                    args[14], Optional.of(args[1]), Optional.of(args[4]), Optional.of("printFlightInformation"));
-                        } else if (args[0].equals("-port") && args[2].equals("-print") && args[3].equals("-host")) {
-                            // Validate and add airline and flight information
-                            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
-                                    args[14], Optional.of(args[4]), Optional.of(args[1]), Optional.of("printFlightInformation"));
-                        } else {
-                            handleUnknownOption(args);
-                            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
-                        }
+                        addFlightToTheSpecifiedAirlineWithPrintOption(args);
                         break;
                 }
                 if (argLength < 6) {
@@ -308,6 +139,91 @@ public class Project5 {
         }
     }
 
+    private static void addFlightToTheSpecifiedAirlineWithPrintOption(String[] args) {
+        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
+        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-print")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
+                    args[14], Optional.of(args[1]), Optional.of(args[3]), Optional.of("printFlightInformation"));
+        } else if (args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-print")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
+                    args[14], Optional.of(args[3]), Optional.of(args[1]), Optional.of("printFlightInformation"));
+        } else if (args[0].equals("-print") && args[1].equals("-host") && args[3].equals("-port")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
+                    args[14], Optional.of(args[2]), Optional.of(args[4]), Optional.of("printFlightInformation"));
+        } else if (args[0].equals("-print") && args[1].equals("-port") && args[3].equals("-host")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
+                    args[14], Optional.of(args[4]), Optional.of(args[2]), Optional.of("printFlightInformation"));
+        } else if (args[0].equals("-host") && args[2].equals("-print") && args[3].equals("-port")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
+                    args[14], Optional.of(args[1]), Optional.of(args[4]), Optional.of("printFlightInformation"));
+        } else if (args[0].equals("-port") && args[2].equals("-print") && args[3].equals("-host")) {
+            // Validate and add airline and flight information
+            validateArguments(args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13],
+                    args[14], Optional.of(args[4]), Optional.of(args[1]), Optional.of("printFlightInformation"));
+        } else {
+            handleUnknownOption(args);
+            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        }
+    }
+
+    private static void addFlightToTheSpecifiedAirlineWithoutPrintOption(String[] args) {
+        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        } else if (args[0].equals("-host") && args[2].equals("-port")) {
+            // Validate and add airline and flight information
+            validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
+                    args[13], Optional.of(args[1]), Optional.of(args[3]), Optional.empty());
+        } else if (args[0].equals("-port") && args[2].equals("-host")) {
+            // Validate and add airline and flight information
+            validateArguments(args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12],
+                    args[13], Optional.of(args[3]), Optional.of(args[1]), Optional.empty());
+        } else {
+            handleUnknownOption(args);
+            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        }
+    }
+
+    private static void handleSimilarInvalidScenarios(String[] args) {
+        // Invalid scenarios
+        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
+        } else if ((Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)) ||
+                (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)
+                        && Arrays.stream(args).anyMatch("-print"::equals))) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        } else {
+            handleUnknownOption(args);
+            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        }
+    }
+
+    private static void processInvalidScenariosWith13Param(String[] args) {
+        handleSimilarInvalidScenarios(args);
+    }
+
+    private static void processInvalidScenariosWith12Param(String[] args) {
+        // Invalid scenarios
+        if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
+            throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
+            throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
+        } else {
+            handleSimilarInvalidScenarios(args);
+        }
+    }
+
     /**
      * This method processes the airline details with only '-print' option
      *
@@ -316,11 +232,108 @@ public class Project5 {
      *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
      *         Options: '-print'
      */
-    private static void processAirlineDetailsWithOnlyPrintOption(String[] args) throws AirlineException {
-        // Validate and add airline and flight information
-        validateArguments(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9],
-                args[10], Optional.empty(), Optional.empty(), Optional.of("printFlightInformation"));
+    private static void processAirlineDetailsWithOnlyPrintOption(String[] args) {
+        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals)) {
+            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        } else if (args[0].equals("-print")) {
+            // Valid scenario: create the flight and print the flight information
+            validateArguments(args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9],
+                    args[10], Optional.empty(), Optional.empty(), Optional.of("printFlightInformation"));
+        } else {
+            handleUnknownOption(args);
+            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        }
+    }
 
+    private static void processInvalidScenariosWith9Param(String[] args) {
+        // Invalid scenarios
+        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals)) {
+            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        } else {
+            handleUnknownOption(args);
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        }
+    }
+
+    private static void searchAndDisplayOnlyThoseFlightWithSpecifiedSrcAndDest(String[] args) {
+        // Display all the flights of the airline specified with the '-search' parameter from given source airport to destination airport
+        if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
+            throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
+            throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
+        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-search")) {
+            validateAndSearchAirlineDetails(args[1], args[3], args[5], Optional.of(args[6]), Optional.of(args[7]));
+        } else if (args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-search")) {
+            validateAndSearchAirlineDetails(args[3], args[1], args[5], Optional.of(args[6]), Optional.of(args[7]));
+        } else if (args[0].equals("-search") && args[4].equals("-host") && args[6].equals("-port")) {
+            validateAndSearchAirlineDetails(args[5], args[7], args[1], Optional.of(args[2]), Optional.of(args[3]));
+        } else if (args[0].equals("-search") && args[4].equals("-port") && args[6].equals("-host")) {
+            validateAndSearchAirlineDetails(args[7], args[5], args[1], Optional.of(args[2]), Optional.of(args[3]));
+        } else if (args[0].equals("-host") && args[2].equals("-search") && args[6].equals("-port")) {
+            validateAndSearchAirlineDetails(args[1], args[7], args[3], Optional.of(args[4]), Optional.of(args[5]));
+        } else if (args[0].equals("-port") && args[2].equals("-search") && args[6].equals("-host")) {
+            validateAndSearchAirlineDetails(args[7], args[1], args[3], Optional.of(args[4]), Optional.of(args[5]));
+        } else {
+            handleUnknownOption(args);
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        }
+    }
+
+    private static void processInvalidScenariosWith7Param(String[] args) {
+        // Invalid scenarios
+        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
+        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-search")
+                || args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-search")) {
+            // Validation of the provided source location airport code
+            String srcLocation = args[6];
+            if (Pattern.matches("[a-zA-Z]+", srcLocation) && srcLocation.length() == 3 && AirportNames.getName(srcLocation.toUpperCase()) != null) {
+                throw new AirlineException(PLEASE_PROVIDE_DEST_AIRPORT_CODE_ALONG_WITH_SOUCRE_AIRPORT_CODE + "\n" + USAGE);
+            } else {
+                handleUnknownOption(args);
+                throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+            }
+        } else if (!Arrays.stream(args).anyMatch("-search"::equals)) {
+            handleUnknownOption(args);
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        }
+    }
+
+    private static void searchAndDisplayAllFlightsOfTheSpecifiedAirline(String[] args) {
+        if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
+            throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
+            throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
+        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-search")) {
+            validateAndSearchAirlineDetails(args[1], args[3], args[5], Optional.empty(), Optional.empty());
+        } else if (args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-search")) {
+            validateAndSearchAirlineDetails(args[3], args[1], args[5], Optional.empty(), Optional.empty());
+        } else if (args[0].equals("-search") && args[2].equals("-host") && args[4].equals("-port")) {
+            validateAndSearchAirlineDetails(args[3], args[5], args[1], Optional.empty(), Optional.empty());
+        } else if (args[0].equals("-search") && args[2].equals("-port") && args[4].equals("-host")) {
+            validateAndSearchAirlineDetails(args[5], args[3], args[1], Optional.empty(), Optional.empty());
+        } else if (args[0].equals("-host") && args[2].equals("-search") && args[4].equals("-port")) {
+            validateAndSearchAirlineDetails(args[1], args[5], args[3], Optional.empty(), Optional.empty());
+        } else if (args[0].equals("-port") && args[2].equals("-search") && args[4].equals("-host")) {
+            validateAndSearchAirlineDetails(args[5], args[1], args[3], Optional.empty(), Optional.empty());
+        } else {
+            handleUnknownOption(args);
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        }
     }
 
     /**
@@ -330,8 +343,21 @@ public class Project5 {
      *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
      *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
      */
-    private static void processAirlineDetailsWithoutOptions(String[] args) throws AirlineException {
-        // Validate and add airline and flight information
+    private static void processAirlineDetailsWithoutOptions(String[] args) {
+        // Invalid scenarios
+        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
+            throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+                Arrays.stream(args).anyMatch("-search"::equals)) {
+            throw new AirlineException(TOO_MANY_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-print"::equals) ||
+                (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals))) {
+            throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
+        } else {
+            handleUnknownOption(args);
+        }
+        // Valid scenario: Only create the flight and exit
         validateArguments(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8],
                 args[9], Optional.empty(), Optional.empty(), Optional.empty());
     }
@@ -389,7 +415,6 @@ public class Project5 {
             srcLocation = srcLocation.toUpperCase();
         }
 
-
         // Validation of the provided destination location
         if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
             throw new AirlineException("Invalid destination location. Destination location provided should consist of only three alphabets [a-zA-Z].");
@@ -421,10 +446,24 @@ public class Project5 {
         }
 
         Airline createdAirline = null;
-        Flight newFlight = null;
+        String responseMessage = null;
 
         if (hostname.isPresent() && portNumberString.isPresent()) {
-
+            // Validation of the provided port number
+            int portNumber = 0;
+            try {
+                portNumber = Integer.parseInt(portNumberString.get());
+            } catch (NumberFormatException e) {
+                throw new AirlineException("Invalid port number. Port number provided should be an integer.");
+            }
+            // Send parameters to REST client
+            AirlineRestClient client = new AirlineRestClient(hostname.get(), portNumber);
+            try {
+                responseMessage = client.addFlightToTheSpecifiedAirline(airlineName, flightNumberString,
+                        srcLocation, departureDateTimeString, destLocation, arrivalDateAndTimeString);
+            } catch (IOException e) {
+                throw new AirlineException("Error while contacting the server: " + e.getMessage());
+            }
         } else {
             createdAirline = createAirlineAndFlight(airlineName, flightNumber, srcLocation, departureDateTimeString, departureDate, destLocation,
                     arrivalDateAndTimeString, arrivalDate);
@@ -432,8 +471,8 @@ public class Project5 {
 
         // If '-print' option is present
         if (printFlightInformation.isPresent() && printFlightInformation.get().equals("printFlightInformation")) {
-            if (newFlight != null) {
-                System.out.println(newFlight.toString());
+            if (responseMessage != null) {
+                System.out.println(responseMessage);
             } else if (createdAirline != null) {
                 System.out.println(((ArrayList) createdAirline.getFlights()).get(0).toString());
             }
@@ -519,6 +558,9 @@ public class Project5 {
             } else {
                 destLocation = destLocation.toUpperCase();
             }
+        } else if (srcAirportCode.isPresent()) {
+            throw new AirlineException("Destination airport code missing. " +
+                    "Please provide destination airport code along with source airport code. ");
         }
 
         if (srcLocation != null && destLocation != null && srcLocation.equals(destLocation)) {
@@ -527,6 +569,25 @@ public class Project5 {
         }
 
         // Send parameters to REST client
+        AirlineRestClient client = new AirlineRestClient(hostname, portNumber);
+        try {
+            if (srcAirportCode.isPresent() && destAirportCode.isPresent()) {
+                Airline fetchedAirline = client.getFlightsWithSpecifiedSrcAndDestAirportOfAnAirline(airlineName, srcLocation, destLocation);
+                AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new StringWriter()));
+                prettyPrinter.dumpToTerminal(fetchedAirline);
+            } else {
+                Airline fetchedAirline = client.getAllFlightsOfAnAirline(airlineName);
+                AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new StringWriter()));
+                prettyPrinter.dumpToTerminal(fetchedAirline);
+            }
+        } catch (IOException | ParserException e) {
+            throw new AirlineException("Error while contacting the server: " + e.getMessage());
+        } catch (HttpRequestHelper.RestException e) {
+            if (e.getHttpStatusCode() == 404) {
+                throw new AirlineException(Project5.SPECIFIED_AIRLINE_DOES_NOT_EXIST);
+            }
+            throw new AirlineException(e.getMessage());
+        }
     }
 
     /**

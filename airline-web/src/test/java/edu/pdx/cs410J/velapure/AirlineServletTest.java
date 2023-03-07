@@ -64,7 +64,7 @@ class AirlineServletTest {
 
         servlet.doPost(request, response);
 
-        assertThat(stringWriter.toString(), containsString(Messages.addedFlightToTheAirline(airlineName, flightNumberString, srcAirport, departure, destAirport, arrival)));
+        assertThat(stringWriter.toString(), containsString("Flight 123 departs PDX at 1/1/2023 10:59 AM arrives LAS at 01/1/2023 2:00 PM"));
 
         // Use an ArgumentCaptor when you want to make multiple assertions against the value passed to the mock
         ArgumentCaptor<Integer> statusCode = ArgumentCaptor.forClass(Integer.class);
