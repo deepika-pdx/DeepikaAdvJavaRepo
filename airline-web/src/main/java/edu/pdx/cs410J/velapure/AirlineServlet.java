@@ -47,13 +47,23 @@ public class AirlineServlet extends HttpServlet {
         String destAirportCode = getParameter(DEST_PARAMETER, request);
         if (airlineName != null) {
             if (srcAirportCode != null) {
-                // Validation of the provided source location
-                srcAirportCode = validateSrcAirportCode(response, srcAirportCode);
+                try {
+                    // Validation of the provided source location
+                    srcAirportCode = validateSrcAirportCode(response, srcAirportCode);
+                } catch (AirlineException e) {
+                    specifiedParameterIsInvalid(response, srcAirportCode, e.getMessage());
+                    return;
+                }
             }
             if (destAirportCode != null) {
-                destAirportCode = validateDestAirportCode(response, srcAirportCode, destAirportCode);
+                try {
+                    destAirportCode = validateDestAirportCode(response, destAirportCode);
+                } catch (AirlineException e) {
+                    specifiedParameterIsInvalid(response, destAirportCode, e.getMessage());
+                    return;
+                }
             } else if (srcAirportCode != null) {
-                specifiedParameterIsInvalid(response, srcAirportCode, Messages.DEST_AIRPORT_CODE_MISSING);
+                specifiedParameterIsInvalid(response, "", Messages.DEST_AIRPORT_CODE_MISSING);
                 return;
             }
             if (srcAirportCode != null && destAirportCode != null && srcAirportCode.equals(destAirportCode)) {
@@ -77,20 +87,6 @@ public class AirlineServlet extends HttpServlet {
         } else {
             missingRequiredParameter(response, AIRLINE_PARAMETER);
         }
-    }
-
-    private String validateDestAirportCode(HttpServletResponse response, String srcAirportCode, String destAirportCode) throws IOException {
-        // Validation of the provided destination location
-        if (!(Pattern.matches("[a-zA-Z]+", destAirportCode)) || destAirportCode.length() != 3) {
-            specifiedParameterIsInvalid(response, srcAirportCode, Messages.DEST_AIRPORT_CODE_IS_NOT_VALID);
-            return null;
-        } else if (AirportNames.getName(destAirportCode.toUpperCase()) == null) {
-            specifiedParameterIsInvalid(response, srcAirportCode, Messages.DEST_AIRPORT_CODE_IS_UNKNOWN);
-            return null;
-        } else {
-            destAirportCode = destAirportCode.toUpperCase();
-        }
-        return destAirportCode;
     }
 
     /**
@@ -127,7 +123,12 @@ public class AirlineServlet extends HttpServlet {
             missingRequiredParameter(response, SRC_PARAMETER);
             return;
         } else {
-            srcAirportCode = validateSrcAirportCode(response, srcAirportCode);
+            try {
+                srcAirportCode = validateSrcAirportCode(response, srcAirportCode);
+            } catch (AirlineException e) {
+                specifiedParameterIsInvalid(response, srcAirportCode, e.getMessage());
+                return;
+            }
         }
 
         String destAirportCode = getParameter(DEST_PARAMETER, request);
@@ -135,8 +136,13 @@ public class AirlineServlet extends HttpServlet {
             missingRequiredParameter(response, DEST_PARAMETER);
             return;
         } else {
-            // Validation of the provided destination location
-            destAirportCode = validateDestAirportCode(response, srcAirportCode, destAirportCode);
+            try {
+                // Validation of the provided destination location
+                destAirportCode = validateDestAirportCode(response, destAirportCode);
+            } catch (AirlineException e) {
+                specifiedParameterIsInvalid(response, destAirportCode, e.getMessage());
+                return;
+            }
         }
 
         if (srcAirportCode.equals(destAirportCode)) {
@@ -222,15 +228,25 @@ public class AirlineServlet extends HttpServlet {
     private String validateSrcAirportCode(HttpServletResponse response, String srcAirportCode) throws IOException {
         // Validation of the provided source location
         if (!(Pattern.matches("[a-zA-Z]+", srcAirportCode)) || srcAirportCode.length() != 3) {
-            specifiedParameterIsInvalid(response, srcAirportCode, Messages.SRC_AIRPORT_CODE_IS_NOT_VALID);
-            return null;
+            throw new AirlineException(Messages.SRC_AIRPORT_CODE_IS_NOT_VALID);
         } else if (AirportNames.getName(srcAirportCode.toUpperCase()) == null) {
-            specifiedParameterIsInvalid(response, srcAirportCode, Messages.SRC_AIRPORT_CODE_IS_UNKNOWN);
-            return null;
+            throw new AirlineException(Messages.SRC_AIRPORT_CODE_IS_UNKNOWN);
         } else {
             srcAirportCode = srcAirportCode.toUpperCase();
         }
         return srcAirportCode;
+    }
+
+    private String validateDestAirportCode(HttpServletResponse response, String destAirportCode) throws IOException {
+        // Validation of the provided destination location
+        if (!(Pattern.matches("[a-zA-Z]+", destAirportCode)) || destAirportCode.length() != 3) {
+            throw new AirlineException(Messages.DEST_AIRPORT_CODE_IS_NOT_VALID);
+        } else if (AirportNames.getName(destAirportCode.toUpperCase()) == null) {
+            throw new AirlineException(Messages.DEST_AIRPORT_CODE_IS_UNKNOWN);
+        } else {
+            destAirportCode = destAirportCode.toUpperCase();
+        }
+        return destAirportCode;
     }
 
     /**
