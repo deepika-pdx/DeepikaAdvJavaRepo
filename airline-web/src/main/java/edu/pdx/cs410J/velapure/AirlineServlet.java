@@ -205,17 +205,17 @@ public class AirlineServlet extends HttpServlet {
             return;
         }
 
-        Airline airlineObj = airlineFlightMap.get(airlineName);
+        Airline airlineObj = airlineFlightMap.get(airlineName.toUpperCase());
         Flight flight = null;
         if (airlineObj == null) {
             airlineObj = new Airline(airlineName);
             flight = new Flight(flightNumber, srcAirportCode, departureFlightString, departureDate, destAirportCode, arrivalFlightString, arrivalDate);
             airlineObj.addFlight(flight);
-            airlineFlightMap.put(airlineName, airlineObj);
+            airlineFlightMap.put(airlineName.toUpperCase(), airlineObj);
         } else {
             flight = new Flight(flightNumber, srcAirportCode, departureFlightString, departureDate, destAirportCode, arrivalFlightString, arrivalDate);
             airlineObj.addFlight(flight);
-            airlineFlightMap.put(airlineName, airlineObj);
+            airlineFlightMap.put(airlineName.toUpperCase(), airlineObj);
         }
 
         PrintWriter pw = response.getWriter();
@@ -300,7 +300,7 @@ public class AirlineServlet extends HttpServlet {
      *         A HttpServletResponse response.
      */
     private void writeAirlineAndFlightInformation(String airlineName, Optional<String> srcAirport, Optional<String> destAirport, HttpServletResponse response) throws IOException {
-        Airline fetchedAirline = this.airlineFlightMap.get(airlineName);
+        Airline fetchedAirline = this.airlineFlightMap.get(airlineName.toUpperCase());
         response.setContentType("text/xml");
         if (fetchedAirline == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -329,6 +329,6 @@ public class AirlineServlet extends HttpServlet {
 
     @VisibleForTesting
     Airline getAirline(String airlineName) {
-        return this.airlineFlightMap.get(airlineName);
+        return this.airlineFlightMap.get(airlineName.toUpperCase());
     }
 }
