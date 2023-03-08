@@ -549,8 +549,18 @@ class Project5IT extends InvokeMainTestCase {
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
     }
 
+    /**
+     * Tests that providing the optional parameters '-host','-port', '-search', and airline name and src and dest airport code no direct flight exists
+     */
     @Test
-    void test51CheckAllAirlineFunctionalities() {
+    void test51HostPortSearchAndUnknownOptionWithAirlineNameIssuesError() {
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "spirit", "AVP", "PDX");
+        assertThat(result.getTextWrittenToStandardError(), containsString(Messages.NO_DIRECT_FLIGHTS));
+        assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
+    }
+
+    @Test
+    void test52CheckAllAirlineFunctionalities() {
         String airlineName = "American Airlines";
 
         MainMethodResult result = invokeMain(Project5.class, "-print", "-host", HOSTNAME, "-port", PORT, airlineName, "888", "DFW", "1/11/2023", "12:59", "AM", "PIT", "01/12/2023", "1:00", "PM");

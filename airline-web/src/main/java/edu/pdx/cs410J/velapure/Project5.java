@@ -85,6 +85,7 @@ public class Project5 {
      */
     public static final String SPECIFIED_AIRLINE_DOES_NOT_EXIST = "The specified airline does not exist. ";
 
+
     public static void main(String... args) {
         if (args != null) {
             try {
@@ -584,7 +585,11 @@ public class Project5 {
             throw new AirlineException("Error while contacting the server: " + e.getMessage());
         } catch (HttpRequestHelper.RestException e) {
             if (e.getHttpStatusCode() == 404) {
-                throw new AirlineException(Project5.SPECIFIED_AIRLINE_DOES_NOT_EXIST);
+                if (e.getMessage().contains(Messages.NO_DIRECT_FLIGHTS)) {
+                    throw new AirlineException(Messages.NO_DIRECT_FLIGHTS);
+                } else {
+                    throw new AirlineException(Project5.SPECIFIED_AIRLINE_DOES_NOT_EXIST);
+                }
             }
             throw new AirlineException(e.getMessage());
         }
