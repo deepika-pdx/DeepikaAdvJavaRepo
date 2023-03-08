@@ -17,9 +17,9 @@ import java.util.Date;
 import java.util.Optional;
 
 /**
- * This is <code>AirlineXmlDumper</code> class for Project.
+ * This is <code>AirlineWebXmlDumper</code> class for Project.
  */
-public class AirlineXmlDumper extends AirlineXmlHelper {
+public class AirlineWebXmlDumper extends AirlineXmlHelper {
 
     /**
      * PrintWriter for writing error messages.
@@ -32,32 +32,32 @@ public class AirlineXmlDumper extends AirlineXmlHelper {
     private static PrintWriter pw;
 
     /**
-     * Creates a new <code>AirlineXmlDumper</code>
+     * Creates a new <code>AirlineWebXmlDumper</code>
      *
      * @param fileName
      *         filename for writing airline and flight data.
      */
-    public AirlineXmlDumper(String fileName) throws IOException {
+    public AirlineWebXmlDumper(String fileName) throws IOException {
         this(new File(fileName));
     }
 
     /**
-     * Creates a new <code>AirlineXmlDumper</code>
+     * Creates a new <code>AirlineWebXmlDumper</code>
      *
      * @param file
      *         file for writing airline and flight data.
      */
-    public AirlineXmlDumper(File file) throws IOException {
+    public AirlineWebXmlDumper(File file) throws IOException {
         this(new PrintWriter(new FileWriter(file), true));
     }
 
     /**
-     * Creates a new <code>AirlineXmlDumper</code>
+     * Creates a new <code>AirlineWebXmlDumper</code>
      *
      * @param pw
      *         PrintWriter obj for writing airline and flight data to the file.
      */
-    public AirlineXmlDumper(PrintWriter pw) {
+    public AirlineWebXmlDumper(PrintWriter pw) {
         this.pw = pw;
     }
 
@@ -101,14 +101,19 @@ public class AirlineXmlDumper extends AirlineXmlHelper {
             airlineName.appendChild(doc.createTextNode(airline.getName()));
             airlineElement.appendChild(airlineName);
 
+            boolean directFlightExists = false;
             for (Flight flight : airline.getFlights()) {
                 if (srcAirport.isPresent() && destAirport.isPresent()) {
                     if (flight.getSource().equals(srcAirport.get()) && flight.getDestination().equals(destAirport.get())) {
+                        directFlightExists = true;
                         createFlightDOMElements(doc, airlineElement, flight);
                     }
                 } else {
                     createFlightDOMElements(doc, airlineElement, flight);
                 }
+            }
+            if (srcAirport.isPresent() && destAirport.isPresent() && !directFlightExists) {
+                throw new AirlineException(Messages.NO_DIRECT_FLIGHTS);
             }
         } catch (DOMException e) {
             errorMessage = "Exception while building DOM tree";

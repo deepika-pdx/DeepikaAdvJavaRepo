@@ -83,7 +83,7 @@ public class Project5 {
     /**
      * User-understandable error message for an non-existent airline name provided.
      */
-    public static final String SPECIFIED_AIRLINE_DOES_NOT_EXIST = "The specified airline does not exists. ";
+    public static final String SPECIFIED_AIRLINE_DOES_NOT_EXIST = "The specified airline does not exist. ";
 
     public static void main(String... args) {
         if (args != null) {

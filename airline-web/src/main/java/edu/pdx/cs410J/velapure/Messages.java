@@ -26,6 +26,8 @@ public class Messages {
 
     public static final String ARRIVAL_DATE_SHOULD_NOT_BE_SAME_OR_BEFORE_DEPARTURE_TIME = "The provided arrival date and time should not be before or same as the departure date and time.";
 
+    public static final String NO_DIRECT_FLIGHTS = "There are no direct flights for the specified source and destination airport codes!";
+
 
     public static String missingRequiredParameter(String parameterName) {
         return String.format("The required parameter \"%s\" is missing", parameterName);

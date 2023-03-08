@@ -17,7 +17,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
- * Unit tests for the {@link AirlineXmlDumper} class.
+ * Unit tests for the {@link AirlineWebXmlDumper} class.
  */
 public class AirlineXmlDumperTest {
 
@@ -40,7 +40,7 @@ public class AirlineXmlDumperTest {
         airline.addFlight(flight);
 
         File xmlFile = new File(tempDir + "airline.xml");
-        AirlineXmlDumper dumper = new AirlineXmlDumper(xmlFile);
+        AirlineWebXmlDumper dumper = new AirlineWebXmlDumper(xmlFile);
         dumper.dump(airline, Optional.empty(), Optional.empty());
 
         AirlineXmlHelper helper = new AirlineXmlHelper();

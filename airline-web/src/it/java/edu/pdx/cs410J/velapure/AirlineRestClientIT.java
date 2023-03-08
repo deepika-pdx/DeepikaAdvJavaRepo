@@ -253,4 +253,15 @@ class AirlineRestClientIT {
         assertThat(airlineName, equalTo(fetchedAirline.getName()));
         assertThat(2, equalTo(fetchedAirline.getFlights().size()));
     }
+
+    @Test
+    void test23POSTAirlinetWithNoDirectFlightsIssuesError() throws ParserException, IOException {
+        AirlineRestClient client = newAirlineRestClient();
+        String airlineName = "Frontier";
+
+        HttpRequestHelper.RestException ex =
+                assertThrows(HttpRequestHelper.RestException.class, () -> client.getFlightsWithSpecifiedSrcAndDestAirportOfAnAirline(airlineName, "PDX", "AVP"));
+        assertThat(ex.getHttpStatusCode(), equalTo(HttpURLConnection.HTTP_NOT_FOUND));
+        assertThat(ex.getMessage(), containsString(Messages.NO_DIRECT_FLIGHTS));
+    }
 }

@@ -288,7 +288,7 @@ public class AirlineServlet extends HttpServlet {
 
     /**
      * Writes the flights of the given airline (from srcAirport to destAirport if specified) to the HTTP response.
-     * The text of the message is formatted with {@link AirlineXmlDumper}
+     * The text of the message is formatted with {@link AirlineWebXmlDumper}
      *
      * @param airlineName
      *         Specified airline name.
@@ -305,10 +305,18 @@ public class AirlineServlet extends HttpServlet {
         if (fetchedAirline == null) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
-            PrintWriter pw = response.getWriter();
-            AirlineXmlDumper xmlDumper = new AirlineXmlDumper(pw);
-            xmlDumper.dump(fetchedAirline, srcAirport, destAirport);
-            response.setStatus(HttpServletResponse.SC_OK);
+            try {
+                PrintWriter pw = response.getWriter();
+                AirlineWebXmlDumper xmlDumper = new AirlineWebXmlDumper(pw);
+                xmlDumper.dump(fetchedAirline, srcAirport, destAirport);
+                response.setStatus(HttpServletResponse.SC_OK);
+            } catch (AirlineException e) {
+                if (e.getMessage().contains(Messages.NO_DIRECT_FLIGHTS)) {
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+                } else {
+                    throw new AirlineException(e.getMessage());
+                }
+            }
         }
     }
 
