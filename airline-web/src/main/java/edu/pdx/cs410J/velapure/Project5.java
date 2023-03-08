@@ -573,11 +573,11 @@ public class Project5 {
         try {
             if (srcAirportCode.isPresent() && destAirportCode.isPresent()) {
                 Airline fetchedAirline = client.getFlightsWithSpecifiedSrcAndDestAirportOfAnAirline(airlineName, srcLocation, destLocation);
-                AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new StringWriter()));
+                AirlineWebPrettyPrinter prettyPrinter = new AirlineWebPrettyPrinter(new PrintWriter(new StringWriter()));
                 prettyPrinter.dumpToTerminal(fetchedAirline);
             } else {
                 Airline fetchedAirline = client.getAllFlightsOfAnAirline(airlineName);
-                AirlinePrettyPrinter prettyPrinter = new AirlinePrettyPrinter(new PrintWriter(new StringWriter()));
+                AirlineWebPrettyPrinter prettyPrinter = new AirlineWebPrettyPrinter(new PrintWriter(new StringWriter()));
                 prettyPrinter.dumpToTerminal(fetchedAirline);
             }
         } catch (IOException | ParserException e) {
