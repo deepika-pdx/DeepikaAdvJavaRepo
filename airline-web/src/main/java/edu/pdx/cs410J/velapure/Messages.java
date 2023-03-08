@@ -24,6 +24,8 @@ public class Messages {
 
     public static final String ARRIVAL_DATE_IS_INVALID = "The provided arrival date \"%s\" is invalid. ";
 
+    public static final String ARRIVAL_DATE_SHOULD_NOT_BE_SAME_OR_BEFORE_DEPARTURE_TIME = "The provided arrival date and time should not be before or same as the departure date and time.";
+
 
     public static String missingRequiredParameter(String parameterName) {
         return String.format("The required parameter \"%s\" is missing", parameterName);

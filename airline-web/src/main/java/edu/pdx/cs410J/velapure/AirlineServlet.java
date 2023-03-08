@@ -169,7 +169,6 @@ public class AirlineServlet extends HttpServlet {
             }
         }
 
-
         String arrivalDateTimeString = getParameter(ARRIVAL_PARAMETER, request);
         Date arrivalDate = null;
         String arrivalFlightString = null;
@@ -193,6 +192,11 @@ public class AirlineServlet extends HttpServlet {
                 specifiedParameterIsInvalid(response, arrivalDateTimeString, e.getMessage());
                 return;
             }
+        }
+
+        if (arrivalDate.before(departureDate) || arrivalDate.equals(departureDate)) {
+            specifiedParameterIsInvalid(response, arrivalDateTimeString, Messages.ARRIVAL_DATE_SHOULD_NOT_BE_SAME_OR_BEFORE_DEPARTURE_TIME);
+            return;
         }
 
         Airline airlineObj = airlineFlightMap.get(airlineName);
