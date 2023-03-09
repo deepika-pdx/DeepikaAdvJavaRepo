@@ -32,6 +32,11 @@ public class Messages {
     public static final String DEST_AIRPORT_CODE_MISSING = "Destination airport code missing. Please provide destination airport code along with source airport code. ";
 
     /**
+     * User-understandable error message for missing source airport code.
+     */
+    public static final String SRC_AIRPORT_CODE_MISSING = "Source airport code missing. Please provide source airport code along with destination airport code. ";
+
+    /**
      * User-understandable error message for providing same source and destination airport code.
      */
     public static final String SRC_AND_DEST_AIRPORT_CODE_ARE_SAME = "Source and Destination airport code are same. Please provide different airport codes for flight's source and destination location. ";

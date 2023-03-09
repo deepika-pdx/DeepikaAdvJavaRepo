@@ -89,10 +89,19 @@ public class AirlineServlet extends HttpServlet {
                     specifiedParameterIsInvalid(response, destAirportCode, e.getMessage());
                     return;
                 }
-            } else if (srcAirportCode != null) {
+            }
+
+            if (srcAirportCode != null && destAirportCode == null) {
                 specifiedParameterIsInvalid(response, "", Messages.DEST_AIRPORT_CODE_MISSING);
                 return;
             }
+
+            if (destAirportCode != null && srcAirportCode == null) {
+                specifiedParameterIsInvalid(response, "", Messages.SRC_AIRPORT_CODE_MISSING);
+                return;
+            }
+
+
             if (srcAirportCode != null && destAirportCode != null && srcAirportCode.equals(destAirportCode)) {
                 specifiedParameterIsInvalid(response, srcAirportCode, Messages.SRC_AND_DEST_AIRPORT_CODE_ARE_SAME);
                 return;
