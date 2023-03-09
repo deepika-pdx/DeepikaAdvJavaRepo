@@ -70,6 +70,10 @@ public class AirlineWebXmlDumper extends AirlineXmlHelper {
      *
      * @param airline
      *         An airline object having flight details.
+     * @param srcAirport
+     *         {@link Optional} parameter that holds the source airport.
+     * @param destAirport
+     *         {@link Optional} parameter that holds the destination airport.
      */
     public void dump(Airline airline, Optional<String> srcAirport, Optional<String> destAirport) {
         Document doc = null;
@@ -140,6 +144,17 @@ public class AirlineWebXmlDumper extends AirlineXmlHelper {
         this.pw.close();
     }
 
+
+    /**
+     * This method creates the flight DOM elements.
+     *
+     * @param doc
+     *         Document obj for holding airline and flight details.
+     * @param airlineElement
+     *         An airline element.
+     * @param flight
+     *         A Flight obj reference.
+     */
     private static void createFlightDOMElements(Document doc, Element airlineElement, Flight flight) {
         Element flightElement = doc.createElement("flight");
 
@@ -173,6 +188,8 @@ public class AirlineWebXmlDumper extends AirlineXmlHelper {
      *         flight departure/arrival date.
      * @param dateType
      *         String holding 'depart' or 'arrive'.
+     *
+     * @return a date element object.
      */
     private static Element createDateElement(Document doc, Date flightDate, String dateType) {
         Element flightDateElement = doc.createElement(dateType);

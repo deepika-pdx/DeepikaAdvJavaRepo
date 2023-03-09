@@ -184,6 +184,8 @@ public class AirlineXmlParser extends AirlineXmlHelper implements AirlineParser<
      *
      * @param flightDateElement
      *         Element holding flight departure/arrival date and time
+     *
+     * @return a date object.
      */
     private Date createDateFromXmlFile(Element flightDateElement) throws ParserException {
         Calendar calendar = Calendar.getInstance();

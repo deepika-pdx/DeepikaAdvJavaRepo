@@ -15,17 +15,44 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 /**
- * This servlet ultimately provides a REST API for working with an
+ * This is <code>AirlineServlet</code> class ultimately provides a REST API for working with an
  * <code>Airline</code>.
  */
 public class AirlineServlet extends HttpServlet {
+
+    /**
+     * String containing the airline parameter.
+     */
     static final String AIRLINE_PARAMETER = "airline";
+
+    /**
+     * String containing the source airport code parameter.
+     */
     static final String SRC_PARAMETER = "src";
+
+    /**
+     * String containing the destination airport code parameter.
+     */
     static final String DEST_PARAMETER = "dest";
 
+    /**
+     * String containing the flight number parameter.
+     */
     static final String FLIGHT_NO_PARAMETER = "flightNumber";
+
+    /**
+     * String containing the flight departure parameter.
+     */
     static final String DEPARTURE_PARAMETER = "depart";
+
+    /**
+     * String containing the flight arrival parameter.
+     */
     static final String ARRIVAL_PARAMETER = "arrive";
+
+    /**
+     * Map storing the airlines.
+     */
     private final Map<String, Airline> airlineFlightMap = new HashMap<>();
 
     /**
@@ -91,8 +118,13 @@ public class AirlineServlet extends HttpServlet {
 
     /**
      * Handles an HTTP POST request by storing the flight details for the
-     * "airline" and flight details request parameters.  It writes the airline dictionary
-     * entry to the HTTP response.
+     * "airline" and flight details request parameters.  It writes the airline details
+     * to the HTTP response.
+     *
+     * @param request
+     *         A HttpServletRequest request.
+     * @param response
+     *         A HttpServletResponse response.
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -225,6 +257,16 @@ public class AirlineServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
+    /**
+     * Validates the specified source airport code.
+     *
+     * @param response
+     *         A HttpServletResponse response.
+     * @param srcAirportCode
+     *         Specified source airport code.
+     *
+     * @return validated source airport code.
+     */
     private String validateSrcAirportCode(HttpServletResponse response, String srcAirportCode) throws IOException {
         // Validation of the provided source location
         if (!(Pattern.matches("[a-zA-Z]+", srcAirportCode)) || srcAirportCode.length() != 3) {
@@ -237,6 +279,16 @@ public class AirlineServlet extends HttpServlet {
         return srcAirportCode;
     }
 
+    /**
+     * Validates the specified destination airport code.
+     *
+     * @param response
+     *         A HttpServletResponse response.
+     * @param destAirportCode
+     *         Specified destination airport code.
+     *
+     * @return validated destination airport code.
+     */
     private String validateDestAirportCode(HttpServletResponse response, String destAirportCode) throws IOException {
         // Validation of the provided destination location
         if (!(Pattern.matches("[a-zA-Z]+", destAirportCode)) || destAirportCode.length() != 3) {
@@ -252,6 +304,11 @@ public class AirlineServlet extends HttpServlet {
     /**
      * Handles an HTTP DELETE request by removing all airlineFlightMap entries.  This
      * behavior is exposed for testing purposes only.
+     *
+     * @param request
+     *         A HttpServletRequest request.
+     * @param response
+     *         A HttpServletResponse response.
      */
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -269,6 +326,11 @@ public class AirlineServlet extends HttpServlet {
     /**
      * Writes an error message about a missing parameter to the HTTP response.
      * The text of the error message is created by {@link Messages#missingRequiredParameter(String)}
+     *
+     * @param response
+     *         A HttpServletResponse response.
+     * @param parameterName
+     *         String holding the request parameter name.
      */
     private void missingRequiredParameter(HttpServletResponse response, String parameterName)
             throws IOException {
@@ -279,6 +341,13 @@ public class AirlineServlet extends HttpServlet {
     /**
      * Writes an error message about an invalid parameter to the HTTP response.
      * The text of the error message is created by {@link Messages#invalidInputParameter(String, String)}
+     *
+     * @param response
+     *         A HttpServletResponse response.
+     * @param parameterName
+     *         String holding the request parameter name.
+     * @param errMsg
+     *         String holding the error message.
      */
     private void specifiedParameterIsInvalid(HttpServletResponse response, String parameterName, String errMsg)
             throws IOException {
@@ -323,6 +392,11 @@ public class AirlineServlet extends HttpServlet {
     /**
      * Returns the value of the HTTP request parameter with the given name.
      *
+     * @param name
+     *         name of the request parameter.
+     * @param request
+     *         A HttpServletRequest request.
+     *
      * @return <code>null</code> if the value of the parameter is
      * <code>null</code> or is the empty string
      */
@@ -335,6 +409,9 @@ public class AirlineServlet extends HttpServlet {
         }
     }
 
+    /**
+     * This method is visible only for testing.
+     */
     @VisibleForTesting
     Airline getAirline(String airlineName) {
         return this.airlineFlightMap.get(airlineName.toUpperCase());

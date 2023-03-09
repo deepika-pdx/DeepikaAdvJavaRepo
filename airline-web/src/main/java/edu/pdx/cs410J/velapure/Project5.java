@@ -85,7 +85,15 @@ public class Project5 {
      */
     public static final String SPECIFIED_AIRLINE_DOES_NOT_EXIST = "The specified airline does not exist. ";
 
-
+    /**
+     * This is the main method of the Airline project and below is the description
+     * of the parameters expected to be passed as arguments.
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-host hostname', '-port portNumber', '-search airlineName and/or src and dest', '-print', '-README'
+     */
     public static void main(String... args) {
         if (args != null) {
             try {
@@ -118,9 +126,9 @@ public class Project5 {
                         processAirlineDetailsWithOnlyPrintOption(args);
                         break;
                     case 12:
-                        processInvalidScenariosWith12Param(args);
+                        handleSimilarInvalidScenarios(args);
                     case 13:
-                        processInvalidScenariosWith13Param(args);
+                        handleSimilarInvalidScenarios(args);
                     case 14:
                         addFlightToTheSpecifiedAirlineWithoutPrintOption(args);
                         break;
@@ -140,6 +148,14 @@ public class Project5 {
         }
     }
 
+    /**
+     * This method adds flight to the specified airline
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-host', '-port', '-print'
+     */
     private static void addFlightToTheSpecifiedAirlineWithPrintOption(String[] args) {
         if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
                 Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
@@ -174,6 +190,14 @@ public class Project5 {
         }
     }
 
+    /**
+     * This method adds flight to the specified airline
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-host', '-port'
+     */
     private static void addFlightToTheSpecifiedAirlineWithoutPrintOption(String[] args) {
         if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
                 Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
@@ -195,9 +219,21 @@ public class Project5 {
         }
     }
 
+    /**
+     * This method handles invalid scenarios about the provided flight and airline details.
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-host', '-port', '-print', '-search'
+     */
     private static void handleSimilarInvalidScenarios(String[] args) {
         // Invalid scenarios
-        if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
+        if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
+            throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
+            throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
                 Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
         } else if ((Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals)) ||
@@ -210,28 +246,13 @@ public class Project5 {
         }
     }
 
-    private static void processInvalidScenariosWith13Param(String[] args) {
-        handleSimilarInvalidScenarios(args);
-    }
-
-    private static void processInvalidScenariosWith12Param(String[] args) {
-        // Invalid scenarios
-        if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
-            throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
-        } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
-            throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
-        } else {
-            handleSimilarInvalidScenarios(args);
-        }
-    }
-
     /**
      * This method processes the airline details with only '-print' option
      *
      * @param args
      *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
      *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
-     *         Options: '-print'
+     *         Options: '-host', '-port', '-print'
      */
     private static void processAirlineDetailsWithOnlyPrintOption(String[] args) {
         if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
@@ -252,6 +273,14 @@ public class Project5 {
         }
     }
 
+    /**
+     * This method handles invalid scenarios about the provided flight and airline details with 9 params.
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-host', '-port', '-print', '-search'
+     */
     private static void processInvalidScenariosWith9Param(String[] args) {
         // Invalid scenarios
         if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
@@ -266,6 +295,14 @@ public class Project5 {
         }
     }
 
+    /**
+     * This method searches and pretty prints details about only those flights with specified src and dest airport code.
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-host', '-port', '-print', '-search'
+     */
     private static void searchAndDisplayOnlyThoseFlightWithSpecifiedSrcAndDest(String[] args) {
         // Display all the flights of the airline specified with the '-search' parameter from given source airport to destination airport
         if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
@@ -293,6 +330,14 @@ public class Project5 {
         }
     }
 
+    /**
+     * This method handles invalid scenarios about the provided flight and airline details with 7 params.
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-host', '-port', '-print', '-search'
+     */
     private static void processInvalidScenariosWith7Param(String[] args) {
         // Invalid scenarios
         if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
@@ -314,6 +359,14 @@ public class Project5 {
         }
     }
 
+    /**
+     * This method searches and pretty prints details about all the flights of the specified airline.
+     *
+     * @param args
+     *         Arguments:'airlineName', 'flightNumber', 'sourceLocation', 'departureDate',
+     *         'departureTime', 'departureTimeIndication', 'destinationLocation', 'arrivalDate', 'arrivalTime', 'arrivalTimeIndication'
+     *         Options: '-host', '-port', '-print', '-search'
+     */
     private static void searchAndDisplayAllFlightsOfTheSpecifiedAirline(String[] args) {
         if (Arrays.stream(args).anyMatch("-host"::equals) && !Arrays.stream(args).anyMatch("-port"::equals)) {
             throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
@@ -623,7 +676,6 @@ public class Project5 {
                     readLine = readmeReader.readLine();
                 }
             }
-            return;
         } catch (IOException e) {
             throw new AirlineException("Error occurred while reading from the README file!!");
         }
