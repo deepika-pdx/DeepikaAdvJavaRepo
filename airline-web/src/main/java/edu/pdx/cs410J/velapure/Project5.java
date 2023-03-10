@@ -5,10 +5,7 @@ import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -312,18 +309,20 @@ public class Project5 {
         } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) &&
                 Arrays.stream(args).anyMatch("-search"::equals) && Arrays.stream(args).anyMatch("-print"::equals)) {
             throw new AirlineException(PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER + "\n" + USAGE);
-        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-search")) {
-            validateAndSearchAirlineDetails(args[1], args[3], args[5], Optional.of(args[6]), Optional.of(args[7]));
-        } else if (args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-search")) {
-            validateAndSearchAirlineDetails(args[3], args[1], args[5], Optional.of(args[6]), Optional.of(args[7]));
-        } else if (args[0].equals("-search") && args[4].equals("-host") && args[6].equals("-port")) {
-            validateAndSearchAirlineDetails(args[5], args[7], args[1], Optional.of(args[2]), Optional.of(args[3]));
-        } else if (args[0].equals("-search") && args[4].equals("-port") && args[6].equals("-host")) {
-            validateAndSearchAirlineDetails(args[7], args[5], args[1], Optional.of(args[2]), Optional.of(args[3]));
-        } else if (args[0].equals("-host") && args[2].equals("-search") && args[6].equals("-port")) {
-            validateAndSearchAirlineDetails(args[1], args[7], args[3], Optional.of(args[4]), Optional.of(args[5]));
-        } else if (args[0].equals("-port") && args[2].equals("-search") && args[6].equals("-host")) {
-            validateAndSearchAirlineDetails(args[7], args[1], args[3], Optional.of(args[4]), Optional.of(args[5]));
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) && Arrays.stream(args).anyMatch("-search"::equals)) {
+            List<String> argsList = Arrays.asList(args);
+
+            int hostnameIndex = argsList.indexOf("-host");
+            String hostname = argsList.get(hostnameIndex + 1);
+
+            int portNumberIndex = argsList.indexOf("-port");
+            String portNumber = argsList.get(portNumberIndex + 1);
+
+            String airlineName = argsList.get(argsList.size() - 3);
+            String srcAirportCode = argsList.get(argsList.size() - 2);
+            String destAirportCode = argsList.get(argsList.size() - 1);
+
+            validateAndSearchAirlineDetails(hostname, portNumber, airlineName, Optional.of(srcAirportCode), Optional.of(destAirportCode));
         } else {
             handleUnknownOption(args);
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);
@@ -372,18 +371,18 @@ public class Project5 {
             throw new AirlineException(PLEASE_PROVIDE_PORT_NUMBER_ALONG_WITH_HOSTNAME + "\n" + USAGE);
         } else if (Arrays.stream(args).anyMatch("-port"::equals) && !Arrays.stream(args).anyMatch("-host"::equals)) {
             throw new AirlineException(PLEASE_PROVIDE_HOSTNAME_ALONG_WITH_PORT_NUMBER + "\n" + USAGE);
-        } else if (args[0].equals("-host") && args[2].equals("-port") && args[4].equals("-search")) {
-            validateAndSearchAirlineDetails(args[1], args[3], args[5], Optional.empty(), Optional.empty());
-        } else if (args[0].equals("-port") && args[2].equals("-host") && args[4].equals("-search")) {
-            validateAndSearchAirlineDetails(args[3], args[1], args[5], Optional.empty(), Optional.empty());
-        } else if (args[0].equals("-search") && args[2].equals("-host") && args[4].equals("-port")) {
-            validateAndSearchAirlineDetails(args[3], args[5], args[1], Optional.empty(), Optional.empty());
-        } else if (args[0].equals("-search") && args[2].equals("-port") && args[4].equals("-host")) {
-            validateAndSearchAirlineDetails(args[5], args[3], args[1], Optional.empty(), Optional.empty());
-        } else if (args[0].equals("-host") && args[2].equals("-search") && args[4].equals("-port")) {
-            validateAndSearchAirlineDetails(args[1], args[5], args[3], Optional.empty(), Optional.empty());
-        } else if (args[0].equals("-port") && args[2].equals("-search") && args[4].equals("-host")) {
-            validateAndSearchAirlineDetails(args[5], args[1], args[3], Optional.empty(), Optional.empty());
+        } else if (Arrays.stream(args).anyMatch("-host"::equals) && Arrays.stream(args).anyMatch("-port"::equals) && Arrays.stream(args).anyMatch("-search"::equals)) {
+            List<String> argsList = Arrays.asList(args);
+
+            int hostnameIndex = argsList.indexOf("-host");
+            String hostname = argsList.get(hostnameIndex + 1);
+
+            int portNumberIndex = argsList.indexOf("-port");
+            String portNumber = argsList.get(portNumberIndex + 1);
+
+            String airlineName = argsList.get(argsList.size() - 1);
+
+            validateAndSearchAirlineDetails(hostname, portNumber, airlineName, Optional.empty(), Optional.empty());
         } else {
             handleUnknownOption(args);
             throw new AirlineException(TOO_FEW_COMMAND_LINE_ARGUMENTS + "\n" + USAGE);

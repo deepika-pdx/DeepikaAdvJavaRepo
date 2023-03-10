@@ -31,7 +31,7 @@ args are (in this order):
 options are (Options may appear in any order. Please do not provide '-search' and '-print' option together.):
     -host hostname    Host computer on which the server runs
     -port portNumber  Port on which the server is listening
-    -search name      Search for flights. Airline name is required with the '-search' option. The source and destination airport codes can be
+    -search           Search for flights. Airline name is required with the '-search' option. The source and destination airport codes can be
                       optionally provided with the '-search' option.
     -print            Prints the description of the newly added flight
     -README           Prints a README for this project and exits

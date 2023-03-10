@@ -152,7 +152,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test14HostPortSearchParamInOrder3PrettyPrintsFlightInfo() {
-        MainMethodResult result = invokeMain(Project5.class, "-search", "Spirit", "-host", HOSTNAME, "-port", PORT);
+        MainMethodResult result = invokeMain(Project5.class, "-search", "-host", HOSTNAME, "-port", PORT, "Spirit");
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Spirit airline"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 details:"));
@@ -164,7 +164,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test15HostPortSearchParamInOrder4PrettyPrintsFlightInfo() {
-        MainMethodResult result = invokeMain(Project5.class, "-search", "Frontier", "-port", PORT, "-host", HOSTNAME);
+        MainMethodResult result = invokeMain(Project5.class, "-search", "-port", PORT, "-host", HOSTNAME, "Frontier");
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Frontier airline"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 12345 details:"));
@@ -176,7 +176,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test16HostPortSearchParamInOrder5PrettyPrintsFlightInfo() {
-        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-search", "Frontier", "-port", PORT);
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-search", "-port", PORT, "Frontier");
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Frontier airline"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 12345 details:"));
@@ -188,7 +188,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test17HostPortSearchParamInOrder6PrettyPrintsFlightInfo() {
-        MainMethodResult result = invokeMain(Project5.class, "-port", PORT, "-search", "Spirit", "-host", HOSTNAME);
+        MainMethodResult result = invokeMain(Project5.class, "-port", PORT, "-search", "-host", HOSTNAME, "Spirit");
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Spirit airline"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 789 details:"));
@@ -199,7 +199,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test18HostPortSearchParamInOrder6WithNonExistentAirlineIssuesError() {
-        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "SpiceJet");
+        MainMethodResult result = invokeMain(Project5.class, "-search", "-host", HOSTNAME, "-port", PORT, "SpiceJet");
         assertThat(result.getTextWrittenToStandardError(), containsString(Project5.SPECIFIED_AIRLINE_DOES_NOT_EXIST));
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
     }
@@ -209,7 +209,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test19HostPortSearchAndPrintWith7ParamIssuesError() {
-        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "SpiceJet", "-print");
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "-print", "SpiceJet");
         assertThat(result.getTextWrittenToStandardError(), containsString(Project5.PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER));
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
     }
@@ -297,7 +297,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test27HostPortSearchParamInOrder3PrettyPrintsFlightInfo() {
-        MainMethodResult result = invokeMain(Project5.class, "-search", "Frontier", "PDX", "LAS", "-host", HOSTNAME, "-port", PORT);
+        MainMethodResult result = invokeMain(Project5.class, "-search", "-host", HOSTNAME, "-port", PORT, "Frontier", "PDX", "LAS");
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Frontier airline"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 12345 details:"));
@@ -309,7 +309,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test28HostPortSearchParamInOrder4PrettyPrintsFlightInfo() {
-        MainMethodResult result = invokeMain(Project5.class, "-search", "Frontier", "PDX", "LAS", "-port", PORT, "-host", HOSTNAME);
+        MainMethodResult result = invokeMain(Project5.class, "-search", "-port", PORT, "-host", HOSTNAME, "Frontier", "PDX", "LAS");
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Frontier airline"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 12345 details:"));
@@ -321,7 +321,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test29HostPortSearchParamInOrder5PrettyPrintsFlightInfo() {
-        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-search", "Spirit", "PDX", "LAS", "-port", PORT);
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-search", "-port", PORT, "Spirit", "PDX", "LAS");
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Spirit airline"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 4856 details:"));
@@ -334,7 +334,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test30HostPortSearchParamInOrder6PrettyPrintsFlightInfo() {
-        MainMethodResult result = invokeMain(Project5.class, "-port", PORT, "-search", "Spirit", "PDX", "LAS", "-host", HOSTNAME);
+        MainMethodResult result = invokeMain(Project5.class, "-port", PORT, "-search", "-host", HOSTNAME, "Spirit", "PDX", "LAS");
         assertThat(result.getTextWrittenToStandardError(), equalTo(""));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight Information of the Spirit airline"));
         assertThat(result.getTextWrittenToStandardOut(), containsString("Flight 4856 details:"));
@@ -346,7 +346,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test31HostPortSearchParamInOrder1WithNonExistentFlightIssuesError() {
-        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "SpiceJet", "PDX", "LAS");
+        MainMethodResult result = invokeMain(Project5.class, "-search", "-host", HOSTNAME, "-port", PORT, "SpiceJet", "PDX", "LAS");
         assertThat(result.getTextWrittenToStandardError(), containsString(Project5.SPECIFIED_AIRLINE_DOES_NOT_EXIST));
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
     }
@@ -356,7 +356,7 @@ class Project5IT extends InvokeMainTestCase {
      */
     @Test
     void test32HostPortSearchParamInOrder1WithPrintOptionIssuesError() {
-        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "SpiceJet", "-print", "LAS");
+        MainMethodResult result = invokeMain(Project5.class, "-host", HOSTNAME, "-port", PORT, "-search", "-print", "SpiceJet", "LAS");
         assertThat(result.getTextWrittenToStandardError(), containsString(Project5.PLEASE_DO_NOT_PROVIDE_PRINT_AND_SEARCH_PARAMETER_TOGETHER));
         assertThat(result.getTextWrittenToStandardOut(), equalTo(""));
     }

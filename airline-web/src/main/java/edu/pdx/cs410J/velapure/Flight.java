@@ -143,7 +143,7 @@ public class Flight extends AbstractFlight implements Comparable<Flight> {
     public int compareTo(Flight o) {
         int srcLocationCompareResult = getSource().compareTo(o.getSource());
         if (srcLocationCompareResult == 0) {
-            return getDeparture().compareTo(getArrival());
+            return getDeparture().compareTo(o.getDeparture());
         }
         return srcLocationCompareResult;
     }
