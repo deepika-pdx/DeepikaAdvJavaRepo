@@ -111,6 +111,7 @@
             android:layout_marginEnd="77dp"
             android:layout_marginBottom="401dp"
             android:ems="10"
+            android:enabled="false"
             android:inputType="textPersonName" />
 
         <Button
@@ -132,6 +133,7 @@
             android:layout_marginEnd="76dp"
             android:layout_marginBottom="345dp"
             android:ems="10"
+            android:enabled="false"
             android:inputType="textPersonName" />
 
         <Button
@@ -184,6 +186,7 @@
             android:layout_marginEnd="94dp"
             android:layout_marginBottom="185dp"
             android:ems="10"
+            android:enabled="false"
             android:inputType="textPersonName" />
 
         <Button
@@ -205,6 +208,7 @@
             android:layout_marginEnd="97dp"
             android:layout_marginBottom="136dp"
             android:ems="10"
+            android:enabled="false"
             android:inputType="textPersonName" />
 
         <Button

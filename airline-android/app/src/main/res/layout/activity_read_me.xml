@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".ReadMeActivity">
 
+    <TextView
+        android:id="@+id/read_me_text"
+        android:layout_width="395dp"
+        android:layout_height="724dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="7dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

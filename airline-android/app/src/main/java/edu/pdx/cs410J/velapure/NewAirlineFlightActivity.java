@@ -17,6 +17,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -175,39 +176,68 @@ public class NewAirlineFlightActivity extends AppCompatActivity implements View.
     public void createAirline(View view) {
         EditText airlineText = findViewById(R.id.airline_name);
         airlineName = airlineText.getText().toString();
+        if(airlineName == null || airlineName.isEmpty()) {
+            Toast.makeText(this, "Please provide airline name.", Toast.LENGTH_LONG).show();
+        } else {
+            Airline airline = null;
+            try {
+                airline = readAirlineFromFile();
+                if (airline == null) {
+                    airline = new Airline(airlineName);
+                }
+            } catch (IOException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+            EditText flightNumberText = findViewById(R.id.flight_number);
+            String flightNumber = flightNumberText.getText().toString();
 
-        EditText flightNumberText = findViewById(R.id.flight_number);
-        String flightNumber = flightNumberText.getText().toString();
+            EditText srcAirportCodeText = findViewById(R.id.src_airport_code);
+            String srcAirportCode = srcAirportCodeText.getText().toString();
 
-        EditText srcAirportCodeText = findViewById(R.id.src_airport_code);
-        String srcAirportCode = srcAirportCodeText.getText().toString();
+            EditText departureDateText = findViewById(R.id.departure_date_text);
+            String departureDate = departureDateText.getText().toString();
 
-        EditText departureDateText = findViewById(R.id.departure_date_text);
-        String departureDate = departureDateText.getText().toString();
+            EditText departureTimeText = findViewById(R.id.departure_time_text);
+            String departureTime = departureTimeText.getText().toString();
 
-        EditText departureTimeText = findViewById(R.id.departure_time_text);
-        String departureTime = departureTimeText.getText().toString();
+            EditText destAirportCodeText = findViewById(R.id.dest_airport_code);
+            String destAirportCode = destAirportCodeText.getText().toString();
 
-        EditText destAirportCodeText = findViewById(R.id.dest_airport_code);
-        String destAirportCode = destAirportCodeText.getText().toString();
+            EditText arrivalDateText = findViewById(R.id.arrival_date_text);
+            String arrivalDate = arrivalDateText.getText().toString();
 
-        EditText arrivalDateText = findViewById(R.id.arrival_date_text);
-        String arrivalDate = arrivalDateText.getText().toString();
-
-        EditText arrivalTimeText = findViewById(R.id.arrival_time_text);
-        String arrivalTime = arrivalTimeText.getText().toString();
-        Airline airline = new Airline(airlineName);
-        try {
-            validateAndAddFlight(airline, flightNumber, srcAirportCode, departureDate, departureTime, destAirportCode, arrivalDate, arrivalTime);
-        } catch (AirlineException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            EditText arrivalTimeText = findViewById(R.id.arrival_time_text);
+            String arrivalTime = arrivalTimeText.getText().toString();
+            try {
+                validateAndAddFlight(airline, flightNumber, srcAirportCode, departureDate, departureTime, destAirportCode, arrivalDate, arrivalTime);
+                writeAirlineToFile(airline);
+            } catch (AirlineException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 
-    private void writeAirlineToFile() throws IOException {
+    private Airline readAirlineFromFile() throws IOException {
+        Airline readAirline = null;
         File airlineFile = getAirlineFile();
-        try(PrintWriter pw = new PrintWriter(new FileWriter(airlineFile))) {
+        try {
+            AirlineTextParser parser = new AirlineTextParser(new FileReader(airlineFile));
+            readAirline = parser.parse();
+        } catch (FileNotFoundException e) {
+            readAirline = null;
+        } catch (IOException | ParserException e) {
+            throw new AirlineException("Unable to get airline and flight details!!");
+        }
+        return readAirline;
+    }
 
+    private void writeAirlineToFile(Airline airline) {
+        File airlineFile = getAirlineFile();
+        try {
+            AirlineTextDumper airlineTextDumper = new AirlineTextDumper(new FileWriter(airlineFile));
+            airlineTextDumper.dump(airline);
+        } catch (IOException e) {
+            throw new AirlineException("Unable to save airline and flight details!!");
         }
     }
 
@@ -217,57 +247,93 @@ public class NewAirlineFlightActivity extends AppCompatActivity implements View.
         return new File(datadir, airlineName + ".txt");
     }
 
-    private static void validateAndAddFlight(Airline airline, String flightNumberString, String srcLocation, String departureDateString,
+    private void validateAndAddFlight(Airline airline, String flightNumberString, String srcLocation, String departureDateString,
                                           String departureTimeString, String destLocation, String arrivalDateString,
                                           String arrivalTimeString) throws AirlineException {
+        int flightNumber = 0;
+        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+        Date departureDate = null;
+        Date arrivalDate = null;
 
         // Validation of the provided flight number
-        int flightNumber = 0;
-        try {
-            flightNumber = Integer.parseInt(flightNumberString);
-        } catch (NumberFormatException e) {
-            throw new AirlineException("Invalid flight number. Flight number provided should consist of only numbers between 0-9.");
+        if (flightNumberString == null || flightNumberString.isEmpty()) {
+            throw new AirlineException("Please provide flight number.");
+        } else {
+            try {
+                flightNumber = Integer.parseInt(flightNumberString);
+            } catch (NumberFormatException e) {
+                throw new AirlineException("Flight number provided should consist of only numbers between 0-9.");
+            }
         }
 
         // Validation of the provided source location
-        if (!(Pattern.matches("[a-zA-Z]+", srcLocation)) || srcLocation.length() != 3) {
-            throw new AirlineException("Invalid source location. Source location provided should consist of only three alphabets [a-zA-Z].");
-        } else if (AirportNames.getName(srcLocation.toUpperCase()) == null) {
-            throw new AirlineException("The three-letter source location code does not correspond to a known airport!");
+        if (srcLocation == null || srcLocation.isEmpty()) {
+            throw new AirlineException("Please provide source airport code.");
         } else {
-            srcLocation = srcLocation.toUpperCase();
+            if (!(Pattern.matches("[a-zA-Z]+", srcLocation)) || srcLocation.length() != 3) {
+                throw new AirlineException("Source location provided should consist of only three alphabets [a-zA-Z].");
+            } else if (AirportNames.getName(srcLocation.toUpperCase()) == null) {
+                throw new AirlineException("The three-letter source location code does not correspond to a known airport!");
+            } else {
+                srcLocation = srcLocation.toUpperCase();
+            }
+        }
+
+        // Validation of the provided departure date and time
+        try {
+            if (departureDateString == null || departureDateString.isEmpty()) {
+                throw new AirlineException("Please provide departure date.");
+            } else if (departureTimeString == null || departureTimeString.isEmpty()) {
+                throw new AirlineException("Please provide departure time.");
+            } else {
+                String departureDateInString = departureDateString + " " + departureTimeString;
+                departureDate = dateTimeFormatter.parse(departureDateInString);
+            }
+        } catch (ParseException e) {
+            throw new AirlineException("Invalid date and/or time.");
         }
 
 
         // Validation of the provided destination location
-        if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
-            throw new AirlineException("Invalid destination location. Destination location provided should consist of only three alphabets [a-zA-Z].");
-        } else if (AirportNames.getName(destLocation.toUpperCase()) == null) {
-            throw new AirlineException("The three-letter destination location code does not correspond to a known airport!");
+        if (destLocation == null || destLocation.isEmpty()) {
+            throw new AirlineException("Please provide destination airport code.");
         } else {
-            destLocation = destLocation.toUpperCase();
+            if (!(Pattern.matches("[a-zA-Z]+", destLocation)) || destLocation.length() != 3) {
+                throw new AirlineException("Destination location provided should consist of only three alphabets [a-zA-Z].");
+            } else if (AirportNames.getName(destLocation.toUpperCase()) == null) {
+                throw new AirlineException("The three-letter destination airport code does not correspond to a known airport!");
+            } else {
+                destLocation = destLocation.toUpperCase();
+            }
         }
 
+        // Validation is source and destination airport code are the same
         if (srcLocation.equals(destLocation)) {
-            throw new AirlineException("The provided source and the destination location code is same. " +
-                    "Please provide different airport codes for flight's source and destination location.");
+            throw new AirlineException("The provided source and destination airport code should not be the same.");
         }
 
-        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("MM/dd/YYYY" + " " + "HH:mm");
-        Date departureDate = null;
-        Date arrivalDate = null;
+        // Validation of the provided arrival date and time
         try {
-            departureDate = dateTimeFormatter.parse(departureDateString + " " + departureTimeString);
-            arrivalDate = dateTimeFormatter.parse(arrivalDateString + " " + arrivalTimeString);
-
+            if (arrivalDateString == null || arrivalDateString.isEmpty()) {
+                throw new AirlineException("Please provide arrival date.");
+            } else if (arrivalTimeString == null || arrivalTimeString.isEmpty()) {
+                throw new AirlineException("Please provide arrival time.");
+            } else {
+                arrivalDate = dateTimeFormatter.parse(arrivalDateString + " " + arrivalTimeString);
+            }
         } catch (ParseException e) {
-            throw new AirlineException("Invalid date and/or time. ");
+            throw new AirlineException("Invalid date and/or time.");
         }
+
+        // Validation of the provided departure and arrival date and time
         if (arrivalDate.before(departureDate) || arrivalDate.equals(departureDate)) {
-            throw new AirlineException("The provided arrival date and time should not be before or same as the departure date and time.");
+            throw new AirlineException("The arrival date/time should be after departure date/time.");
         }
+
+        // Create and add flight to the provided airline
         Flight flight = new Flight(flightNumber, srcLocation, departureDateString + " " + departureTimeString, departureDate, destLocation,
                 arrivalDateString + " " + arrivalTimeString, arrivalDate);
         airline.addFlight(flight);
+        Toast.makeText(this, "Flight added successfully to the airline!", Toast.LENGTH_LONG).show();
     }
 }
