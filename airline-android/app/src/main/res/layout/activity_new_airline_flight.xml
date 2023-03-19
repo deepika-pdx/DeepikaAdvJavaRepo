@@ -24,9 +24,9 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="175dp"
             android:layout_marginBottom="668dp"
-            android:text="Please provide airline details:"
+            android:text="@string/provide_airline_details_title"
             tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="115dp" />
+            tools:layout_editor_absoluteY="115dp"/>
 
         <TextView
             android:id="@+id/airline_name_title"
@@ -35,9 +35,9 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="-9dp"
             android:layout_marginBottom="577dp"
-            android:text="Airline name:"
+            android:text="@string/airline_name_title"
             tools:layout_editor_absoluteX="41dp"
-            tools:layout_editor_absoluteY="194dp" />
+            tools:layout_editor_absoluteY="194dp"/>
 
         <EditText
             android:id="@+id/airline_name"
@@ -48,7 +48,7 @@
             android:layout_marginEnd="63dp"
             android:layout_marginBottom="604dp"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"/>
 
         <TextView
             android:id="@+id/flight_number_title"
@@ -58,7 +58,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="261dp"
             android:layout_marginBottom="519dp"
-            android:text="Flight Number:" />
+            android:text="@string/flight_number_title"/>
 
         <EditText
             android:id="@+id/flight_number"
@@ -69,7 +69,7 @@
             android:layout_marginEnd="54dp"
             android:layout_marginBottom="548dp"
             android:ems="10"
-            android:inputType="number" />
+            android:inputType="number"/>
 
         <TextView
             android:id="@+id/src_airport_code_title"
@@ -79,7 +79,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="271dp"
             android:layout_marginBottom="485dp"
-            android:text="Source Airport Code:" />
+            android:text="@string/src_airport_code_title"/>
 
         <EditText
             android:id="@+id/src_airport_code"
@@ -90,7 +90,7 @@
             android:layout_marginEnd="50dp"
             android:layout_marginBottom="476dp"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"/>
 
         <TextView
             android:id="@+id/departure_title"
@@ -100,7 +100,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="293dp"
             android:layout_marginBottom="350dp"
-            android:text="Departure" />
+            android:text="@string/departure_title"/>
 
         <EditText
             android:id="@+id/departure_date_text"
@@ -122,7 +122,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="400dp"
-            android:text="Select Date" />
+            android:text="@string/select_date"/>
 
         <EditText
             android:id="@+id/departure_time_text"
@@ -134,7 +134,7 @@
             android:layout_marginBottom="345dp"
             android:ems="10"
             android:enabled="false"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"/>
 
         <Button
             android:id="@+id/departure_time_btn"
@@ -144,7 +144,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="346dp"
-            android:text="Select Time" />
+            android:text="@string/select_time"/>
 
         <TextView
             android:id="@+id/dest_airport_code_title"
@@ -154,7 +154,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="252dp"
             android:layout_marginBottom="259dp"
-            android:text="Destination Airport Code:" />
+            android:text="@string/dest_airport_code_title"/>
 
         <EditText
             android:id="@+id/dest_airport_code"
@@ -165,7 +165,7 @@
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="273dp"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"/>
 
         <TextView
             android:id="@+id/arrival_title"
@@ -175,7 +175,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="306dp"
             android:layout_marginBottom="127dp"
-            android:text="Arrival" />
+            android:text="@string/arrival_title"/>
 
         <EditText
             android:id="@+id/arrival_date_text"
@@ -187,7 +187,7 @@
             android:layout_marginBottom="185dp"
             android:ems="10"
             android:enabled="false"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"/>
 
         <Button
             android:id="@+id/arrival_date_btn"
@@ -197,7 +197,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="185dp"
-            android:text="Select Date" />
+            android:text="@string/select_date" />
 
         <EditText
             android:id="@+id/arrival_time_text"
@@ -209,7 +209,7 @@
             android:layout_marginBottom="136dp"
             android:ems="10"
             android:enabled="false"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"/>
 
         <Button
             android:id="@+id/arrival_time_btn"
@@ -219,7 +219,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="19dp"
             android:layout_marginBottom="137dp"
-            android:text="Select Time" />
+            android:text="@string/select_time"/>
 
         <Button
             android:id="@+id/create_airline_btn"
@@ -232,6 +232,6 @@
             android:layout_marginEnd="145dp"
             android:layout_marginBottom="59dp"
             android:onClick="createAirline"
-            android:text="Create" />
+            android:text="@string/create_btn"/>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

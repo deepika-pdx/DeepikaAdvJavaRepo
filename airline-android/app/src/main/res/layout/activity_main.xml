@@ -18,11 +18,12 @@
             android:id="@+id/help_menu"
             android:layout_width="60dp"
             android:layout_height="54dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="-10dp"
             android:onClick="launchReadMeActivity"
-            app:srcCompat="@android:drawable/ic_menu_help" />
+            app:srcCompat="@android:drawable/ic_menu_help"
+            android:contentDescription="@string/help" />
 
         <TextView
             android:id="@+id/welcome_text"
@@ -31,7 +32,7 @@
             android:layout_below="@id/help_menu"
             android:layout_marginStart="80dp"
             android:layout_marginTop="60dp"
-            android:text="Welcome! Let's explore airlines!" />
+            android:text="@string/welcome_msg" />
 
         <Button
             android:id="@+id/create_airline_button"
@@ -42,7 +43,7 @@
             android:layout_marginTop="120dp"
             android:layout_marginBottom="1184dp"
             android:onClick="launchNewAirlineFlightActivity"
-            android:text="Create new Airline/Flight" />
+            android:text="@string/create_airline_btn_title" />
 
         <Button
             android:id="@+id/search_airline_button"
@@ -53,7 +54,6 @@
             android:layout_marginTop="220dp"
             android:layout_marginBottom="84dp"
             android:onClick="launchSearchAirlineActivity"
-            android:text="Search Airline/Flight" />
+            android:text="@string/search_airline_btn_title" />
     </RelativeLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

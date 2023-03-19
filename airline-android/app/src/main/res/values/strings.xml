@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Airline</string>
+    <string name="help">Help Menu</string>
+    <string name="welcome_msg">Welcome! Let\'s explore airlines!</string>
+    <string name="create_airline_btn_title">Create new Airline/Flight</string>
+    <string name="search_airline_btn_title">Search Airline/Flight</string>
+    <string name="provide_airline_details_title">Please provide airline details:</string>
+    <string name="airline_name_title">Airline name:</string>
+    <string name="flight_number_title">Flight Number:</string>
+    <string name="src_airport_code_title">Source Airport Code:</string>
+    <string name="departure_title">Departure</string>
+    <string name="select_date">Select Date</string>
+    <string name="select_time">Select Time</string>
+    <string name="dest_airport_code_title">Destination Airport Code:</string>
+    <string name="arrival_title">Arrival</string>
+    <string name="create_btn">Create</string>
+    <string name="pretty_print_text_view">Pretty print text view</string>
+    <string name="search_airline_flights_title">Search for airline/flights:</string>
+    <string name="airline_name_search">Airline name:</string>
+    <string name="source_airport_code_search">Source Airport Code (Optional):</string>
+    <string name="destination_airport_code_search">Destination Airport Code (Optional):</string>
+    <string name="search_btn">Search</string>
 </resources>
