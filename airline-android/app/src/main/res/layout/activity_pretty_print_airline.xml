@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ReadMeActivity">
+    tools:context=".PrettyPrintAirlineActivity">
 
     <TextView
-        android:id="@+id/read_me_text"
-        android:layout_width="395dp"
-        android:layout_height="724dp"
+        android:id="@+id/pretty_print_text_view"
+        android:layout_width="408dp"
+        android:layout_height="714dp"
+        android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"
-        tools:layout_editor_absoluteX="7dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

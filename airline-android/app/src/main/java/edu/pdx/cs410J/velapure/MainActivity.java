@@ -21,4 +21,8 @@ public class MainActivity extends AppCompatActivity {
     public void launchReadMeActivity(View view) {
         startActivity(new Intent(this, ReadMeActivity.class));
     }
+
+    public void launchSearchAirlineActivity(View view) {
+        startActivity(new Intent(this, SearchAirlineAndFlightActivity.class));
+    }
 }

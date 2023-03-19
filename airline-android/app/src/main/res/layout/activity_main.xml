@@ -52,6 +52,7 @@
             android:layout_marginStart="40dp"
             android:layout_marginTop="220dp"
             android:layout_marginBottom="84dp"
+            android:onClick="launchSearchAirlineActivity"
             android:text="Search Airline/Flight" />
     </RelativeLayout>
 

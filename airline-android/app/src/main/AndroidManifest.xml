@@ -12,6 +12,12 @@
         android:theme="@style/Theme.Airline"
         tools:targetApi="31">
         <activity
+            android:name=".PrettyPrintAirlineActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SearchAirlineAndFlightActivity"
+            android:exported="false" />
+        <activity
             android:name=".ReadMeActivity"
             android:exported="false" />
         <activity
