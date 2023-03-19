@@ -143,8 +143,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="12dp"
-            android:layout_marginBottom="346dp"
-            android:text="@string/select_time"/>
+            android:layout_marginBottom="347dp"
+            android:text="@string/select_time" />
 
         <TextView
             android:id="@+id/dest_airport_code_title"
@@ -217,21 +217,21 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="19dp"
-            android:layout_marginBottom="137dp"
-            android:text="@string/select_time"/>
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="135dp"
+            android:text="@string/select_time" />
 
         <Button
             android:id="@+id/create_airline_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="113dp"
+            android:layout_height="58dp"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="624dp"
-            android:layout_marginEnd="145dp"
-            android:layout_marginBottom="59dp"
+            android:layout_marginTop="620dp"
+            android:layout_marginEnd="138dp"
+            android:layout_marginBottom="53dp"
             android:onClick="createAirline"
-            android:text="@string/create_btn"/>
+            android:text="@string/create_btn" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

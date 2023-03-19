@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".PrettyPrintAirlineActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/pretty_print_text_view"
         android:layout_width="408dp"
@@ -15,4 +19,5 @@
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

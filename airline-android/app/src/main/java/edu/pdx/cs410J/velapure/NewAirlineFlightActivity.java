@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -49,7 +50,7 @@ public class NewAirlineFlightActivity extends AppCompatActivity implements View.
     private EditText arrivalTimeTxt;
     private Button arrivalTimeBtn;
 
-    private int currentYear, currentMonth, currentDay, currentHour, currentMin;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +78,7 @@ public class NewAirlineFlightActivity extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View view) {
-
+        int currentYear, currentMonth, currentDay, currentHour, currentMin;
         if (view == departDateBtn) {
             Calendar cal = Calendar.getInstance();
             currentYear = cal.get(Calendar.YEAR);
@@ -244,7 +245,8 @@ public class NewAirlineFlightActivity extends AppCompatActivity implements View.
     @NonNull
     private File getAirlineFile() {
         File datadir = this.getDataDir();
-        return new File(datadir, airlineName + ".txt");
+        String filename = airlineName.toLowerCase() + ".txt";
+        return new File(datadir, filename);
     }
 
     private void validateAndAddFlight(Airline airline, String flightNumberString, String srcLocation, String departureDateString,

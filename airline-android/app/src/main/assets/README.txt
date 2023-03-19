@@ -18,22 +18,21 @@ Create Airline/Flight option: The create airline and flights
                               given arrival date and time.
 
 Search Airline/Flight option: The search airline and flights
-                              screen allows to search for
-                              airline and its flights either
-                              by using only the airline name
-                              or by using the source and
-                              destination airport code along with
+                              screen allows to search for airline and
+                              its flights either by using only the
+                              airline name or by using the source
+                              and destination airport code along with
                               the airline name.
                               When searched with only airline name,
-                              all the flights of that airline
-                              are displayed.
+                              all the flights of that airline are
+                              displayed.
                               When searched with airline name and
-                              source and destination airport
-                              code, then only the flights with the
+                              source and destination airport code,
+                              then only the flights with the
                               mentioned source and destination
                               airport code are displayed.
 
-All the airlines and flights created using this application are retained even if the application is closed and restarted.
+This application can store information about multiple airlines and its flights. All the airlines and flights created using this application are retained even if the application is closed and restarted.
 
 
 

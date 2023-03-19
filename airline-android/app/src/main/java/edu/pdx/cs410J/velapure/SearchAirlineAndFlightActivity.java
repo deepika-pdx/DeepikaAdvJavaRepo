@@ -74,7 +74,11 @@ public class SearchAirlineAndFlightActivity extends AppCompatActivity {
             } else {
                 destAirport = Optional.of(searchDestAirportCode.toUpperCase());
             }
-            validateAndSearchAirlineDetails(searchAirlineName, srcAirport, destAirport);
+            try {
+                validateAndSearchAirlineDetails(searchAirlineName, srcAirport, destAirport);
+            } catch (AirlineException e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -111,14 +115,14 @@ public class SearchAirlineAndFlightActivity extends AppCompatActivity {
         try {
             Airline airline = readAirlineFromFile();
             if (airline == null) {
-                Toast.makeText(this, "The specified airline does not exist.", Toast.LENGTH_LONG).show();
+                throw new AirlineException("The specified airline does not exist.");
             } else {
                 AirlineScreenPrettyPrinter prettyPrinter = new AirlineScreenPrettyPrinter();
                 prettyPrintText = prettyPrinter.convertToPrettyText(airline, srcAirportCode, destAirportCode);
                 if (srcAirportCode.isPresent() && destAirportCode.isPresent()) {
                     String[] prettyPrintArray = prettyPrintText.split("\n");
                     if (prettyPrintArray != null && prettyPrintArray.length == 1) {
-                        Toast.makeText(this, "There are no direct flights for the specified source and destination airport codes!", Toast.LENGTH_LONG).show();
+                        throw new AirlineException("There are no direct flights for the specified source and destination airport codes!");
                     } else {
                         writeAirlineDetailsToPrettyPrintActivity();
                     }
@@ -127,7 +131,7 @@ public class SearchAirlineAndFlightActivity extends AppCompatActivity {
                 }
             }
         } catch (IOException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+            throw new AirlineException(e.getMessage());
         }
     }
 
@@ -154,6 +158,7 @@ public class SearchAirlineAndFlightActivity extends AppCompatActivity {
     @NonNull
     private File getAirlineFile() {
         File datadir = this.getDataDir();
-        return new File(datadir, searchAirlineName + ".txt");
+        String filename = searchAirlineName.toLowerCase() + ".txt";
+        return new File(datadir, filename);
     }
 }
