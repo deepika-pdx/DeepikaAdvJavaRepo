@@ -58,12 +58,12 @@ public class AirlineScreenPrettyPrinter {
                     prettyStringBuilder.append("\n");
                     flightDateFormatter = DateFormat.getDateInstance(DateFormat.FULL, Locale.US);
                     flightTimeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
-                    prettyStringBuilder.append("    Departure date and time: " +
+                    prettyStringBuilder.append("    Departure date & time: " +
                             flightDateFormatter.format(flight.getDeparture()) + " " + flightTimeFormatter.format(flight.getDeparture()));
                     prettyStringBuilder.append("\n");
                     prettyStringBuilder.append("    Destination: " + AirportNames.getName(flight.getDestination()) + "(" + flight.getDestination() + ")");
                     prettyStringBuilder.append("\n");
-                    prettyStringBuilder.append("    Arrival date and time: " + flightDateFormatter.format(flight.getArrival()) + " " + flightTimeFormatter.format(flight.getArrival()));
+                    prettyStringBuilder.append("    Arrival date & time: " + flightDateFormatter.format(flight.getArrival()) + " " + flightTimeFormatter.format(flight.getArrival()));
                     prettyStringBuilder.append("\n");
                     long flightDifference = (flight.getArrival().getTime() - flight.getDeparture().getTime());
                     long flightDuration = flightDifference / (60 * 1000);
@@ -78,12 +78,12 @@ public class AirlineScreenPrettyPrinter {
                 prettyStringBuilder.append("\n");
                 flightDateFormatter = DateFormat.getDateInstance(DateFormat.FULL, Locale.US);
                 flightTimeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US);
-                prettyStringBuilder.append("    Departure date and time: " +
+                prettyStringBuilder.append("    Departure date & time: " +
                         flightDateFormatter.format(flight.getDeparture()) + " " + flightTimeFormatter.format(flight.getDeparture()));
                 prettyStringBuilder.append("\n");
                 prettyStringBuilder.append("    Destination: " + AirportNames.getName(flight.getDestination()) + "(" + flight.getDestination() + ")");
                 prettyStringBuilder.append("\n");
-                prettyStringBuilder.append("    Arrival date and time: " + flightDateFormatter.format(flight.getArrival()) + " " + flightTimeFormatter.format(flight.getArrival()));
+                prettyStringBuilder.append("    Arrival date & time: " + flightDateFormatter.format(flight.getArrival()) + " " + flightTimeFormatter.format(flight.getArrival()));
                 prettyStringBuilder.append("\n");
                 long flightDifference = (flight.getArrival().getTime() - flight.getDeparture().getTime());
                 long flightDuration = flightDifference / (60 * 1000);
