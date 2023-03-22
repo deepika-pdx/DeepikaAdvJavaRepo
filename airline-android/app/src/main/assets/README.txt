@@ -7,7 +7,7 @@ This is an 'Airline' android application.
 The home screen provides two options, one for creating an airline and its flights and other for searching an airline and its flights.
 
 Create Airline/Flight option: The create airline and flights
-                              screen accepts airline name and flights
+                              screen accepts airline name and flight
                               details.
                               An Airline has a unique name and can have
                               multiple flights.
@@ -31,6 +31,9 @@ Search Airline/Flight option: The search airline and flights
                               then only the flights with the
                               mentioned source and destination
                               airport code are displayed.
+                              Also, the search screen is provided with
+                              a scroll option to see the details of
+                              all the flights.
 
 This application can store information about multiple airlines and its flights. All the airlines and flights created using this application are retained even if the application is closed and restarted.
 

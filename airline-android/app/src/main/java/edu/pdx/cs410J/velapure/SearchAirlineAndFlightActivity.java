@@ -122,7 +122,7 @@ public class SearchAirlineAndFlightActivity extends AppCompatActivity {
                 if (srcAirportCode.isPresent() && destAirportCode.isPresent()) {
                     String[] prettyPrintArray = prettyPrintText.split("\n");
                     if (prettyPrintArray != null && prettyPrintArray.length == 1) {
-                        throw new AirlineException("There are no direct flights for the specified source and destination airport codes!");
+                        throw new AirlineException("There are no direct flights for specified source and destination airport codes!");
                     } else {
                         writeAirlineDetailsToPrettyPrintActivity();
                     }
